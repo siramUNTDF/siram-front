@@ -6,6 +6,22 @@
 > Este documento cuenta **qué hace el usuario y qué ve**. No describe el modelo de datos: los datos
 > llegan por la API, y las dudas sobre su forma se resuelven con el back.
 
+> **⚠ Desactualizada (aviso del 2026-11-03).** La narrativa cambió desde el 2026-10-23 y este archivo
+> todavía no lo refleja; se reescribe pronto. Mientras tanto, **donde choque con una ficha de
+> `vistas/`, gana la ficha.** Lo que ya no vale:
+> - **Hay formulario público.** Lo que envía un ciudadano es una **solicitud** (no un caso): va a la
+>   cola `Casos › Solicitudes` y un agente la descarta o la registra (crea un caso o la suma a uno).
+> - **Marcas:** incompleto · posible duplicado · **grave** (un animal murió o enfermó en la
+>   observación del día 10). «Posible evento relacionado» ya no existe: que dos casos compartan un
+>   animal se ve en la ficha del caso («en N casos»), no con una marca.
+> - **No se vincula.** Los posibles duplicados se detectan por el DNI de la víctima y el agente
+>   decide «consolidar» o «no es duplicado». Desaparecen el puntaje, las señales y «vincular».
+> - **Un caso puede tener varios animales**, y lleva **canal de origen** (ciudadano, salud,
+>   zoonosis, cadic, histórico).
+> - **La bandeja se ordena por última modificación.**
+> - **La denuncia la anota solo Zoonosis** (DNI de quien la hizo, fecha, número, estado). «¿Hizo
+>   denuncia?» y su motivo son lo que declaró la persona en su solicitud: ningún agente los carga.
+
 ---
 
 ## 1. La historia
@@ -34,7 +50,7 @@
 | Término | Qué es | Lo que no es |
 |---|---|---|
 | **Caso** (`C-2026-0418`) | El incidente. Es lo único que SIRAM gestiona: se registra, se sigue, se completa y se cuenta. | No es una denuncia. |
-| **Denuncia** | Un trámite oficial hecho en un ente, anotado dentro de un caso (ente, número, fecha, quién la hizo). | No tiene pantalla propia, ni estados, ni identificador `D-…`. Nunca existe fuera de un caso. |
+| **Denuncia** | Un trámite oficial hecho en un ente, anotado dentro de un caso (ente, número, fecha). SIRAM no guarda quién la hizo. | No tiene pantalla propia, ni estados, ni identificador `D-…`. Nunca existe fuera de un caso. |
 | **Posible duplicado** | Dos casos que parecen el **mismo incidente con la misma persona**. | — |
 | **Evento relacionado** | Dos casos con **personas distintas** y el mismo animal, lugar y fecha. | No es un duplicado. |
 | **Consolidar** | Fundir dos casos duplicados en uno. **Irreversible.** | — |
@@ -76,7 +92,7 @@ Lesión, Denuncia y seguimiento…).
   crear el registro** y deja comparar. Si el parecido es menor (lugar y fecha), solo lo marca para
   revisarlo después.
 - Bloque **Denuncia**: «¿Hizo denuncia?» con las respuestas *Sí*, *No* y *Sin dato*. Si es *Sí*,
-  se anota una o más denuncias (ente, número, fecha, quién la hizo). Si es *No*, se puede anotar el
+  se anota una o más denuncias (ente, número, fecha). Si es *No*, se puede anotar el
   motivo. Lo normal es que quede *Sin dato* y se complete en el seguimiento.
 
 ### Ficha del caso

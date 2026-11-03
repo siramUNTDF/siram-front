@@ -1,7 +1,7 @@
 # SIRAM — guía del front
 
 > Entregado por el agente de diseño (repo `../proyecto`). No lo edites desde el front: si algo no
-> cierra, avisá al usuario. Última actualización: 2026-10-09.
+> cierra, avisá al usuario. Última actualización: 2026-11-03.
 
 ## Qué es SIRAM
 
@@ -9,16 +9,27 @@
 ataques y mordeduras de perros y gatos a personas en Tierra del Fuego. Lo usan agentes de varios
 organismos (Zoonosis, Salud, CADIC…) para registrar casos, completarlos, detectar duplicados y
 consultar estadísticas. **SIRAM trata casos**: para qué sirve cada pantalla y cómo se usa está en
-`narrativa.md`; leelo antes de proponer un cambio. **El proyecto no arranca de cero:** el prototipo de esta carpeta ya define
-cómo se ven y se comportan las pantallas.
+`narrativa.md`; leelo antes de proponer un cambio. **El proyecto no arranca de cero:** las pantallas
+ya están diseñadas en **Figma**, y cada vista tiene una **ficha** en `vistas/` que dice cómo se comporta.
+
+## Cómo se trabaja una vista *(desde el 2026-11-03)*
+
+1. **Lo visual sale de Figma**: archivo `XC7e02ZzIfQwmALf1RHgiZ` («SIRAM — Diseño»), leído con el MCP
+   de Figma. Cada ficha dice qué nodo mirar. Los tokens de Figma (colecciones «Tokens» y «Paleta»)
+   son los de `src/tema/tokens.js`.
+2. **El comportamiento y los datos salen de la ficha** (`vistas/<vista>.md`): qué cambia respecto del
+   código, columnas, estados, datos de ejemplo y qué pasa según quién mira. **Si Figma y la ficha no
+   coinciden, gana la ficha.**
+3. **Desde que una vista está implementada, el código es la referencia** de esa vista. Figma se
+   vuelve a poner al día con el código al final del proyecto.
 
 ## Archivos de esta carpeta
 
 | Archivo | Qué es |
 |---|---|
-| `narrativa.md` | **Para qué sirve SIRAM y cómo se usa:** la historia, el vocabulario, las pantallas y las respuestas a las dudas del front. |
-| `prototipo-siram.html` | **Referencia de comportamiento.** Prototipo navegable con datos de ejemplo. Abrilo en el navegador antes de implementar cualquier pantalla. |
-| `lenguaje-visual-delta-a-siram.html` | El lenguaje visual completo: qué se hereda de Delta, qué se corrige, tokens, patrones. |
+| `vistas/*.md` | **Una ficha por vista.** Hoy: `bandeja.md`. Las demás llegan de a una. |
+| `narrativa.md` | Para qué sirve SIRAM y cómo se usa. **Desactualizada (2026-10-08)**: ver el aviso al principio del archivo. |
+| `lenguaje-visual-delta-a-siram.html` | El porqué del lenguaje visual (qué se hereda de Delta y qué se corrige). Los valores concretos están en Figma. |
 
 ## Lenguaje visual (resumen)
 
@@ -36,16 +47,19 @@ cómo se ven y se comportan las pantallas.
   **Dos niveles de menú, nunca tres.**
 - **Navegación:**
   - Inicio (panel)
-  - Casos: Bandeja, Nuevo caso, Posibles duplicados, Eventos relacionados, Incompletos
-  - Consultas: Búsqueda, Mapa, Estadísticas, Exportar
-  - Administración: Usuarios, Organismos, Tipos de evento, Importar CSV
+  - Casos: Bandeja, Nuevo caso, Solicitudes, Posibles duplicados, Incompletos
+  - Consultas: Búsqueda, Personas, Animales, Mapa, Estadísticas, Exportar
+  - Administración: Usuarios, Organismos, Tipos de evento
+  - *(2026-11-03: salen «Eventos relacionados» e «Importar CSV»; entran Solicitudes, Personas y
+    Animales.)*
 - **Ventanas:** crear/editar/confirmar abren un **drawer lateral** (50 % en escritorio, 100 % en
   teléfono), Cancelar a la izquierda y Guardar a la derecha. Guardar deshabilitado hasta que haya cambios.
 - **Formularios:** un fieldset con leyenda por bloque; 20 px reservados para el error bajo cada
   campo; la ayuda va en un ícono junto a la etiqueta, nunca como texto bajo el campo.
 - **Mensajes:** éxito/info se autocierran; advertencia/error exigen cierre manual.
 - **Tokens:** acento `#00776F`, tinta `#16211F`, fondo `#F6F7F7`; colores semánticos ok, warn, crit,
-  info, dup (violeta), rel (tierra). Todo color es un token.
+  info, dup (violeta), rel (tierra). Todo color es un token. Los valores del tema oscuro ya están en
+  Figma (colección «Tokens», modo Oscuro).
 - **Tema oscuro: obligatorio, en una segunda pasada.** Primero va una versión base en tema claro;
   después se agrega el oscuro revisando cada vista. Por eso, desde el primer componente, ningún color
   va escrito a mano: todo sale de un token. Al terminar, el tema arranca según el sistema operativo y
@@ -65,12 +79,12 @@ Un caso tiene tres indicadores independientes. **No los juntes en un solo compon
 |---|---|---|
 | Estado | Píldora en su propia columna | Registrado · En seguimiento · Finalizado · Desestimado · Unificado |
 | Motivo de espera | Junto al estado, solo si está «En seguimiento» | Contacto · Respuesta · Certificado |
-| Marcas | Íconos pegados al identificador, a la izquierda; pueden ser varias | Incompleto · Posible duplicado · Posible evento relacionado |
+| Marcas | Íconos pegados al identificador, a la izquierda; pueden ser varias | Incompleto · Posible duplicado · Grave *(2026-11-03: sale «Posible evento relacionado»)* |
 
 ## De dónde salen los datos
 
-- **Hoy:** no hay API. Usá datos de ejemplo con la forma de los del prototipo, aislados en un solo
-  lugar (p. ej. `src/mocks/`) para poder reemplazarlos sin tocar las pantallas.
+- **Hoy:** no hay API. Usá datos de ejemplo con la forma que da cada ficha de vista, aislados en un
+  solo lugar (`src/mocks/`) para poder reemplazarlos sin tocar las pantallas.
 - **Después:** el backend (repo `../back`) publica la API REST con su esquema OpenAPI. Ese esquema es
   el contrato del front; las dudas sobre datos se resuelven con el back.
 
@@ -80,4 +94,8 @@ Ajustes que el código del front todavía no refleja. **Registralos como pendien
 un change de openspec). Cuando estén hechos no hace falta avisar: el agente de diseño revisa el código
 y borra el aviso de acá.
 
-_Sin avisos pendientes._
+- **2026-11-03 · Bandeja** (`vistas/bandeja.md`). Orden por última modificación, columnas nuevas
+  (última modificación, animales, tipo de evento, canal de origen), marca **Grave** en lugar de
+  «Posible evento relacionado», chip «Graves» en lugar de «Eventos relacionados», búsqueda por DNI y
+  motivos de espera como «Esperando …». También sale «Eventos relacionados» del menú y de los
+  contadores, e «Importar CSV» de Administración.

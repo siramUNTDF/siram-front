@@ -18,6 +18,8 @@ proyecto parte de una base existente, no de cero.**
 - No hagas commits salvo que el usuario lo pida.
 
 ## Referencias
-- Prototipo: `docs/prototipo-siram.html` (abrilo en el navegador).
-- Lenguaje visual: `docs/lenguaje-visual-delta-a-siram.html` y el resumen en `docs/README.md`.
+- **Pantallas:** Figma, archivo `XC7e02ZzIfQwmALf1RHgiZ` («SIRAM — Diseño»), leído con el MCP de
+  Figma. Cada vista tiene una ficha en `docs/vistas/` que dice qué nodo mirar y cómo se comporta; si
+  Figma y la ficha no coinciden, gana la ficha. Cómo se trabaja una vista: `docs/README.md`.
+- Lenguaje visual: el resumen en `docs/README.md`; el porqué, en `docs/lenguaje-visual-delta-a-siram.html`.
 - Delta (solo lectura, para consultar patrones): `/home/dddario/front/delta`, `modulos/servicios-publicos`.
