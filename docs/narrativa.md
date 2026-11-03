@@ -103,7 +103,7 @@ La API va a decir qué puede editar cada uno; el front no lo deduce.
 
 ## 5. Pantallas
 
-Cada una tiene (o va a tener) su ficha en `vistas/`. Acá va solo para qué sirve.
+Cada una tiene su ficha en `vistas/` (la lista está en `README.md`). Acá va solo para qué sirve.
 
 **Inicio.** El panel de quien entra a trabajar. Arriba, «Para resolver hoy», ordenado por lo que
 frena el registro: casos incompletos, esperando contacto y graves; después solicitudes pendientes y
@@ -115,7 +115,7 @@ zona del cuerpo, franja etaria, canal de origen). Todo sobre casos **vigentes**.
   `vistas/bandeja.md`.
 - **Nuevo caso** — el formulario inicial en una ventana lateral. Si el DNI de la víctima ya está en
   otro caso, **avisa antes de guardar**. Ubicación, animales, tratamiento y denuncia se completan
-  después, en la ficha del caso.
+  después, en la ficha del caso. Ficha: `vistas/nuevo-caso.md`.
 - **Solicitudes** — la cola de lo que mandaron los ciudadanos. Al revisar una: descartar, registrar
   como caso nuevo o sumar a un caso existente (eligiendo campo por campo cuando los datos chocan).
 - **Posibles duplicados** — lista de trabajo. Al abrir uno se comparan los dos casos lado a lado y se
@@ -124,7 +124,7 @@ zona del cuerpo, franja etaria, canal de origen). Todo sobre casos **vigentes**.
 - **Incompletos** — lista de trabajo de los casos a los que les falta algún dato del caso.
 - **Ficha del caso** (sin entrada en el menú) — todo el caso: víctima, contacto responsable, hecho
   (con el mapa), animales (cada uno con su identidad, descripción, seguimiento y fotos; «en N casos»
-  lleva a los otros casos de ese animal), tratamiento, denuncias, lo declarado, documentos y un
+  lleva al detalle del animal, con todos sus casos), tratamiento, denuncias, lo declarado, documentos y un
   acceso al **historial**. Acciones: editar, cambiar estado, desestimar, agregar animal, cargar
   tratamiento, anotar denuncia, adjuntar documento; cada una en una ventana lateral.
 - **Historial** (desde la ficha) — línea de tiempo de cambios: quién, cuándo, desde qué organismo,

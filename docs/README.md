@@ -33,9 +33,21 @@ ya están diseñadas en **Figma**, y cada vista tiene una **ficha** en `vistas/`
 
 | Archivo | Qué es |
 |---|---|
-| `vistas/*.md` | **Una ficha por vista.** Hoy: `bandeja.md`. Las demás llegan de a una. |
+| `vistas/*.md` | **Una ficha por vista** (18; lista abajo). |
 | `narrativa.md` | **Para qué sirve SIRAM y cómo se usa:** la historia, el vocabulario, cómo se muestra un caso, quién ve qué y para qué sirve cada pantalla. Reescrita el 2026-11-03. |
 | `lenguaje-visual-delta-a-siram.html` | El porqué del lenguaje visual (qué se hereda de Delta y qué se corrige). Los valores concretos están en Figma. |
+
+## Fichas de vista
+
+| Área | Fichas |
+|---|---|
+| Casos | `bandeja.md` · `nuevo-caso.md` · `ficha-del-caso.md` (con sus ventanas) · `historial.md` · `solicitudes.md` (cola, revisar, sumar) · `posibles-duplicados.md` (lista y comparar) · `incompletos.md` |
+| Inicio | `inicio.md` |
+| Consultas | `busqueda.md` · `personas.md` · `animales.md` (con reconciliar) · `mapa.md` · `estadisticas.md` · `exportar.md` |
+| Administración | `usuarios.md` (con roles y permisos) · `organismos.md` · `tipos-de-evento.md` |
+| Público | `formulario-publico.md` (8 pantallas, sin cáscara) |
+
+Cada ficha tiene una sección **«Pendiente»**: lo que está ahí no se implementa todavía.
 
 ## Lenguaje visual (resumen)
 
@@ -105,3 +117,10 @@ y borra el aviso de acá.
   «Posible evento relacionado», chip «Graves» en lugar de «Eventos relacionados», búsqueda por DNI y
   motivos de espera como «Esperando …». También sale «Eventos relacionados» del menú y de los
   contadores, e «Importar CSV» de Administración.
+- **2026-11-03 · Nuevo caso** (`vistas/nuevo-caso.md`). Reemplaza el formulario completo de la v1 por
+  el **formulario inicial** (víctima, contacto responsable si lo hay, fecha y especie), con
+  obligatoriedad según el canal y el aviso de DNI de víctima repetido antes de guardar.
+- **2026-11-03 · Las 16 fichas restantes** (ver «Fichas de vista»). Son todas vistas nuevas o
+  rehechas: implementalas de a una, empezando por las de Casos. Implican cambios en la navegación
+  (`src/navegacion.js`): entran Solicitudes, Personas y Animales; salen Eventos relacionados e
+  Importar CSV.
