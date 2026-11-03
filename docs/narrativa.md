@@ -1,26 +1,13 @@
 # SIRAM: narrativa de uso
 
 > Lo entrega el agente de diseño (repo `../proyecto`). No lo edites desde el front: si algo no
-> cierra, avisá al usuario. Última actualización: 2026-10-08.
+> cierra, avisá al usuario. Última actualización: 2026-11-03 (reescrita entera; reemplaza la del
+> 2026-10-08).
 >
 > Este documento cuenta **qué hace el usuario y qué ve**. No describe el modelo de datos: los datos
-> llegan por la API, y las dudas sobre su forma se resuelven con el back.
-
-> **⚠ Desactualizada (aviso del 2026-11-03).** La narrativa cambió desde el 2026-10-23 y este archivo
-> todavía no lo refleja; se reescribe pronto. Mientras tanto, **donde choque con una ficha de
-> `vistas/`, gana la ficha.** Lo que ya no vale:
-> - **Hay formulario público.** Lo que envía un ciudadano es una **solicitud** (no un caso): va a la
->   cola `Casos › Solicitudes` y un agente la descarta o la registra (crea un caso o la suma a uno).
-> - **Marcas:** incompleto · posible duplicado · **grave** (un animal murió o enfermó en la
->   observación del día 10). «Posible evento relacionado» ya no existe: que dos casos compartan un
->   animal se ve en la ficha del caso («en N casos»), no con una marca.
-> - **No se vincula.** Los posibles duplicados se detectan por el DNI de la víctima y el agente
->   decide «consolidar» o «no es duplicado». Desaparecen el puntaje, las señales y «vincular».
-> - **Un caso puede tener varios animales**, y lleva **canal de origen** (ciudadano, salud,
->   zoonosis, cadic, histórico).
-> - **La bandeja se ordena por última modificación.**
-> - **La denuncia la anota solo Zoonosis** (DNI de quien la hizo, fecha, número, estado). «¿Hizo
->   denuncia?» y su motivo son lo que declaró la persona en su solicitud: ningún agente los carga.
+> llegan por la API, y las dudas sobre su forma se resuelven con el back. Lo visual está en Figma y el
+> detalle de cada pantalla, en su ficha de `vistas/`. **Si esta narrativa y una ficha no coinciden,
+> gana la ficha** (es más nueva y más precisa).
 
 ---
 
@@ -28,35 +15,49 @@
 
 1. Un perro o un gato ataca a una persona. Puede haber lesión o no: también se registran los
    intentos de ataque y las lesiones derivadas (p. ej. una caída al huir).
-2. Un **agente** de un organismo (Salud, Zoonosis…) **registra el caso** en SIRAM y carga los
-   datos por la persona, DNI y contacto incluidos. Caso típico: el encargado del lugar donde la
-   atienden. Otro: Zoonosis atiende a alguien que va a hacer una denuncia, toma los datos, registra
-   el caso y le anota esa denuncia.
-3. **SIRAM trata casos, y nada más.** Un caso siempre lo registra personal interno. No hay
-   formulario público, ni cola de entrada, ni nada que «llegue solo».
-4. La **denuncia** es otra cosa: un trámite oficial que la persona (o alguien vinculado, p. ej. el
-   padre de un menor) hizo ante un ente (Zoonosis, policía…). SIRAM no la recibe: si existe, **se
-   anota dentro del caso** como un dato más.
-5. Al registrar el caso, muchas veces no se sabe si la persona hizo una denuncia. Más tarde un
-   agente la llama con los datos de contacto, lo verifica y completa lo que falte. Mientras tanto el
-   caso queda **En seguimiento**, con el motivo **Pendiente de contacto**.
-6. SIRAM compara los casos entre sí y avisa cuando dos se parecen: puede ser el mismo incidente
-   registrado dos veces (p. ej. por el hospital y por Zoonosis) o dos víctimas del mismo animal. Un
-   agente decide qué son.
-7. Con los casos se arman el panel de inicio, las estadísticas y el mapa.
+2. El hecho entra a SIRAM por uno de **cuatro canales**: Salud, Zoonosis, CADIC o el **canal
+   ciudadano** (un formulario público). Todos empiezan con el mismo **formulario inicial**, corto a
+   propósito: nombre, apellido, DNI, teléfono, correo, especie del animal y fecha del hecho. Qué es
+   obligatorio depende del canal.
+3. **Si lo carga un agente de un organismo, es un caso.** **Si lo carga un ciudadano, es una
+   solicitud**: lo que declaró la persona, tal cual, a la espera de que un agente la revise.
+4. Después de enviar, el ciudadano puede seguir con un **formulario detallado** opcional, en cuatro
+   partes (dónde fue, qué pasó, cómo era el animal, la denuncia). Cada parte se guarda al pasar a la
+   siguiente. Es **una sola oportunidad**: el enlace vence en una hora y después solo los organismos
+   agregan datos.
+5. Un agente revisa la solicitud: la **descarta** o la **registra**, creando un caso nuevo o
+   **sumándola a un caso que ya existe**. Nada de lo que manda un ciudadano llega a un caso sin un
+   agente de por medio.
+6. Cada organismo completa el caso con lo suyo: **Salud** carga la atención de la víctima
+   (tratamiento); **Zoonosis**, el seguimiento de cada animal (la observación del día 10) y las
+   denuncias; **CADIC** completa los datos comunes. Si faltan datos de contacto, alguien busca a la
+   persona por DNI y el caso queda **En seguimiento · Esperando contacto** mientras tanto.
+7. La **denuncia** es un trámite oficial ante Zoonosis, fuera de SIRAM. Si existe, **Zoonosis la
+   anota en el caso**. Aparte, el caso guarda lo que la persona declaró en su solicitud: si hizo la
+   denuncia y, si no, por qué.
+8. Con los casos se arman el panel de inicio, las estadísticas, el mapa y las exportaciones.
 
 ## 2. Vocabulario de pantalla
 
 | Término | Qué es | Lo que no es |
 |---|---|---|
-| **Caso** (`C-2026-0418`) | El incidente. Es lo único que SIRAM gestiona: se registra, se sigue, se completa y se cuenta. | No es una denuncia. |
-| **Denuncia** | Un trámite oficial hecho en un ente, anotado dentro de un caso (ente, número, fecha). SIRAM no guarda quién la hizo. | No tiene pantalla propia, ni estados, ni identificador `D-…`. Nunca existe fuera de un caso. |
-| **Posible duplicado** | Dos casos que parecen el **mismo incidente con la misma persona**. | — |
-| **Evento relacionado** | Dos casos con **personas distintas** y el mismo animal, lugar y fecha. | No es un duplicado. |
-| **Consolidar** | Fundir dos casos duplicados en uno. **Irreversible.** | — |
-| **Vincular** | Enlazar dos casos relacionados sin fundirlos. **Reversible.** | — |
-| **No sabe / Sin dato** | «No sabe»: la persona respondió que no sabe. «Sin dato»: no se preguntó o no se respondió. | Nunca se muestran igual. |
-| **No evaluable** | Una señal de comparación que no se puede evaluar porque falta el dato en un caso. | No es «no coincide». |
+| **Caso** (`C-2026-0418`) | El incidente: un ataque a **una** persona (dos víctimas del mismo ataque son dos casos). Es lo único que SIRAM gestiona: se registra, se sigue, se completa y se cuenta. | No es una denuncia ni una solicitud. |
+| **Solicitud** (`S-2026-0034`) | Lo que mandó un ciudadano por el formulario público, tal cual. Estados: pendiente · registrada · descartada. | No es un caso. Nunca se borra (descartar no borra). |
+| **Canal de origen** | Por dónde entró el caso: ciudadano · salud · zoonosis · cadic · histórico (registros viejos cargados a mano). | No es el organismo que lo registró (ese es otro dato). |
+| **Víctima** | La persona atacada. Una por caso. | — |
+| **Contacto responsable** | Quien informó por la víctima (p. ej. la madre por su hija) y a quien se llama. Opcional. | No se guarda la relación entre los dos. |
+| **Animal** | Un perro o un gato con identidad propia (especie y, si tiene, chip). **Un caso puede tener varios animales**, y un mismo animal puede aparecer en varios casos. | — |
+| **Observación del día 10** | Lo que Zoonosis registra de cada animal a los diez días: pendiente · sin novedad · murió o enfermó · no se pudo observar. | — |
+| **Tratamiento** | La atención de la víctima que carga Salud. «Recibió atención médica» **no se pregunta**: se deduce de que exista. | — |
+| **Denuncia** | Un trámite hecho en Zoonosis, anotado en el caso por Zoonosis: DNI de quien la hizo, fecha, número (si lo hay) y estado. | No tiene pantalla propia ni existe fuera de un caso. |
+| **Lo que declaró la persona** | «¿Hizo denuncia?» y «motivo de no denunciar», tal como los respondió en su solicitud. | Nadie los edita, y no es lo mismo que una denuncia anotada. |
+| **Posible duplicado** | Dos casos cuya víctima tiene **el mismo DNI**. Un agente decide si son el mismo hecho cargado dos veces o dos ataques distintos. | — |
+| **Consolidar** | Fundir dos casos duplicados en uno, eligiendo campo por campo. **Irreversible.** El absorbido queda *Unificado* y apunta al que sobrevive. | — |
+| **No sabe / Sin dato** | «No sabe»: la persona respondió que no sabe. «Sin dato»: no se preguntó o no se respondió. «Sin dato» se muestra en rojo. | Nunca se muestran igual. |
+
+Términos que **ya no existen** (si los ves en algún lado, están viejos): *evento relacionado* como
+marca o lista, *vincular*, *motor de coincidencias* con puntaje y señales, *pendientes de
+validación*, *sin confirmar*, *confirmado*, *grave* como estado, *auditoría* (ahora es *historial*).
 
 ## 3. Cómo se muestra un caso
 
@@ -65,130 +66,98 @@ componente.
 
 | Indicador | Valores | En pantalla |
 |---|---|---|
-| **Estado** (uno solo) | Registrado · En seguimiento · Finalizado · Desestimado · Unificado | Píldora en su propia columna. Un caso nace *Registrado*. *Unificado* muestra a qué caso fue a parar (`→ C-2026-0402`). |
-| **Motivo de espera** (solo en *En seguimiento*) | Pendiente de contacto · de respuesta · de certificado | Junto al estado. |
-| **Marcas** (pueden ser varias) | Incompleto · Posible duplicado · Posible evento relacionado | Íconos pegados al identificador, a la izquierda. |
+| **Estado** (uno solo) | Registrado · En seguimiento · Finalizado · Desestimado · Unificado | Píldora en su propia columna. Un caso nace *Registrado*. |
+| **Motivo de espera** (solo en *En seguimiento*) | Esperando contacto · respuesta · certificado | Debajo del estado. |
+| **Marcas** (pueden ser varias) | Incompleto · Posible duplicado · **Grave** | Íconos pegados al número de caso, a la izquierda. |
 
-Los valores definitivos vienen de la API. Los de esta tabla sirven para los datos de ejemplo.
+- **Las marcas llegan calculadas por la API.** El front no decide cuándo un caso es incompleto,
+  grave o posible duplicado.
+- **Grave**: algún animal del caso murió o enfermó en la observación del día 10. Nadie la pone a mano
+  y **sigue aunque el caso se finalice**. Pide atención especial al tratamiento de la víctima.
+- **Incompleto**: le falta algún dato del caso. Los datos de los animales **no** cuentan: un perro que
+  nunca se ubicó no hace incompleto al caso.
+- **Cambios de estado posibles**: Registrado → En seguimiento, Finalizado o Desestimado · En
+  seguimiento → (otro motivo de espera), Finalizado o Desestimado. **Finalizado, Desestimado y
+  Unificado no se reabren.** Unificado no se elige: resulta de consolidar. Desestimar pide un motivo.
+  La regla la hace cumplir el back; el front ofrece solo lo que vale.
+- **En SIRAM no se borra nada.** La «baja» de un caso es *Desestimado*; un usuario se desactiva.
 
-## 4. Pantallas
+## 4. Quién ve qué
 
-### Inicio
-El panel de quien entra a trabajar. Arriba aparece **lo que bloquea**: los casos incompletos y los
-que esperan un contacto. Debajo están los indicadores epidemiológicos. El gráfico «Origen del
-registro» muestra qué organismos cargan casos. Es un dato de cobertura, no epidemiológico.
+**Las reglas viven en el servidor. El front muestra lo que llega y no decide por rol:** si un dato
+no vino, la sección o la columna no se muestra (o muestra solo lo que llegó). Esconder algo solo en
+pantalla no lo protege.
 
-### Casos › Bandeja
-Todos los casos, en cualquier estado. Se filtra por cada eje por separado (estado, motivo, marcas),
-por organismo y por fechas. El organismo es una columna o un chip, nunca un color del sistema. Hoy
-la bandeja se ordena por número de caso. Más adelante se va a ordenar por «último movimiento», que
-todavía no está definido.
+Para orientarte (las reglas son tentativas y las aplica el back):
+- **Agentes** (Salud, Zoonosis, CADIC): ven todos los casos y todas las solicitudes.
+  - Salud **no** recibe dueño, chip, descripción ni fotos de los animales, ni el detalle de las
+    denuncias (solo «tiene 1 denuncia anotada»).
+  - CADIC no recibe dueño ni chip, ni el certificado médico.
+- **Analista / comité** (rol «Consulta»): casos **sin datos personales**; busca, ve estadísticas y
+  exporta. No edita.
+- **Administrador**: no ve casos; solo usuarios, organismos y tipos de evento.
 
-### Casos › Nuevo caso
-Lo carga un agente, en un drawer lateral, con un fieldset por bloque (Persona, Hecho, Animal,
-Lesión, Denuncia y seguimiento…).
-- **El DNI es obligatorio.**
-- Al guardar, si el sistema detecta un caso muy parecido (mismo DNI o teléfono), **avisa antes de
-  crear el registro** y deja comparar. Si el parecido es menor (lugar y fecha), solo lo marca para
-  revisarlo después.
-- Bloque **Denuncia**: «¿Hizo denuncia?» con las respuestas *Sí*, *No* y *Sin dato*. Si es *Sí*,
-  se anota una o más denuncias (ente, número, fecha). Si es *No*, se puede anotar el
-  motivo. Lo normal es que quede *Sin dato* y se complete en el seguimiento.
+Lo mismo con **editar**: los datos comunes los edita cualquier agente; el tratamiento, solo Salud;
+el seguimiento de los animales y las denuncias, solo Zoonosis; lo declarado por la persona, nadie.
+La API va a decir qué puede editar cada uno; el front no lo deduce.
 
-### Ficha del caso
-Muestra el caso completo: los tres indicadores, la completitud (p. ej. «38 de 50 campos»), los
-bloques de datos, las denuncias anotadas y la **línea de tiempo de auditoría** (quién hizo qué y
-cuándo, incluido «Sistema»).
-- Acciones: **Editar** y **Cambiar estado**. Al pasar a *En seguimiento* se elige el motivo de
-  espera.
-- **Desestimar** es la única forma de «dar de baja» un caso. En SIRAM no se borra nada. Pide un
-  motivo obligatorio, y la lista de motivos todavía no está definida (ver §6).
-- Si el caso tiene una marca de posible duplicado o de evento relacionado, la ficha lo avisa con un
-  enlace a la comparación.
+## 5. Pantallas
 
-### Casos › Posibles duplicados / Eventos relacionados (comparar)
-Dos casos lado a lado, con las señales que los acercan, su peso y las que son *no evaluables*. La
-decisión tiene tres salidas:
-- **Son el mismo incidente → Consolidar.** Se elige **campo por campo** qué valor sobrevive. Si un
-  caso tiene el dato y el otro no, se conserva el que lo tiene. Exige marcar una confirmación
-  explícita («Confirmo que X e Y son la misma persona…») antes de habilitar el botón. Es
-  irreversible: el caso absorbido queda *Unificado* y apunta al que sobrevive.
-- **Son dos víctimas del mismo animal → Vincular.** Los dos casos siguen vivos y el vínculo se puede
-  deshacer. **Nunca se ofrece consolidar un evento relacionado**: borraría una víctima de las
-  estadísticas.
-- **No están relacionados → Descartar.** Se quita la marca.
+Cada una tiene (o va a tener) su ficha en `vistas/`. Acá va solo para qué sirve.
 
-Nunca hay fusión automática.
+**Inicio.** El panel de quien entra a trabajar. Arriba, «Para resolver hoy», ordenado por lo que
+frena el registro: casos incompletos, esperando contacto y graves; después solicitudes pendientes y
+posibles duplicados; después los casos en seguimiento. Debajo, el panorama del año (casos por mes,
+zona del cuerpo, franja etaria, canal de origen). Todo sobre casos **vigentes**.
 
-### Listas de trabajo y contadores del menú
-Incompletos, Posibles duplicados y Eventos relacionados son **listas de trabajo**: muestran, y
-cuentan en el menú, solo casos **vigentes**. Los *desestimados* y los *unificados* no entran, porque
-no queda nada por hacer con ellos. Un caso *unificado* tampoco conserva la marca de posible
-duplicado: consolidar resolvió esa sospecha. La Bandeja con «Todos» sí muestra todos los casos.
+**Casos**
+- **Bandeja** — todos los casos, en cualquier estado, ordenados por última modificación. Ficha:
+  `vistas/bandeja.md`.
+- **Nuevo caso** — el formulario inicial en una ventana lateral. Si el DNI de la víctima ya está en
+  otro caso, **avisa antes de guardar**. Ubicación, animales, tratamiento y denuncia se completan
+  después, en la ficha del caso.
+- **Solicitudes** — la cola de lo que mandaron los ciudadanos. Al revisar una: descartar, registrar
+  como caso nuevo o sumar a un caso existente (eligiendo campo por campo cuando los datos chocan).
+- **Posibles duplicados** — lista de trabajo. Al abrir uno se comparan los dos casos lado a lado y se
+  decide: **consolidar** (con confirmación explícita) o **no es duplicado** (son dos ataques
+  distintos; la marca se va y el aviso no vuelve).
+- **Incompletos** — lista de trabajo de los casos a los que les falta algún dato del caso.
+- **Ficha del caso** (sin entrada en el menú) — todo el caso: víctima, contacto responsable, hecho
+  (con el mapa), animales (cada uno con su identidad, descripción, seguimiento y fotos; «en N casos»
+  lleva a los otros casos de ese animal), tratamiento, denuncias, lo declarado, documentos y un
+  acceso al **historial**. Acciones: editar, cambiar estado, desestimar, agregar animal, cargar
+  tratamiento, anotar denuncia, adjuntar documento; cada una en una ventana lateral.
+- **Historial** (desde la ficha) — línea de tiempo de cambios: quién, cuándo, desde qué organismo,
+  antes → después, con filtros por tipo de dato. No se edita ni se borra.
 
-### Casos › Incompletos
-Los casos con la marca *Incompleto*: les falta algún dato obligatorio (fecha del hecho, ciudad,
-lugar, situación de la persona, animal propio o ajeno). Es la lista de trabajo para completar.
+**Listas de trabajo** (Incompletos, Posibles duplicados) y sus contadores del menú: muestran solo
+casos **vigentes** (ni desestimados ni unificados).
 
-### Consultas (Búsqueda, Mapa, Estadísticas, Exportar)
-Las estadísticas cuentan los casos vigentes: los *desestimados* no cuentan, y los *unificados* ya
-están contados en el caso que los absorbió. El mapa está pendiente de diseño.
+**Consultas**
+- **Búsqueda** — filtros por cuándo y dónde, persona (edad), animal (especie, tamaño, color o raza,
+  tenencia) y registro (organismo, tipo de evento, estado, quién lo registró). Desde los resultados
+  se puede exportar.
+- **Personas** — una por DNI; lista y detalle con todos sus casos y su rol en cada uno. DNI y
+  contacto, solo en el detalle.
+- **Animales** — la identidad de cada animal y todos los casos en que apareció (así se ve la
+  reincidencia). Desde el detalle, **reconciliar** dos registros que resultaron ser el mismo animal.
+- **Mapa** — dónde ocurrieron los casos vigentes (cada punto lo puso una persona).
+- **Estadísticas** — indicadores sobre casos vigentes. «No sabe» y «Sin dato» se cuentan aparte.
+- **Exportar** — CSV o XLSX, eligiendo bloques de columnas. Los datos personales solo para los roles
+  que pueden exportarlos.
 
-### Administración
-Usuarios, Organismos, Tipos de evento (los valores están en revisión, ver §6) e Importar CSV
-(futuro, no implementar).
+**Administración** — Usuarios (con la pestaña de roles y permisos, de solo lectura), Organismos y
+Tipos de evento. **No hay importación CSV.**
 
-## 5. Respuestas a las preguntas del front (2026-10-08)
-
-**A. Definiciones**
-1. **Caso:** el incidente (un ataque de perro o gato a una persona) que un agente registra y SIRAM
-   gestiona. **Denuncia:** un trámite oficial que la persona hizo en un ente, anotado dentro de un
-   caso.
-2. Son dos cosas distintas, pero la denuncia **vive dentro del caso**: un caso tiene cero, una o
-   varias. No hay denuncias sueltas.
-3. Hoy un ciudadano no carga nada: el formulario público está en suspenso. Un organismo registra
-   **casos**.
-4. Caso: `C-2026-0418`. La denuncia **no** tiene un identificador `D-…` propio. Los `D-2026-…` del
-   prototipo pertenecían a la cola de validación, que quedó sin efecto.
-
-**B. Validación**
-
-5–8. **«Pendientes de validación» se elimina.** Pertenecía a la narrativa del formulario público,
-cuando cualquiera podía cargar un caso y había que verificarlo. Hoy los casos los registra siempre
-un agente y no hay nada que validar. Se saca del menú y del inicio, y no hay contador. Las salidas
-«incorporar / vincular / desestimar» de esa pantalla no aplican.
-
-**C. Estados**
-
-9. Quedan cinco: Registrado · En seguimiento · Finalizado · Desestimado · Unificado. **Sin
-   confirmar** y **Confirmado** se eliminan por la misma razón que la validación.
-10. Ya no existe ninguno de los dos.
-11. La denuncia no tiene estados.
-
-**D. Bandeja y contadores**
-
-12. La bandeja muestra todos los casos, en cualquier estado.
-13. Las tres marcas son **solo de casos**. Las coincidencias se buscan siempre entre casos.
-
-**E. Vocabulario**
-
-14. **D1 «Denuncia en Zoonosis» y D2 «Denuncia policial»** ya no son dos campos sueltos: son
-    denuncias anotadas en el caso con su ente (Zoonosis, policía), bajo la pregunta «¿Hizo
-    denuncia?». **T1 «Tipo de denuncia»** pasa a llamarse **«Tipo de evento»**, también el catálogo de
-    Administración: clasifica al caso (ataque con mordedura, lesión compatible…). Los valores
-    todavía no están cerrados: usá los del prototipo como ejemplo.
-15. **«Origen ciudadano sin verificar» se descarta.**
-
-**F. `docs/` corregido.** Se actualizaron el prototipo, el lenguaje visual y el README: cola de
-validación fuera del menú, estados nuevos, sin marca de origen ciudadano. La vista de validación
-sigue en el HTML del prototipo, oculta y sin acceso. No la implementes.
+**Formulario público** — otra piel, sin la cáscara del backoffice, pensada para teléfono: formulario
+inicial, confirmación con el número de solicitud, las cuatro partes del detallado (con el pin en el
+mapa), agradecimiento y «enlace vencido».
 
 ## 6. Pendiente: no lo implementes todavía
 
-- La lista de **motivos para desestimar** un caso (hay una propuesta sin aprobar).
-- Los valores de **«Tipo de evento»** (T1).
-- La lista de **entes** donde se puede haber hecho una denuncia.
-- El **formulario público** (R.17), en suspenso, y la **importación CSV** (R.25), futura.
-- El **mapa**.
-- La **«fecha de novedad»** (último movimiento) de la bandeja.
-- El criterio para que un caso pase a **Finalizado** (se está confirmando con el cliente).
+- El criterio exacto para que un caso pase a **Finalizado** (hoy no tiene condiciones).
+- Los valores de **Tipo de evento** y de **tipo de lesión** (en revisión con el cliente).
+- Las **reglas de permisos** concretas (las de §4 son tentativas; las aplica el back).
+- **Personas sin DNI argentino** (p. ej. turistas): todavía no hay cómo cargarlas.
+- **Tema oscuro**: va en una segunda pasada, vista por vista (los tokens ya están).
+- Filtros avanzados y columnas visibles de las tablas (siguen «en diseño»).

@@ -22,13 +22,19 @@ ya están diseñadas en **Figma**, y cada vista tiene una **ficha** en `vistas/`
    coinciden, gana la ficha.**
 3. **Desde que una vista está implementada, el código es la referencia** de esa vista. Figma se
    vuelve a poner al día con el código al final del proyecto.
+4. **Cuando la vista está implementada, su ficha se marca «Implementada»** (lo hace el agente de
+   diseño al revisar el código; el front no edita `docs/`), con la fecha, arriba de
+   todo (p. ej. `> **Implementada el 2026-11-10. No se mantiene y puede estar superada: la referencia
+   es el código.**`). Desde ahí la ficha no se actualiza; los cambios se hacen en el código y la ficha
+   queda solo como antecedente. Lo que cambie de dominio llega como aviso en este README. Si una vista
+   implementada se rediseña a fondo, se escribe una ficha nueva.
 
 ## Archivos de esta carpeta
 
 | Archivo | Qué es |
 |---|---|
 | `vistas/*.md` | **Una ficha por vista.** Hoy: `bandeja.md`. Las demás llegan de a una. |
-| `narrativa.md` | Para qué sirve SIRAM y cómo se usa. **Desactualizada (2026-10-08)**: ver el aviso al principio del archivo. |
+| `narrativa.md` | **Para qué sirve SIRAM y cómo se usa:** la historia, el vocabulario, cómo se muestra un caso, quién ve qué y para qué sirve cada pantalla. Reescrita el 2026-11-03. |
 | `lenguaje-visual-delta-a-siram.html` | El porqué del lenguaje visual (qué se hereda de Delta y qué se corrige). Los valores concretos están en Figma. |
 
 ## Lenguaje visual (resumen)
