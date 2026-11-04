@@ -1,21 +1,23 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { Box, Drawer, useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import BarraSuperior from './BarraSuperior'
 import MenuLateral from './MenuLateral'
 import { cascara } from '@/tema/tokens'
-import { navegacion } from '@/navegacion'
-import { contar } from '@/componentes/caso/criterios'
-import { obtenerCasos, usuarioActual } from '@/mocks'
+import { navegacionPara } from '@/navegacion'
+import { api, useApi, useSesion } from '@/mocks'
 
 const { alturaBarra, anchoMenu, anchoMenuColapsado } = cascara
 const transicion = 'width .5s ease, left .5s ease'
 
-// Cantidades del menú: total de casos que cumplen el criterio de cada ítem (sin búsqueda ni filtros).
-function calcularContadores(casos) {
-  const claves = navegacion.flatMap((item) => item.hijos ?? []).map((h) => h.contador).filter(Boolean)
-  return Object.fromEntries(claves.map((clave) => [clave, contar(casos, clave)]))
+// Cantidades del menú: las mismas listas de trabajo a las que lleva cada ítem.
+function calcularContadores() {
+  return {
+    duplicado: api.listaDeTrabajo('duplicado').length,
+    incompleto: api.listaDeTrabajo('incompleto').length,
+    solicitudes: api.listarSolicitudes().filter((s) => s.estado === 'pendiente').length,
+  }
 }
 
 // Barra y menú quedan clavados; el contenido es la única zona que scrollea.
@@ -25,7 +27,9 @@ export default function Cascara() {
   const esTelefono = useMediaQuery(theme.breakpoints.down('md'))
   const [colapsado, setColapsado] = useState(false)
   const [cajonAbierto, setCajonAbierto] = useState(false)
-  const contadores = useMemo(() => calcularContadores(obtenerCasos()), [])
+  const sesion = useSesion()
+  const { datos: contadores } = useApi(calcularContadores)
+  const items = navegacionPara(sesion.permisos)
 
   const anchoActual = colapsado ? anchoMenuColapsado : anchoMenu
 
@@ -40,7 +44,7 @@ export default function Cascara() {
 
   return (
     <>
-      <BarraSuperior usuario={usuarioActual} onAlternarMenu={alternarMenu} etiquetaMenu={etiquetaMenu} />
+      <BarraSuperior usuario={sesion} onAlternarMenu={alternarMenu} etiquetaMenu={etiquetaMenu} />
 
       {esTelefono ? (
         <Drawer
@@ -61,7 +65,7 @@ export default function Cascara() {
           }}
         >
           <Box component="nav" aria-label="Navegación principal" sx={{ height: '100%' }}>
-            <MenuLateral contadores={contadores} onNavegar={() => setCajonAbierto(false)} />
+            <MenuLateral items={items} contadores={contadores} onNavegar={() => setCajonAbierto(false)} />
           </Box>
         </Drawer>
       ) : (
@@ -83,7 +87,7 @@ export default function Cascara() {
             transition: transicion,
           }}
         >
-          <MenuLateral colapsado={colapsado} contadores={contadores} onExpandir={() => setColapsado(false)} />
+          <MenuLateral items={items} colapsado={colapsado} contadores={contadores} onExpandir={() => setColapsado(false)} />
         </Box>
       )}
 

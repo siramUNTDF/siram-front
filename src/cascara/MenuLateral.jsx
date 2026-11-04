@@ -3,7 +3,6 @@ import { NavLink, useLocation } from 'react-router'
 import { Box, ButtonBase, Collapse, Tooltip } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { navegacion } from '@/navegacion'
 import { fuentes } from '@/tema/tokens'
 
 // La firma de Delta: píldora abierta a la derecha, sangrada desde el borde izquierdo.
@@ -81,10 +80,10 @@ function grupoContiene(grupo, pathname) {
   return grupo.hijos?.some((h) => rutaActiva(pathname, h.ruta))
 }
 
-export default function MenuLateral({ colapsado = false, contadores = {}, onExpandir, onNavegar }) {
+export default function MenuLateral({ items, colapsado = false, contadores = {}, onExpandir, onNavegar }) {
   const { pathname } = useLocation()
   const [abiertos, setAbiertos] = useState(
-    () => new Set(navegacion.filter((g) => g.hijos && (g.titulo === 'Casos' || grupoContiene(g, pathname))).map((g) => g.titulo)),
+    () => new Set(items.filter((g) => g.hijos && (g.titulo === 'Casos' || grupoContiene(g, pathname))).map((g) => g.titulo)),
   )
 
   function alternarGrupo(titulo) {
@@ -104,7 +103,7 @@ export default function MenuLateral({ colapsado = false, contadores = {}, onExpa
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100%', pt: 2 }}>
       <Box component="ul" sx={{ listStyle: 'none', m: 0, p: 0 }}>
-        {navegacion.map((item) => {
+        {items.map((item) => {
           const IconoItem = item.icono
 
           if (!item.hijos) {

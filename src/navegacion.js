@@ -4,40 +4,47 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 
 // Menú lateral según docs/README.md. Dos niveles, nunca tres.
-// `implementada: false` muestra la pantalla "En diseño".
-// `contador` es el nombre de un criterio de src/componentes/caso/criterios.js:
-// el menú muestra cuántos casos lo cumplen.
+// `permiso`: el ítem aparece solo si la API manda ese permiso para el usuario (RN-35).
+// `contador`: clave de la cantidad que muestra el menú (ver Cascara.jsx).
 export const navegacion = [
-  { titulo: 'Inicio', ruta: '/', icono: HomeOutlinedIcon, implementada: false },
+  { titulo: 'Inicio', ruta: '/', icono: HomeOutlinedIcon },
   {
     titulo: 'Casos',
     icono: FolderOutlinedIcon,
     hijos: [
-      { titulo: 'Bandeja', ruta: '/casos', implementada: true },
-      { titulo: 'Nuevo caso', ruta: '/casos/nuevo' },
-      { titulo: 'Posibles duplicados', ruta: '/casos/duplicados', contador: 'duplicado' },
-      { titulo: 'Eventos relacionados', ruta: '/casos/eventos-relacionados', contador: 'relacionado' },
-      { titulo: 'Incompletos', ruta: '/casos/incompletos', contador: 'incompleto' },
+      { titulo: 'Bandeja', ruta: '/casos', permiso: 'casos' },
+      { titulo: 'Nuevo caso', ruta: '/casos/nuevo', permiso: 'nuevo_caso' },
+      { titulo: 'Solicitudes', ruta: '/casos/solicitudes', permiso: 'solicitudes', contador: 'solicitudes' },
+      { titulo: 'Posibles duplicados', ruta: '/casos/duplicados', permiso: 'listas_trabajo', contador: 'duplicado' },
+      { titulo: 'Incompletos', ruta: '/casos/incompletos', permiso: 'listas_trabajo', contador: 'incompleto' },
     ],
   },
   {
     titulo: 'Consultas',
     icono: SearchOutlinedIcon,
     hijos: [
-      { titulo: 'Búsqueda', ruta: '/consultas/busqueda' },
-      { titulo: 'Mapa', ruta: '/consultas/mapa' },
-      { titulo: 'Estadísticas', ruta: '/consultas/estadisticas' },
-      { titulo: 'Exportar', ruta: '/consultas/exportar' },
+      { titulo: 'Búsqueda', ruta: '/consultas/busqueda', permiso: 'busqueda' },
+      { titulo: 'Personas', ruta: '/consultas/personas', permiso: 'personas' },
+      { titulo: 'Animales', ruta: '/consultas/animales', permiso: 'animales' },
+      { titulo: 'Mapa', ruta: '/consultas/mapa', permiso: 'mapa' },
+      { titulo: 'Estadísticas', ruta: '/consultas/estadisticas', permiso: 'estadisticas' },
+      { titulo: 'Exportar', ruta: '/consultas/exportar', permiso: 'exportar' },
     ],
   },
   {
     titulo: 'Administración',
     icono: SettingsOutlinedIcon,
     hijos: [
-      { titulo: 'Usuarios', ruta: '/administracion/usuarios' },
-      { titulo: 'Organismos', ruta: '/administracion/organismos' },
-      { titulo: 'Tipos de evento', ruta: '/administracion/tipos-evento' },
-      { titulo: 'Importar CSV', ruta: '/administracion/importar-csv' },
+      { titulo: 'Usuarios', ruta: '/administracion/usuarios', permiso: 'usuarios' },
+      { titulo: 'Organismos', ruta: '/administracion/organismos', permiso: 'organismos' },
+      { titulo: 'Tipos de evento', ruta: '/administracion/tipos-evento', permiso: 'tipos_evento' },
     ],
   },
 ]
+
+// El menú con solo lo que el usuario puede ver; un grupo sin hojas no se muestra.
+export function navegacionPara(permisos = []) {
+  return navegacion
+    .map((item) => (item.hijos ? { ...item, hijos: item.hijos.filter((h) => !h.permiso || permisos.includes(h.permiso)) } : item))
+    .filter((item) => !item.hijos || item.hijos.length > 0)
+}

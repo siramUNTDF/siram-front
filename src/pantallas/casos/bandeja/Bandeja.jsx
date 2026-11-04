@@ -1,160 +1,92 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { Box } from '@mui/material'
-import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
-import DensityMediumOutlinedIcon from '@mui/icons-material/DensityMediumOutlined'
-import DensitySmallOutlinedIcon from '@mui/icons-material/DensitySmallOutlined'
-import ViewColumnOutlinedIcon from '@mui/icons-material/ViewColumnOutlined'
 import EncabezadoPagina, { NotaDatosEjemplo } from '@/componentes/EncabezadoPagina'
 import Panel from '@/componentes/Panel'
 import CampoBusqueda from '@/componentes/CampoBusqueda'
 import ChipFiltro from '@/componentes/ChipFiltro'
+import FiltroAplicado from '@/componentes/FiltroAplicado'
 import BotonNuevo from '@/componentes/botones/BotonNuevo'
-import BotonIcono from '@/componentes/botones/BotonIcono'
-import Tabla, { CeldaDoble } from '@/componentes/tabla/Tabla'
-import PieTabla from '@/componentes/tabla/PieTabla'
-import EstadoCaso from '@/componentes/caso/EstadoCaso'
-import MotivoEspera from '@/componentes/caso/MotivoEspera'
-import MarcasCaso from '@/componentes/caso/MarcasCaso'
-import OrigenCaso from '@/componentes/caso/OrigenCaso'
-import EnlaceCaso from '@/componentes/caso/EnlaceCaso'
-import { compararNumeroCaso, criterios } from '@/componentes/caso/criterios'
-import { fuentes } from '@/tema/tokens'
-import { fechaCorta, hora, normalizar } from '@/utiles/formato'
-import { obtenerCasos } from '@/mocks'
-import MenuAccionesCaso from './MenuAccionesCaso'
+import TablaCasos from '@/componentes/caso/TablaCasos'
+import { motivosEspera } from '@/componentes/caso/catalogos'
+import { criterios } from '@/componentes/caso/criterios'
+import { api, useApi, useSesion } from '@/mocks'
+import HerramientasTabla from './HerramientasTabla'
+import useDensidad from './useDensidad'
 import LeyendaMarcas from './LeyendaMarcas'
+import { coincideBusqueda } from './busqueda'
+import NuevoCaso from '../nuevo/NuevoCaso'
 
-// Los chips usan los mismos criterios que los contadores del menú.
+// `clave` es también el valor de `?filtro=` en la URL (lo usa Inicio para llegar ya filtrado).
 const filtros = [
   { clave: 'todos', etiqueta: 'Todos', aplica: () => true },
-  { clave: 'incompleto', etiqueta: 'Incompletos', aplica: criterios.incompleto },
-  { clave: 'duplicado', etiqueta: 'Posibles duplicados', aplica: criterios.duplicado },
-  { clave: 'relacionado', etiqueta: 'Eventos relacionados', aplica: criterios.relacionado },
-  { clave: 'enSeguimiento', etiqueta: 'En seguimiento', aplica: criterios.enSeguimiento },
+  { clave: 'incompletos', etiqueta: 'Incompletos', aplica: criterios.incompleto },
+  { clave: 'duplicados', etiqueta: 'Posibles duplicados', aplica: criterios.duplicado },
+  { clave: 'en_seguimiento', etiqueta: 'En seguimiento', aplica: criterios.enSeguimiento },
+  { clave: 'graves', etiqueta: 'Graves', aplica: criterios.grave },
 ]
 
-function coincideBusqueda(caso, termino) {
-  if (!termino) return true
-  const texto = normalizar(
-    [caso.id, caso.victima.nombre, caso.lugar.direccion, caso.lugar.ciudad, caso.animal.especie, caso.lesion, caso.origen].join(' '),
-  )
-  return texto.includes(normalizar(termino))
+// `?filtro=` elige el chip; `?motivo=` fuerza «En seguimiento» y agrega el filtro de motivo, quitable.
+function leerFiltros(params) {
+  const motivo = motivosEspera[params.get('motivo')] ? params.get('motivo') : null
+  const pedido = params.get('filtro')
+  const chip = motivo ? 'en_seguimiento' : filtros.some((f) => f.clave === pedido) ? pedido : 'todos'
+  return { chip, motivo }
 }
 
-const columnas = [
-  { clave: 'marcas', titulo: 'Marcas', celda: (c) => <MarcasCaso marcas={c.marcas} /> },
-  { clave: 'caso', titulo: 'Caso', celda: (c) => <EnlaceCaso id={c.id} /> },
-  {
-    clave: 'fecha',
-    titulo: 'Fecha del hecho',
-    celda: (c) => <CeldaDoble mono principal={fechaCorta(c.fechaHecho)} secundario={hora(c.fechaHecho)} />,
-  },
-  {
-    clave: 'victima',
-    titulo: 'Víctima',
-    celda: (c) => <CeldaDoble destacado principal={c.victima.nombre} secundario={`${c.victima.edad} años`} />,
-  },
-  { clave: 'lugar', titulo: 'Lugar', celda: (c) => <CeldaDoble principal={c.lugar.direccion} secundario={c.lugar.ciudad} /> },
-  { clave: 'animal', titulo: 'Animal', celda: (c) => <CeldaDoble principal={c.animal.especie} secundario={c.animal.tamano} /> },
-  { clave: 'lesion', titulo: 'Lesión', celda: (c) => c.lesion },
-  {
-    clave: 'estado',
-    titulo: 'Estado',
-    celda: (c) => (
-      <>
-        <EstadoCaso estado={c.estado} />
-        {c.estado === 'en_seguimiento' && <MotivoEspera motivo={c.motivoEspera} />}
-        {c.estado === 'unificado' && c.unificadoEn && (
-          <Box component="span" sx={{ display: 'block', mt: '5px', fontSize: 12, color: 'text.tertiary', fontFamily: fuentes.mono }}>
-            → {c.unificadoEn}
-          </Box>
-        )}
-      </>
-    ),
-  },
-  { clave: 'origen', titulo: 'Origen', celda: (c) => <OrigenCaso organismo={c.origen} /> },
-  { clave: 'acciones', titulo: 'Acciones', acciones: true, celda: (c) => <MenuAccionesCaso id={c.id} /> },
-]
-
-export default function Bandeja() {
+// Con `nuevo`, la ruta /casos/nuevo: la Bandeja con la ventana del formulario inicial abierta.
+export default function Bandeja({ nuevo = false }) {
   const navigate = useNavigate()
-  const casos = useMemo(() => [...obtenerCasos()].sort(compararNumeroCaso), [])
+  const sesion = useSesion()
+  const [params, setParams] = useSearchParams()
+  const { chip, motivo } = leerFiltros(params)
+  const { datos: casos } = useApi(() => api.listarCasos())
   const [busqueda, setBusqueda] = useState('')
-  const [filtro, setFiltro] = useState('todos')
-  const [pagina, setPagina] = useState(0)
-  const [filasPorPagina, setFilasPorPagina] = useState(10)
-  const [densa, setDensa] = useState(false)
+  const [densa, alternarDensidad] = useDensidad()
 
   const buscados = useMemo(() => casos.filter((c) => coincideBusqueda(c, busqueda)), [casos, busqueda])
-  const cantidades = useMemo(
-    () => Object.fromEntries(filtros.map((f) => [f.clave, buscados.filter(f.aplica).length])),
-    [buscados],
-  )
-  const filtrados = useMemo(() => buscados.filter(filtros.find((f) => f.clave === filtro).aplica), [buscados, filtro])
-  const visibles = filtrados.slice(pagina * filasPorPagina, (pagina + 1) * filasPorPagina)
+  const cantidades = useMemo(() => Object.fromEntries(filtros.map((f) => [f.clave, buscados.filter(f.aplica).length])), [buscados])
+  const filtrados = useMemo(() => {
+    const aplica = filtros.find((f) => f.clave === chip).aplica
+    return buscados.filter((c) => aplica(c) && (!motivo || c.motivoEspera === motivo))
+  }, [buscados, chip, motivo])
+
+  // Cambiar de chip borra el filtro de motivo y deja la URL lista para compartir.
+  function elegirChip(clave) {
+    setParams(clave === 'todos' ? {} : { filtro: clave })
+  }
 
   return (
     <>
       <EncabezadoPagina
         titulo="Bandeja de casos"
-        bajada="Casos registrados en el sistema, ordenados por número de caso."
+        bajada="Ordenados por última modificación: arriba queda lo que alguien tocó hace poco."
         extra={<NotaDatosEjemplo />}
       />
 
       <Panel>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', p: 2, borderBottom: 1, borderColor: 'divider' }}>
-          <CampoBusqueda
-            valor={busqueda}
-            onCambio={(v) => { setBusqueda(v); setPagina(0) }}
-            etiqueta="Buscar casos"
-          />
-          <BotonNuevo texto="Nuevo caso" onClick={() => navigate('/casos/nuevo')} />
-          <Box sx={{ ml: { xs: 0, sm: 'auto' }, display: 'flex', gap: '2px' }}>
-            <BotonIcono etiqueta="Filtros (en diseño)" disabled>
-              <FilterAltOutlinedIcon fontSize="small" />
-            </BotonIcono>
-            <BotonIcono
-              etiqueta={densa ? 'Filas normales' : 'Filas compactas'}
-              aria-pressed={densa}
-              onClick={() => setDensa((v) => !v)}
-            >
-              {densa ? <DensityMediumOutlinedIcon fontSize="small" /> : <DensitySmallOutlinedIcon fontSize="small" />}
-            </BotonIcono>
-            <BotonIcono etiqueta="Columnas visibles (en diseño)" disabled>
-              <ViewColumnOutlinedIcon fontSize="small" />
-            </BotonIcono>
-          </Box>
-        </Box>
+        <HerramientasTabla densa={densa} onDensidad={alternarDensidad}>
+          <CampoBusqueda valor={busqueda} onCambio={setBusqueda} placeholder="Buscar por caso, víctima o DNI" etiqueta="Buscar casos por número, víctima o DNI" />
+          {sesion.permisos.includes('nuevo_caso') && <BotonNuevo texto="Nuevo caso" onClick={() => navigate('/casos/nuevo')} />}
+        </HerramientasTabla>
 
         <Box
           role="group"
           aria-label="Filtros rápidos"
-          sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', px: 2, pb: 2, borderBottom: 1, borderColor: 'divider' }}
+          sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center', px: 2, pb: 2, borderBottom: 1, borderColor: 'divider' }}
         >
           {filtros.map((f) => (
-            <ChipFiltro
-              key={f.clave}
-              etiqueta={f.etiqueta}
-              cantidad={cantidades[f.clave]}
-              activo={filtro === f.clave}
-              onClick={() => { setFiltro(f.clave); setPagina(0) }}
-            />
+            <ChipFiltro key={f.clave} etiqueta={f.etiqueta} cantidad={cantidades[f.clave]} activo={chip === f.clave} onClick={() => elegirChip(f.clave)} />
           ))}
+          {motivo && <FiltroAplicado etiqueta={`Motivo: ${motivosEspera[motivo]}`} onQuitar={() => setParams({ filtro: 'en_seguimiento' })} />}
         </Box>
 
-        <Tabla columnas={columnas} filas={visibles} densa={densa} vacio="No hay casos que coincidan con la búsqueda." />
-
-        <PieTabla
-          total={filtrados.length}
-          pagina={pagina}
-          filasPorPagina={filasPorPagina}
-          onPagina={setPagina}
-          onFilasPorPagina={(n) => { setFilasPorPagina(n); setPagina(0) }}
-        />
+        <TablaCasos filas={filtrados} densa={densa} consulta={`${busqueda}|${chip}|${motivo}`} vacio="No hay casos que coincidan con la búsqueda." />
       </Panel>
 
       <LeyendaMarcas />
+
+      {nuevo && sesion.permisos.includes('nuevo_caso') && <NuevoCaso onCerrar={() => navigate('/casos')} />}
     </>
   )
 }

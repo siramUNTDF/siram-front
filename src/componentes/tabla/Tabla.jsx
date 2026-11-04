@@ -3,7 +3,7 @@ import { fuentes } from '@/tema/tokens'
 
 // Tabla densa con encabezado fijo, hover de fila y columna de acciones clavada a la derecha.
 // Las columnas se describen con { clave, titulo, celda(fila), acciones? }.
-export default function Tabla({ columnas, filas, claveFila = (f) => f.id, densa = false, anchoMinimo = 1180, vacio = 'Sin resultados.' }) {
+export default function Tabla({ columnas, filas, claveFila = (f) => f.id, densa = false, anchoMinimo = 1180, vacio = 'Sin resultados.', atributosFila }) {
   const padding = densa ? '6px 14px' : '12px 14px'
   return (
     <Box sx={{ overflowX: 'auto' }}>
@@ -76,7 +76,7 @@ export default function Tabla({ columnas, filas, claveFila = (f) => f.id, densa 
             </tr>
           ) : (
             filas.map((fila) => (
-              <tr key={claveFila(fila)}>
+              <tr key={claveFila(fila)} {...atributosFila?.(fila)}>
                 {columnas.map((c) => (
                   <td key={c.clave} className={c.acciones ? 'col-acc' : undefined}>{c.celda(fila)}</td>
                 ))}

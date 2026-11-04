@@ -39,35 +39,47 @@ const estilos = {
       bgcolor: 'var(--fondo-marca, var(--siram-palette-background-paper))',
     },
   },
-  relacionado: { color: 'rel.main', bgcolor: 'rel.soft' },
+  // Rojo relleno con "!" claro: lo distingue de Incompleto (rojo suave con borde).
+  grave: { color: 'background.paper', bgcolor: 'error.main', borderColor: 'error.main' },
 }
 
-// "≈" dibujado a mano: no todas las fuentes traen el glifo.
-function Aproximado() {
-  return (
-    <svg width="11" height="9" viewBox="0 0 11 9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden>
-      <path d="M1 3c1.5-1.6 3-1.6 4.5 0s3 1.6 4.5 0M1 7c1.5-1.6 3-1.6 4.5 0s3 1.6 4.5 0" />
-    </svg>
-  )
+const simbolos = { incompleto: '!', duplicado: null, grave: '!' }
+const orden = Object.keys(catalogo)
+
+const nombresFaltantes = {
+  fechaHecho: 'fecha del hecho',
+  'lugar.ciudad': 'ciudad',
+  'lugar.direccion': 'lugar',
+  tipoLugar: 'tipo de lugar',
+  'victima.edad': 'edad de la víctima',
+  tipoEvento: 'tipo de evento',
 }
 
-const simbolos = { incompleto: '!', duplicado: null, relacionado: <Aproximado /> }
+// Si la API manda qué datos faltan, el tooltip de Incompleto los nombra (incompletos.md).
+function descripcion(marca, faltantes) {
+  if (marca !== 'incompleto' || !faltantes?.length) return catalogo[marca]?.descripcion ?? marca
+  const nombres = faltantes.map((f) => nombresFaltantes[f] ?? f)
+  const lista = nombres.length > 1 ? `${nombres.slice(0, -1).join(', ')} y ${nombres.at(-1)}` : nombres[0]
+  return `Incompleto: ${nombres.length > 1 ? 'faltan' : 'falta'} ${lista}`
+}
 
-export function MarcaCaso({ marca, conTooltip = true }) {
-  const info = catalogo[marca]
+export function MarcaCaso({ marca, conTooltip = true, faltantes }) {
+  const texto = descripcion(marca, faltantes)
   const icono = (
-    <Box component="span" role="img" aria-label={info?.descripcion ?? marca} sx={{ ...base, ...estilos[marca] }}>
+    <Box component="span" role="img" aria-label={texto} sx={{ ...base, ...estilos[marca] }}>
       {simbolos[marca]}
     </Box>
   )
-  return conTooltip && info ? <Tooltip title={info.descripcion}>{icono}</Tooltip> : icono
+  return conTooltip ? <Tooltip title={texto}>{icono}</Tooltip> : icono
 }
 
-// Marcas paralelas del caso (pueden ser varias). Van pegadas al identificador, a la izquierda.
-export default function MarcasCaso({ marcas = [] }) {
+// Marcas paralelas del caso (pueden ser varias). Van pegadas al identificador, a la izquierda,
+// siempre en el mismo orden: incompleto, posible duplicado, grave. Llegan calculadas por la API.
+export default function MarcasCaso({ marcas = [], faltantes }) {
+  const ordenadas = [...marcas].sort((a, b) => orden.indexOf(a) - orden.indexOf(b))
   return (
     <Box component="span" sx={{ display: 'flex', gap: '5px', alignItems: 'center', minHeight: 20 }}>
-      {marcas.map((m) => <MarcaCaso key={m} marca={m} />)}
+      {ordenadas.map((m) => <MarcaCaso key={m} marca={m} faltantes={faltantes} />)}
     </Box>
   )
 }

@@ -3,11 +3,11 @@ import { Box } from '@mui/material'
 import { fuentes } from '@/tema/tokens'
 
 // Identificador de caso navegable (lleva a la ficha).
-export default function EnlaceCaso({ id }) {
+export default function EnlaceCaso({ numero }) {
   return (
     <Box
       component={Link}
-      to={`/casos/${id}`}
+      to={`/casos/${numero}`}
       sx={{
         fontFamily: fuentes.mono,
         fontVariantNumeric: 'tabular-nums',
@@ -20,7 +20,7 @@ export default function EnlaceCaso({ id }) {
         '&:hover': { borderBottomColor: 'primary.main' },
       }}
     >
-      {id}
+      {numero}
     </Box>
   )
 }

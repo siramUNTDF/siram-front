@@ -1,10 +1,32 @@
-import { Box, ButtonBase, IconButton, Typography } from '@mui/material'
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { Box, ButtonBase, IconButton, ListSubheader, Menu, MenuItem, Typography } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
+import CheckIcon from '@mui/icons-material/Check'
 import { cascara, fuentes } from '@/tema/tokens'
+import { api, perfiles } from '@/mocks'
+
+const textoPerfil = {
+  zoonosis: 'Agente de Zoonosis',
+  salud: 'Agente de Salud',
+  cadic: 'Agente de CADIC',
+  analista: 'Consulta (analista)',
+  administrador: 'Administrador',
+}
 
 // Barra fija de 89 px: identidad a la izquierda, usuario a la derecha.
 // Ningún organismo aparece acá: SIRAM no lleva la marca de nadie.
 export default function BarraSuperior({ usuario, onAlternarMenu, etiquetaMenu }) {
+  const [ancla, setAncla] = useState(null)
+  const navigate = useNavigate()
+
+  // Solo para la demo: con la API, quién mira lo da el login. Cambia los datos que «manda» el servidor de ejemplo.
+  function verComo(clave) {
+    setAncla(null)
+    api.cambiarPerfil(clave)
+    navigate('/')
+  }
+
   return (
     <Box
       component="header"
@@ -64,6 +86,8 @@ export default function BarraSuperior({ usuario, onAlternarMenu, etiquetaMenu })
         <Box aria-hidden sx={{ width: '1px', height: 28, bgcolor: 'divider', mx: 1 }} />
         <ButtonBase
           aria-label={`Cuenta de ${usuario.nombre}`}
+          aria-haspopup="menu"
+          onClick={(e) => setAncla(e.currentTarget)}
           sx={{
             width: 36,
             height: 36,
@@ -79,6 +103,17 @@ export default function BarraSuperior({ usuario, onAlternarMenu, etiquetaMenu })
         >
           {usuario.iniciales}
         </ButtonBase>
+        <Menu anchorEl={ancla} open={Boolean(ancla)} onClose={() => setAncla(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <ListSubheader sx={{ lineHeight: 1.4, py: 1, fontSize: 12, color: 'text.tertiary', maxWidth: 260 }}>
+            Datos de ejemplo · ver la demo como:
+          </ListSubheader>
+          {Object.keys(perfiles).map((clave) => (
+            <MenuItem key={clave} onClick={() => verComo(clave)} selected={usuario.clave === clave} sx={{ gap: 1, fontSize: 14 }}>
+              <Box sx={{ width: 18, display: 'flex' }}>{usuario.clave === clave && <CheckIcon sx={{ fontSize: 18 }} />}</Box>
+              {textoPerfil[clave]}
+            </MenuItem>
+          ))}
+        </Menu>
       </Box>
     </Box>
   )

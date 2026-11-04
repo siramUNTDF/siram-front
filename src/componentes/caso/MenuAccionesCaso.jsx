@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router'
 import { IconButton, Menu, MenuItem } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 
-export default function MenuAccionesCaso({ id }) {
+export default function MenuAccionesCaso({ numero }) {
   const [ancla, setAncla] = useState(null)
   const navigate = useNavigate()
 
   return (
     <>
       <IconButton
-        aria-label={`Acciones del caso ${id}`}
+        aria-label={`Acciones del caso ${numero}`}
         aria-haspopup="menu"
         onClick={(e) => setAncla(e.currentTarget)}
         sx={{
@@ -29,7 +29,7 @@ export default function MenuAccionesCaso({ id }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem onClick={() => navigate(`/casos/${id}`)}>Ver caso</MenuItem>
+        <MenuItem onClick={() => navigate(`/casos/${numero}`)}>Ver caso</MenuItem>
       </Menu>
     </>
   )

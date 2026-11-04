@@ -1,8 +1,7 @@
-// Criterios de caso: una sola definición de "qué casos entran" en cada lista.
-// Los usan los chips de la Bandeja y los contadores del menú, así nunca se contradicen.
+// Criterios de los chips de la Bandeja, sobre las marcas y el estado que llegan de la API.
+// Son los mismos que usa el servidor para las listas de trabajo y los contadores del menú.
 
-// Las listas de trabajo (Incompletos, Posibles duplicados, Eventos relacionados) solo muestran
-// casos vigentes: con los desestimados y los unificados no queda nada por hacer.
+// Las listas de trabajo solo muestran casos vigentes (RN-28).
 export function esVigente(caso) {
   return caso.estado !== 'desestimado' && caso.estado !== 'unificado'
 }
@@ -12,16 +11,7 @@ const vigenteConMarca = (marca) => (caso) => esVigente(caso) && caso.marcas.incl
 export const criterios = {
   incompleto: vigenteConMarca('incompleto'),
   duplicado: vigenteConMarca('duplicado'),
-  relacionado: vigenteConMarca('relacionado'),
   enSeguimiento: (caso) => caso.estado === 'en_seguimiento',
-}
-
-export function contar(casos, criterio) {
-  return casos.filter(criterios[criterio]).length
-}
-
-// Orden de la Bandeja: por número de caso, del más reciente al más antiguo.
-// Provisorio: cuando exista la API, el orden lo da ella.
-export function compararNumeroCaso(a, b) {
-  return b.id.localeCompare(a.id, undefined, { numeric: true })
+  // Un grave finalizado conserva la marca, pero ya no pide atención: solo registrados y en seguimiento.
+  grave: (caso) => caso.marcas.includes('grave') && (caso.estado === 'registrado' || caso.estado === 'en_seguimiento'),
 }

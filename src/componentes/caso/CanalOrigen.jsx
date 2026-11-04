@@ -1,7 +1,8 @@
 import { Box } from '@mui/material'
+import { canalesOrigen } from './catalogos'
 
-// El organismo es un dato del caso, nunca una marca visual del sistema.
-export default function OrigenCaso({ organismo }) {
+// Por dónde entró el caso. Es un dato, nunca un color ni una marca del sistema (RN-01).
+export default function CanalOrigen({ canal }) {
   return (
     <Box
       component="span"
@@ -17,7 +18,7 @@ export default function OrigenCaso({ organismo }) {
         bgcolor: 'var(--fondo-origen, var(--siram-palette-background-default))',
       }}
     >
-      {organismo}
+      {canalesOrigen[canal] ?? canal}
     </Box>
   )
 }

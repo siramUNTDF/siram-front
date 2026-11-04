@@ -9,7 +9,7 @@ export default function LeyendaMarcas() {
         <Box key={clave} component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: '7px' }}>
           <MarcaCaso marca={clave} conTooltip={false} />
           {etiqueta}
-          {clave === 'relacionado' && <span>— mismo animal, otra víctima. No se fusiona.</span>}
+          {clave === 'grave' && <span>— un animal del caso murió o enfermó en la observación</span>}
         </Box>
       ))}
     </Box>
