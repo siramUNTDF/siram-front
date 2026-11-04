@@ -115,6 +115,4 @@ Ajustes que el código del front todavía no refleja. **Registralos como pendien
 un change de openspec). Cuando estén hechos no hace falta avisar: el agente de diseño revisa el código
 y borra el aviso de acá.
 
-- **2026-11-04 · Posibles duplicados** (`vistas/posibles-duplicados.md`). La marca de posible
-  duplicado solo se muestra si **los dos casos del par están vigentes**: si uno se desestima, la marca
-  se va de los dos y el otro sale de la lista. La coincidencia queda sin decisión.
+_Sin avisos pendientes._
