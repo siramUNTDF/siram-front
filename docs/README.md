@@ -14,6 +14,9 @@ ya están diseñadas en **Figma**, y cada vista tiene una **ficha** en `vistas/`
 
 ## Cómo se trabaja una vista *(desde el 2026-11-03)*
 
+0. **Las reglas de negocio son obligatorias** (`narrativa.md`, «Reglas de negocio»). Están por encima
+   de Figma y de las fichas. Si algo las contradice, no elijas: avisale al usuario. Antes de dar una
+   vista por terminada, verificá que cumple las que le tocan.
 1. **Lo visual sale de Figma**: archivo `XC7e02ZzIfQwmALf1RHgiZ` («SIRAM — Diseño»), leído con el MCP
    de Figma. Cada ficha dice qué nodo mirar. Los tokens de Figma (colecciones «Tokens» y «Paleta»)
    son los de `src/tema/tokens.js`.

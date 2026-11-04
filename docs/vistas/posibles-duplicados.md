@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -34,7 +35,9 @@ Ya **no hay** puntaje, señales de coincidencia ni «vincular»: si los ves en a
 - **Encabezado:** «Posibles duplicados» · bajada «Casos vigentes que el sistema marcó como posible
   duplicado de otro. Al abrir un caso se ve con cuál y se decide en la comparación.»
 - **Qué casos entran:** vigentes (ni desestimados ni unificados) con la marca *posible duplicado*. Es
-  una **lista de trabajo**: su cantidad es el contador del menú.
+  una **lista de trabajo**: su cantidad es el contador del menú. Un caso llega acá cuando, al
+  registrarlo, el agente eligió **«Guardar y revisar después»** en el aviso de DNI repetido (ver
+  `nuevo-caso.md`).
 - **Tabla:** las **mismas columnas que la Bandeja** (ver `bandeja.md`: marcas, caso, última
   modificación, fecha del hecho, víctima, lugar, animales, tipo de evento, estado, canal de origen).
   Mismo orden: última modificación, más reciente arriba. Búsqueda igual que en la Bandeja. Sin filtros
@@ -43,8 +46,9 @@ Ya **no hay** puntaje, señales de coincidencia ni «vincular»: si los ves en a
   casos** (ver la ficha del caso). Desde ahí se llega a comparar.
 - **Vacío:** «No hay posibles duplicados para revisar.»
 
-Los dos casos de un par aparecen los dos en la lista (cada uno tiene la marca). En el ejemplo de
-Figma: C-2026-0418 (Zoonosis, con marcas incompleto y duplicado) y C-2026-0402 (Salud, solo duplicado).
+Los dos casos de un par aparecen los dos en la lista (cada uno tiene la marca). En el ejemplo:
+C-2026-0418 (Zoonosis, con marcas incompleto y duplicado; última modificación 22/09/2026 10:15 ·
+M. Acosta) y C-2026-0402 (Salud, solo duplicado; última modificación 13/09/2026 11:20 · M. Acosta, al reconciliar su animal).
 
 ---
 
@@ -62,10 +66,12 @@ Es una **página**, con el botón de volver a la izquierda del título.
 3. **Resumen:** «7 iguales · 4 distintos · 2 solo en uno» · a la derecha: «Lo marcado en violeta es lo
    que sobrevive si consolidás.»
 4. **Cabeceras de los dos casos**, lado a lado: número (enlace a la ficha, en otra pestaña), organismo,
-   estado y fecha de registro. **A** a la izquierda, **B** a la derecha.
+   estado y fecha de registro. **A** a la izquierda (el caso desde el que se abrió la comparación),
+   **B** a la derecha.
 5. **Comparación campo por campo**, por grupos: *Persona afectada* (nombre, edad, DNI, teléfono,
    correo), *Hecho* (fecha, hora, lugar, tipo de lugar), *Animal* (especie, tamaño, color), *Tipo de
-   evento*. Cada fila es una **Fila de comparación**:
+   evento*. **Salud no recibe la descripción del animal**: para Salud, las filas de tamaño y color no se
+   muestran (la API no las manda). Cada fila es una **Fila de comparación**:
 
    | Estado de la fila | Qué pasa | Cómo se ve |
    |---|---|---|
@@ -77,11 +83,12 @@ Es una **página**, con el botón de volver a la izquierda del título.
    `75:6219`); el agente puede cambiarlo en cada fila.
 6. **Desenlace:** «Decidí qué pasa con estos dos registros» · «Cada camino deja un rastro distinto en el
    registro provincial. Elegí uno solo.»
-   - **Consolidar en un registro único** (tarjeta violeta, «Irreversible»): «Es la misma persona y el
-     mismo incidente, cargado dos veces. Queda un solo caso con los valores que elegiste arriba, y se
+   - **Consolidar en un registro único** (tarjeta violeta, «Irreversible»): «Es el mismo incidente,
+     cargado dos veces. Queda un solo caso con los valores que elegiste arriba, y se
      conserva la trazabilidad de los dos originales…» · resultado «C-2026-0418 + C-2026-0402 →
-     C-2026-0418 · el 0402 queda Unificado y apunta a este caso» · casilla **«Confirmo que Micaela Sosa
-     y M. Sosa son la misma persona y que se trata de un único incidente.»** · botón **Consolidar
+     C-2026-0418 · el 0402 queda Unificado y apunta a este caso» · casilla **«Confirmo que los dos casos
+     son el mismo incidente, cargado dos veces.»** (La víctima ya es la misma persona: es única por DNI,
+     RN-20; lo que se confirma es el hecho.) · botón **Consolidar
      registros** (deshabilitado hasta marcar la casilla; al lado: «Marcá la confirmación para
      habilitar», y con la casilla marcada: «Es irreversible: revisá los valores marcados arriba.»).
    - **No es duplicado: son casos distintos** (botón secundario) · «Otro ataque a la misma persona.
@@ -90,16 +97,22 @@ Es una **página**, con el botón de volver a la izquierda del título.
 
 ### Qué caso sobrevive
 
-**A es el caso que ya existía** (el más viejo) y **B el que generó el aviso** (el nuevo). Al consolidar,
-**sobrevive A** con los valores elegidos y **B queda *Unificado*** y apunta a A («→ C-2026-0418»). B no se
-borra: se ve en la Bandeja con su estado y su enlace.
+**A es el caso desde el que se abrió la comparación** (el que el agente estaba mirando, con «Comparar
+casos» en su ficha) y **B el otro**. No importa cuál se registró antes. Al consolidar, **sobrevive A**
+con los valores elegidos y **B queda *Unificado*** y apunta a A («→ C-2026-0418»). B no se borra: se ve
+en la Bandeja con su estado y su enlace.
+
+En el ejemplo, la comparación se abre desde C-2026-0418: **A = C-2026-0418** (registrado el 12/09 a las
+15:02, sobrevive) y **B = C-2026-0402** (registrado antes, a las 14:50; queda unificado). Si se abriera
+desde la ficha de C-2026-0402, sería al revés. La ruta lleva el orden: `/casos/comparar/:a/:b`.
 
 ### Comportamiento
 
 - **Consolidar:** con la casilla marcada, el botón se habilita. Al hacer clic **no hay otra
   confirmación** (la casilla ya lo es). Mensaje de éxito «C-2026-0402 consolidado en C-2026-0418» y se
   abre la ficha de A. La marca de posible duplicado desaparece de los dos.
-- **No es duplicado:** abre una ventana lateral corta con un campo **Observación** (opcional, texto
+- **No es duplicado:** abre una ventana lateral corta (la misma que abre «No es duplicado» desde el
+  aviso de la ficha del caso) con un campo **Observación** (opcional, texto
   libre: p. ej. «Dos mordeduras del mismo perro con un mes de diferencia») · Cancelar · **Guardar**. Al
   guardar: mensaje de éxito «Marcados como casos distintos», vuelve a la lista. Los dos casos siguen
   como estaban, sin la marca.
@@ -114,37 +127,49 @@ Lo que devuelve la API para comparar (forma de ejemplo):
 
 ```json
 {
-  "a": { "numero": "C-2026-0418", "organismo": "Zoonosis Ushuaia", "estado": "registrado", "registrado": "2026-09-12" },
-  "b": { "numero": "C-2026-0402", "organismo": "Hospital Regional Ushuaia", "estado": "registrado", "registrado": "2026-09-13" },
+  "a": { "numero": "C-2026-0418", "organismo": "Zoonosis Ushuaia", "estado": "registrado", "registrado": "2026-09-12T15:02" },
+  "b": { "numero": "C-2026-0402", "organismo": "Hospital Regional Ushuaia", "estado": "registrado", "registrado": "2026-09-12T14:50" },
   "dni": "58412336",
   "filas": [
-    { "grupo": "Persona afectada", "campo": "victima.nombre", "etiqueta": "Nombre", "codigo": "P1", "a": "Micaela Sosa", "b": "M. Sosa" },
-    { "grupo": "Persona afectada", "campo": "victima.correo", "etiqueta": "Correo electrónico", "codigo": "P3", "a": null, "b": "carla.sosa@ejemplo.org" },
-    { "grupo": "Hecho", "campo": "hecho.fecha", "etiqueta": "Fecha del hecho", "codigo": "H1", "a": "2026-09-12", "b": "2026-09-12" }
+    { "grupo": "Persona afectada", "campo": "victima.nombre", "etiqueta": "Nombre", "codigo": "P1", "a": "Micaela", "b": "Micaela" },
+    { "grupo": "Persona afectada", "campo": "victima.apellido", "etiqueta": "Apellido", "codigo": "P1", "a": "Sosa", "b": "Sosa" },
+    { "grupo": "Hecho", "campo": "fechaHecho", "etiqueta": "Fecha del hecho", "codigo": "H1", "a": "2026-09-12", "b": "2026-09-12" },
+    { "grupo": "Hecho", "campo": "tipoLugar", "etiqueta": "Tipo de lugar", "codigo": "H5", "a": null, "b": "via_publica" }
   ]
 }
 ```
 
-El estado de cada fila (igual, solo en uno, distinto) se calcula con `a` y `b`. Lo que se manda al
-consolidar:
+En pantalla, nombre y apellido van en una sola fila; en los datos, separados. Los enumerados llegan en
+`snake_case` (`via_publica`) y se muestran con su etiqueta («Vía pública»). El estado de cada fila
+(igual, solo en uno, distinto) se calcula con `a` y `b`. Lo que se manda al consolidar:
 
 ```json
-{ "a": "C-2026-0418", "b": "C-2026-0402", "elecciones": { "victima.nombre": "a", "hecho.hora": "a" }, "confirmado": true }
+{ "coincidencia": 7, "sobrevive": "C-2026-0418", "absorbido": "C-2026-0402", "elecciones": { "horaHecho": "C-2026-0418", "lugar.direccion": "C-2026-0418" }, "confirmado": true }
 ```
 
-Y al marcar como distintos: `{ "a": "C-2026-0418", "b": "C-2026-0402", "desenlace": "distintos", "observacion": "…" }`.
+En `elecciones` van solo las filas distintas en las que el agente cambió la elección: las que no
+figuran quedan con A (el que sobrevive), que es lo elegido por defecto.
+
+Y al marcar como distintos: `{ "coincidencia": 7, "desenlace": "distintos", "observacion": "…" }`. A y B son solo izquierda y derecha de la pantalla: **no** son los `caso_a`/`caso_b` del modelo (allá, A es el caso que ya existía). Por eso se manda la coincidencia y cuál sobrevive.
 
 ## Quién la ve
 
-- **Agentes:** ven la lista y comparan. Consolidar pide además un permiso propio («persona
-  autorizada»): si la API no lo da, la tarjeta Consolidar se muestra **sin la casilla ni el botón**, con
-  la línea «Consolidar requiere un permiso que tu usuario no tiene».
+- **Agentes** (Salud, Zoonosis, CADIC): ven la lista, comparan y deciden. **Cualquier agente puede
+  consolidar**: no hay un permiso propio mientras no se defina quién es la «persona autorizada» (ver
+  «Pendiente»). La casilla de confirmación es lo único que se pide.
 - **Analista / comité** y **administrador:** no ven esta lista.
 
 ## Pendiente: no lo implementes todavía
 
 - **Qué pasa con lo demás de B al consolidar** (sus animales, tratamiento, denuncias, solicitudes y
-  documentos): todavía no está definido si se suman a A o se eligen. La pantalla de Figma solo compara
-  los datos del caso. Por ahora, implementá la comparación de los datos de la tabla.
-- **Casos con varios animales:** la comparación de Figma muestra un solo animal por caso. Cómo se
-  emparejan los animales de A y de B está por definirse.
+  documentos): todavía no está definido si se suman a A o se eligen. La comparación solo muestra los
+  datos del caso. Por ahora, implementá la comparación de los datos de la tabla.
+- **Casos con varios animales:** la comparación muestra un solo animal por caso. Cómo se emparejan los
+  animales de A y de B está por definirse (en el ejemplo, A tiene dos y B uno, el perro con chip que
+  ya comparten).
+- **Quién puede consolidar** («persona autorizada», RN-15): sin definir. Mientras tanto, cualquier
+  agente.
+- **Los datos de la víctima en los dos casos:** la persona es única por DNI, así que nombre, teléfono y
+  correo de la víctima son los mismos en A y en B; lo que puede variar entre casos es la edad al
+  momento del hecho. Por eso las filas de *Persona afectada* salen siempre iguales, salvo la edad.
+  Qué hace Nuevo caso cuando el DNI ya es de una persona sigue pendiente allá.

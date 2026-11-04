@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -22,8 +23,7 @@ una lista fija en el código.
 
 1. **Encabezado:** «Tipos de evento» · bajada «Catálogo que clasifica cada caso (campo T1 de la ficha).»
 2. **Mensaje de advertencia** (fijo en la pantalla): «Valores en revisión con el cliente. Son la
-   propuesta del equipo. Falta deslindarlos del tipo de lesión (L1), para que los dos no digan lo
-   mismo.»
+   propuesta del equipo.» El tipo de lesión ya no existe como dato: el tipo de evento lo reemplaza.
 3. **Herramientas:** botón **Nuevo tipo de evento**.
 4. **Tabla:** Tipo de evento (nombre destacado + descripción en segunda línea) · Casos vigentes · Estado
    (Activo / Inactivo) · acciones (`⋮`: Editar). Orden: el que define el back (hoy, el de abajo).
@@ -46,7 +46,7 @@ Ventana lateral: «Editar tipo de evento» · bajada con el nombre y «N casos v
 { "id": 2, "nombre": "Lesión compatible", "descripcion": "Lesión compatible con un ataque, sin certeza de mordedura (por ejemplo, un arañazo).", "activo": true, "casosVigentes": 15 }
 ```
 
-Valores de Figma (todos activos):
+Valores de Figma (todos activos; los casos vigentes suman los 127 de Inicio):
 
 | Tipo de evento | Descripción | Casos vigentes |
 |---|---|---|
@@ -62,5 +62,5 @@ Valores de Figma (todos activos):
 
 ## Pendiente: no lo implementes todavía
 
-- Los valores definitivos y el **deslinde con el tipo de lesión**: en revisión con el cliente.
+- Los **valores definitivos**: en revisión con el cliente.
 - **Orden** de los tipos (¿manual, arrastrando?): no definido; usá el que manda la API.

@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -52,7 +53,7 @@ acá»).
 ## Recorrido
 
 ```
-1 Formulario inicial ──Enviar──▶ 2 Solicitud enviada ──Terminar acá──▶ (fin)
+1 Formulario inicial ──Enviar──▶ 2 Solicitud enviada ──Terminar acá──▶ 7 Gracias
                                        │
                                   Contar más
                                        ▼
@@ -65,8 +66,7 @@ acá»).
 ```
 
 «Terminar acá» en las partes 3 a 6 **guarda lo de esa parte** (si se completó algo) y va a
-**Gracias**. En la pantalla 2, «Terminar acá» no tiene nada que guardar: muestra Gracias o simplemente
-deja la confirmación a la vista (ver «Decisiones», abajo).
+**Gracias**. En la pantalla 2, «Terminar acá» no tiene nada que guardar: va directo a **Gracias**.
 
 ## Pantalla 1 · Formulario inicial
 
@@ -99,8 +99,8 @@ víctima si es otra persona. La regla final la hace cumplir el back; el front va
 
 ```json
 {
-  "esLaVictima": false,
-  "quienCompleta": { "nombre": "Carla", "apellido": "Sosa", "dni": "32114887", "telefono": "2901-54-8820", "correo": "carla.sosa@correo.com" },
+  "informaLaVictima": false,
+  "quienInforma": { "nombre": "Carla", "apellido": "Sosa", "dni": "32114887", "telefono": "2901-54-8820", "correo": "carla.sosa@correo.com" },
   "victima": { "nombre": "Micaela", "apellido": "Sosa", "dni": "58412336" },
   "fechaHecho": "2026-09-12",
   "especie": "perro"
@@ -162,7 +162,7 @@ hace falta.»
 - **Dirección**: al **soltar** el mapa (no mientras se arrastra, no por cada tecla) se pide **una**
   geocodificación inversa y se completa el campo, con la nota «La propuso el mapa al soltar el pin.».
   La persona la puede corregir a mano; si la corrige, mover el mapa de nuevo **no** la pisa sin
-  preguntar (ver «Decisiones»). El pedido va **al back** (que tiene un proxy con caché de Nominatim),
+  preguntar. El pedido va **al back** (que tiene un proxy con caché de Nominatim),
   nunca directo a Nominatim desde el navegador. Si la geocodificación falla o tarda, el campo queda
   vacío y editable; no se muestra error.
 - **Referencias** (texto libre): «casa roja», «plaza en la esquina».
@@ -178,8 +178,8 @@ hace falta.»
 - **¿Qué le pasó a la persona?**: Mordedura · Arañazo · Intentó atacar, sin lastimar · Se lastimó al
   escapar · No sé.
 - **¿Cuántos animales atacaron?**: 1 · 2 · 3 · Más de 3. **Define cuántas veces se repite la parte 3**
-  («Animal 1 de N»). «Más de 3» repite la parte 3 tres veces y en la tercera agrega la nota «Si hubo
-  más, contalo en las referencias» (ver «Decisiones»). Sin respuesta = 1 animal.
+  («Animal 1 de N»). «Más de 3» repite la parte 3 tres veces. Cuántos fueron en total no se pregunta
+  todavía (ver «Pendiente»). Sin respuesta = 1 animal.
 - **Edad de quien sufrió el ataque** (número, en años).
 - **Domicilio de quien sufrió el ataque** (opcional).
 
@@ -188,8 +188,10 @@ No se pregunta nada de la atención médica: eso lo carga Salud.
 ### Pantalla 5 · El animal (3 de 4) — una vez por animal
 
 Título «Animal 1 de 2» · «Contanos lo que sepas. Todo se puede dejar en “No sé”.» La especie del
-animal 1 viene del inicial (no se repite la pregunta); desde el animal 2 se pregunta Perro · Gato ·
-No sé.
+animal 1 viene del inicial (no se repite la pregunta); desde el animal 2 se pregunta **Perro · Gato**
+y es **obligatoria** (sin «No sé»: la especie no es una escala, solo puede ser perro o gato, y todo
+animal nace con su especie, RN-30). Es la única pregunta obligatoria de esa parte: sin ella no se pasa
+a la siguiente ni se guarda ese animal; «Terminar acá» guarda lo anterior y descarta ese animal.
 
 **De quién es**
 - **¿De quién es el animal?**: Es mío · De alguien que conozco · No sé de quién es.
@@ -282,3 +284,5 @@ consulta pública.
 - **Adjuntar el certificado médico** desde acá: no se diseña por ahora (lo carga Zoonosis).
 - Si el cliente acepta pedir el DNI en el formulario público: está por confirmarse. Se diseña con DNI
   obligatorio.
+- **«Más de 3» animales:** cuántos fueron en total no se pregunta (la parte del animal se repite solo
+  tres veces). Falta definir si se agrega esa pregunta.

@@ -6,10 +6,39 @@
 >
 > Este documento cuenta **qué hace el usuario y qué ve**. No describe el modelo de datos: los datos
 > llegan por la API, y las dudas sobre su forma se resuelven con el back. Lo visual está en Figma y el
-> detalle de cada pantalla, en su ficha de `vistas/`. **Si esta narrativa y una ficha no coinciden,
-> gana la ficha** (es más nueva y más precisa).
+> detalle de cada pantalla, en su ficha de `vistas/`. Si la historia o el vocabulario de esta narrativa
+> no coinciden con una ficha, gana la ficha. **Las reglas de negocio de abajo no las pisa nadie:** ni
+> una ficha ni Figma.
 
 ---
+
+## Reglas de negocio (obligatorias)
+
+Estas reglas salen de `CONTEXTO.md` del repo de diseño (los números RN-xx son los de ese documento).
+**Toda pantalla las cumple.** Una ficha de vista puede detallarlas, pero nunca contradecirlas: si una
+ficha (o Figma) parece ir contra una de estas reglas, **no elijas vos: avisale al usuario.** Antes de
+dar una vista por terminada, revisá que cumple todas las que le tocan.
+
+| RN | Regla | Qué significa en pantalla |
+|---|---|---|
+| RN-01 | Ningún organismo domina | El organismo es un dato (chip, columna, filtro). Nunca un color, un logo ni una marca del sistema. |
+| RN-05 · RN-08 · RN-31 | Caso ≠ solicitud ≠ denuncia | Lo que manda un ciudadano es una **solicitud**, nunca un caso. Una solicitud no escribe en un caso ni en una persona sin que un agente la registre. |
+| RN-06 | La denuncia solo la anota Zoonosis, en un caso que ya existe | No hay denuncias sueltas ni pantalla de denuncias. Solo Zoonosis ve el botón de anotar. |
+| RN-06b | En SIRAM no se borra nada | No hay botón de borrar casos, solicitudes, denuncias, personas, animales ni usuarios. La baja de un caso es *Desestimado*; un usuario se *desactiva*; una solicitud se *descarta* (y queda guardada). |
+| RN-07 | Lo declarado por la persona no se edita | «¿Hizo denuncia?» y su motivo vienen de la solicitud. Ningún formulario de agente los carga ni los cambia. |
+| RN-09 · RN-36 | Estados y transiciones | Estados: registrado · en seguimiento · finalizado · desestimado · unificado. Finalizado, desestimado y unificado **no se reabren**; no se vuelve a registrado; unificado solo resulta de consolidar; desestimar pide motivo. Se ofrecen solo los cambios válidos. |
+| RN-10 | Motivo de espera solo en *En seguimiento* | Pasar a *En seguimiento* exige elegir motivo; en cualquier otro estado no se muestra. |
+| RN-11 · RN-12 | Tres indicadores separados | Estado (píldora), motivo de espera y marcas (incompleto · posible duplicado · grave) **nunca** van juntos en un mismo campo ni componente. Las marcas llegan calculadas: el front no las deduce. |
+| RN-14 · RN-15 | Consolidar es irreversible y nunca automático | Exige una confirmación explícita marcada por la persona antes de habilitar el botón. Nada se fusiona solo. |
+| RN-19 | Al consolidar o sumar una solicitud, campo por campo | Si un lado tiene el dato y el otro no, se conserva el que lo tiene; si chocan, elige el agente. |
+| RN-20 | Una víctima por caso; la persona es única por DNI | Dos víctimas del mismo ataque son dos casos. Editar una persona cambia todos sus casos (y hay que decirlo). |
+| RN-21 · RN-30 | DNI obligatorio; lo demás según el canal | Todo formulario de alta exige DNI. Qué más es obligatorio depende del canal (tabla en `vistas/nuevo-caso.md` y `vistas/formulario-publico.md`). |
+| RN-23 | «No sabe» ≠ «Sin dato» | Se muestran distinto y se cuentan aparte. «Sin dato» va en rojo. Toda pregunta con escala ofrece «No sé»/«No sabe». |
+| RN-28 | Estadísticas y listas de trabajo: solo casos vigentes | Ni desestimados ni unificados en Inicio, Estadísticas, Mapa, Incompletos ni Posibles duplicados. La Bandeja («Todos») sí muestra todo. |
+| RN-29 | Datos sensibles al mínimo | DNI y contacto solo donde hacen falta (detalle, no listas). Exportar datos personales, solo los roles que pueden, con aviso. |
+| RN-32 | Formulario detallado del ciudadano: una sola vez | Token aleatorio que vence en el servidor; nunca en la URL; nunca el número de solicitud o de caso como llave. |
+| RN-34 · RN-22 | Cada organismo carga lo suyo | Tratamiento: solo Salud. Seguimiento del animal (día 10, observaciones, dueño, tenencia, chip) y denuncias: solo Zoonosis. Cualquier agente agrega un animal con su especie y su descripción, dentro de lo que ve (Salud no ve la descripción). |
+| RN-35 | Los permisos los aplica el servidor | El front muestra lo que llega y no decide por rol: si un dato o una acción no vienen, no se muestran. Esconder algo solo en pantalla no lo protege. |
 
 ## 1. La historia
 
@@ -47,7 +76,7 @@
 | **Víctima** | La persona atacada. Una por caso. | — |
 | **Contacto responsable** | Quien informó por la víctima (p. ej. la madre por su hija) y a quien se llama. Opcional. | No se guarda la relación entre los dos. |
 | **Animal** | Un perro o un gato con identidad propia (especie y, si tiene, chip). **Un caso puede tener varios animales**, y un mismo animal puede aparecer en varios casos. | — |
-| **Observación del día 10** | Lo que Zoonosis registra de cada animal a los diez días: pendiente · sin novedad · murió o enfermó · no se pudo observar. | — |
+| **Observación del día 10** | Lo que Zoonosis registra de cada animal a los diez días: pendiente · sin novedad · murió o enfermó · ubicado, sin acceso · no se ubicó. Ninguno hace incompleto al caso; «murió o enfermó» lo marca Grave. | — |
 | **Tratamiento** | La atención de la víctima que carga Salud. «Recibió atención médica» **no se pregunta**: se deduce de que exista. | — |
 | **Denuncia** | Un trámite hecho en Zoonosis, anotado en el caso por Zoonosis: DNI de quien la hizo, fecha, número (si lo hay) y estado. | No tiene pantalla propia ni existe fuera de un caso. |
 | **Lo que declaró la persona** | «¿Hizo denuncia?» y «motivo de no denunciar», tal como los respondió en su solicitud. | Nadie los edita, y no es lo mismo que una denuncia anotada. |
@@ -90,11 +119,13 @@ pantalla no lo protege.
 
 Para orientarte (las reglas son tentativas y las aplica el back):
 - **Agentes** (Salud, Zoonosis, CADIC): ven todos los casos y todas las solicitudes.
-  - Salud **no** recibe dueño, chip, descripción ni fotos de los animales, ni el detalle de las
-    denuncias (solo «tiene 1 denuncia anotada»).
-  - CADIC no recibe dueño ni chip, ni el certificado médico.
-- **Analista / comité** (rol «Consulta»): casos **sin datos personales**; busca, ve estadísticas y
-  exporta. No edita.
+  - Salud **no** recibe dueño, chip, tenencia, descripción ni fotos de los animales, ni el detalle de
+    las denuncias (solo «tiene 1 denuncia anotada»).
+  - CADIC no recibe dueño ni chip, ni el certificado médico, ni el detalle del tratamiento ni el de
+    las denuncias (solo que existen).
+  - Zoonosis no recibe el detalle del tratamiento (solo que existe).
+- **Analista / comité** (rol `analista`, que en pantalla se llama «Consulta»; no tiene organismo):
+  casos **sin datos personales**; busca, ve estadísticas y exporta. No edita.
 - **Administrador**: no ve casos; solo usuarios, organismos y tipos de evento.
 
 Lo mismo con **editar**: los datos comunes los edita cualquier agente; el tratamiento, solo Salud;
@@ -156,7 +187,8 @@ mapa), agradecimiento y «enlace vencido».
 ## 6. Pendiente: no lo implementes todavía
 
 - El criterio exacto para que un caso pase a **Finalizado** (hoy no tiene condiciones).
-- Los valores de **Tipo de evento** y de **tipo de lesión** (en revisión con el cliente).
+- Los valores de **Tipo de evento** (en revisión con el cliente). El tipo de lesión ya no existe como
+  dato: lo reemplaza el tipo de evento.
 - Las **reglas de permisos** concretas (las de §4 son tentativas; las aplica el back).
 - **Personas sin DNI argentino** (p. ej. turistas): todavía no hay cómo cargarlas.
 - **Tema oscuro**: va en una segunda pasada, vista por vista (los tokens ya están).

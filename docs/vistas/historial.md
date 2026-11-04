@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -36,8 +37,8 @@ y después. Es solo lectura: **el historial no se edita ni se borra.**
      manchas blancas»). Si algo no tenía valor antes, «—». En una creación: «creación».
    - **Desde otro caso** (si corresponde): cuando el cambio de una persona o un animal compartido se
      hizo desde otro caso o desde Consultas, se aclara: «Editó a Carla Sosa (contacto responsable) desde
-     el caso C-2026-0411 · persona compartida: el cambio se ve en sus dos casos». El número de caso es
-     un enlace a esa ficha.
+     Consultas › Personas · persona compartida: el cambio se ve en todos sus casos». Si se hizo desde
+     otro caso, se nombra ese caso con un enlace a su ficha.
 4. **Pie:** «El historial no se edita ni se borra. Las credenciales de los usuarios nunca se copian en
    él.»
 
@@ -61,40 +62,59 @@ el front solo la pide y la muestra con el mismo formato de la ficha, en modo lec
 
 ## Datos de ejemplo
 
-La forma real la define la API. Ejemplo para `src/mocks/` (los 7 cambios de Figma, del más nuevo al
-más viejo):
+La forma real la define la API. Ejemplo para `src/mocks/`: los 13 cambios de C-2026-0418 al
+25/09/2026 (la historia común de todas las fichas), del más nuevo al más viejo:
 
 ```json
 [
-  { "fecha": "2026-09-14T10:05", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "creacion", "sobre": "denuncia",
-    "frase": "Anotó la denuncia ZU-2026-1180.",
-    "cambios": [{ "campo": "Estado de la denuncia", "antes": null, "despues": "confirmada" }] },
-  { "fecha": "2026-09-14T09:12", "por": "L. Puig", "organismo": "Hospital Regional Ushuaia", "tipo": "creacion", "sobre": "tratamiento",
+  { "fecha": "2026-09-22T10:15", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "animal",
+    "frase": "Cargó la observación del día 10 del animal 2 (sin chip) en este caso.",
+    "cambios": [{ "campo": "Observación del día 10", "antes": "Pendiente", "despues": "No se ubicó" }] },
+  { "fecha": "2026-09-22T10:12", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "animal",
+    "frase": "Cargó la observación del día 10 del animal 1 (chip 900 123 456 789 012) en este caso.",
+    "cambios": [{ "campo": "Observación del día 10", "antes": "Pendiente", "despues": "Sin novedad" }] },
+  { "fecha": "2026-09-13T10:00", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "creacion", "sobre": "documento",
+    "frase": "Adjuntó el certificado médico.",
+    "cambios": [{ "campo": "Documento", "antes": null, "despues": "certificado-medico.pdf" }] },
+  { "fecha": "2026-09-13T09:12", "por": "L. Puig", "organismo": "Hospital Regional Ushuaia", "tipo": "creacion", "sobre": "tratamiento",
     "frase": "Cargó el tratamiento del caso.",
-    "cambios": [{ "campo": "Tratamiento", "antes": null, "despues": "consulta 14/09/2026 · antirrábica Sí · antitetánica Sí · antibiótico Sí · sutura No" }] },
-  { "fecha": "2026-09-14T08:40", "por": null, "organismo": null, "tipo": "modificacion", "sobre": "caso",
-    "frase": "Avisó una coincidencia con C-2026-0402: mismo DNI de la víctima.", "cambios": [] },
-  { "fecha": "2026-09-14T08:10", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "persona",
-    "frase": "Editó a Carla Sosa (contacto responsable).", "desdeCaso": "C-2026-0411",
-    "cambios": [{ "campo": "Teléfono", "antes": "2901-50-1111", "despues": "2901-54-8820" }] },
-  { "fecha": "2026-09-14T07:47", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "animal",
+    "cambios": [{ "campo": "Tratamiento", "antes": null, "despues": "consulta 12/09/2026 · antirrábica Sí · antitetánica Sí · antibiótico Sí · sutura No" }] },
+  { "fecha": "2026-09-12T16:10", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "persona",
+    "frase": "Editó a Carla Sosa (contacto responsable).", "desdeCaso": null, "desde": "Consultas › Personas",
+    "cambios": [{ "campo": "Domicilio", "antes": null, "despues": "Kuanip 1240, Ushuaia" }] },
+  { "fecha": "2026-09-12T15:47", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "animal",
     "frase": "Editó el animal 1 (chip 900 123 456 789 012) en este caso.",
     "cambios": [{ "campo": "Color", "antes": "Negro", "despues": "Negro con manchas blancas" }] },
-  { "fecha": "2026-09-13T22:06", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "solicitud",
-    "frase": "Registró la solicitud S-2026-0034 como este caso.",
-    "cambios": [{ "campo": "¿Hizo denuncia? (lo declaró la persona)", "antes": null, "despues": "No" }] },
-  { "fecha": "2026-09-13T22:05", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "creacion", "sobre": "caso",
-    "frase": "Registró el caso.", "cambios": [{ "campo": "Canal de origen", "antes": null, "despues": "Ciudadano" }] }
+  { "fecha": "2026-09-12T15:10", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "solicitud",
+    "frase": "Sumó la solicitud S-2026-0031 al caso.",
+    "cambios": [{ "campo": "¿Hizo denuncia? (lo declaró la persona)", "antes": null, "despues": "Sí" }, { "campo": "Animal 1 · color", "antes": null, "despues": "Negro" }, { "campo": "Domicilio de la víctima", "antes": null, "despues": "Kuanip 1240, Ushuaia" }] },
+  { "fecha": "2026-09-12T15:05", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "creacion", "sobre": "denuncia",
+    "frase": "Anotó la denuncia ZU-2026-1180.",
+    "cambios": [{ "campo": "Estado de la denuncia", "antes": null, "despues": "Confirmada" }] },
+  { "fecha": "2026-09-12T15:04", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "creacion", "sobre": "animal",
+    "frase": "Agregó el animal 2 (perro, sin chip, ajeno desconocido).", "cambios": [{ "campo": "Animal 2", "antes": null, "despues": "creación" }] },
+  { "fecha": "2026-09-12T15:04", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "animal",
+    "frase": "Completó el animal 1 (chip 900 123 456 789 012).", "cambios": [{ "campo": "Chip", "antes": null, "despues": "900 123 456 789 012" }, { "campo": "Dueño", "antes": null, "despues": "Raúl Benítez" }, { "campo": "Tenencia", "antes": null, "despues": "Ajeno conocido" }] },
+  { "fecha": "2026-09-12T15:03", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "modificacion", "sobre": "caso",
+    "frase": "Editó el caso.", "cambios": [{ "campo": "Edad de la víctima", "antes": null, "despues": "7" }, { "campo": "Ciudad", "antes": null, "despues": "Ushuaia" }, { "campo": "Dirección", "antes": null, "despues": "Kuanip 1240" }, { "campo": "Tipo de evento", "antes": null, "despues": "Ataque con mordedura" }] },
+  { "fecha": "2026-09-12T15:02", "por": null, "organismo": null, "tipo": "modificacion", "sobre": "caso",
+    "frase": "Avisó una coincidencia con C-2026-0402: mismo DNI de la víctima.", "cambios": [] },
+  { "fecha": "2026-09-12T15:02", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia", "tipo": "creacion", "sobre": "caso",
+    "frase": "Registró el caso.", "cambios": [{ "campo": "Canal de origen", "antes": null, "despues": "Zoonosis" }] }
 ]
 ```
 
-- `por: null` = Sistema.
-- **Ojo con el ejemplo de Figma:** sus fechas no cierran con la historia (el caso aparece registrado
-  antes de que llegara la solicitud, y una solicitud S-2026-0031 que no existe en el resto del
-  ejemplo). Usá este JSON, que ya está corregido; ordená siempre por `fecha`, de más nueva a más vieja,
-  sin confiar en el orden en que llegan.
+- `por: null` = Sistema. El aviso del Sistema tiene **la misma fecha y hora que el registro**: el agente
+  eligió «Guardar y revisar después» en Nuevo caso, y la coincidencia se anota en el mismo momento del
+  alta (ver `nuevo-caso.md`). En pantalla va arriba del registro (pasó después).
+- El último cambio (22/09 10:15, M. Acosta) es la **última modificación** que muestra la Bandeja, y la
+  ficha dice «13 cambios · el último, 22/09/2026 10:15 por M. Acosta».
+- Ordená siempre por `fecha`, de más nueva a más vieja, sin confiar en el orden en que llegan (para
+  el empate de arriba, ver «Pendiente»).
 - `sobre` es lo que usa cada filtro: caso → Caso; persona → Personas; animal → Animales; tratamiento →
-  Tratamiento; denuncia → Denuncias; solicitud → Solicitudes. Los cambios de documentos entran en Caso.
+  Tratamiento; denuncia → Denuncias; solicitud → Solicitudes. Los cambios de documentos
+  (`sobre: "documento"`) entran en Caso.
+- «Antes → después» usa el texto de pantalla (`Confirmada`, `Sí`), no el valor del enumerado.
 
 ## Quién lo ve
 
@@ -117,3 +137,6 @@ más viejo):
 - Historial de las **consultas** (quién vio o exportó qué): es solo una sugerencia, no se modela.
 - Paginación de la línea de tiempo: con el volumen esperado (≈200 casos por año, pocos cambios cada
   uno) no hace falta por ahora.
+- **Dos cambios con la misma fecha y hora** (el registro y el aviso del Sistema): con fecha al minuto
+  no se pueden ordenar solo por `fecha`. Cómo los desempata la API (segundos, un número de orden) lo
+  define el back.

@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -15,8 +16,8 @@
 ## Para qué sirve
 
 La **lista de trabajo para completar casos**: los casos abiertos a los que les falta algún dato del
-caso. Un agente entra, abre uno, lo completa desde la ficha y el caso sale solo de la lista cuando
-deja de estar incompleto.
+caso. Un agente entra, abre uno, lo completa desde la ficha con **Editar** (ver `ficha-del-caso.md`) y
+el caso sale solo de la lista cuando deja de estar incompleto.
 
 ## Qué casos entran
 
@@ -33,8 +34,9 @@ deja de estar incompleto.
 - Seguros (regla del dominio): **fecha del hecho, ciudad y lugar**.
 - Supuestos, todavía en revisión con el equipo: **tipo de lugar, edad de la víctima y tipo de
   evento**.
-- **No cuentan**: los datos de los animales (un perro que nunca se ubicó no hace incompleto al caso),
-  el tratamiento ni la falta de contacto (eso es *En seguimiento · Esperando contacto*, no incompleto).
+- **No cuentan**: los datos de los animales (ningún valor del día 10, tampoco «No se ubicó», hace
+  incompleto al caso), el tratamiento ni la falta de contacto (eso es *En seguimiento · Esperando
+  contacto*, no incompleto).
 
 ## Estructura
 
@@ -65,15 +67,19 @@ deja de estar incompleto.
 Las filas tienen la misma forma que en `bandeja.md`, más (opcional) la lista de datos que faltan:
 
 ```json
-{ "numero": "C-2026-0404", "marcas": ["incompleto"], "faltantes": ["lugar.ciudad", "victima.edad"], "…": "resto igual que en la Bandeja" }
+{ "numero": "C-2026-0418", "marcas": ["incompleto", "duplicado"], "faltantes": ["tipoLugar"], "…": "resto igual que en la Bandeja" }
 ```
 
-Las filas de Figma:
+`faltantes` usa los nombres de campo de los JSON de ejemplo: `fechaHecho`, `lugar.ciudad`,
+`lugar.direccion`, `tipoLugar`, `victima.edad`, `tipoEvento`.
 
-| Caso | Últ. modificación | Hecho | Víctima | Lugar | Animales | Tipo de evento | Estado | Canal |
-|---|---|---|---|---|---|---|---|---|
-| C-2026-0418 | 13/09 09:12 · L. Puig | 12/09 14:20 | Micaela Sosa, 7 | Kuanip 1240, Ushuaia | Perro +1 | Ataque con mordedura | Registrado | Zoonosis |
-| C-2026-0404 | 11/09 10:15 · C. Iraola | 01/09 08:30 | Tomás Aguirre, 45 | Alem 2190, Río Grande | Perro, 1 | Intento sin lesión | En seguimiento (Esperando contacto) | Salud |
+Las filas para el mock (datos al 25/09/2026; la última modificación de C-2026-0418 es la carga del día
+10 de sus dos animales, el 22/09 por M. Acosta):
+
+| Caso | Le falta | … |
+|---|---|---|
+| C-2026-0418 | tipo de lugar | 22/09 10:15 · M. Acosta · 12/09 14:20 · Micaela Sosa, 7 · Kuanip 1240, Ushuaia · Perro +1 · Ataque con mordedura · Registrado · Zoonosis |
+| C-2026-0404 | tipo de lugar | 11/09 10:15 · C. Iraola · 01/09 08:30 · Tomás Aguirre, 45 · Alem 2190, Río Grande · Perro, 1 · Intento sin lesión · En seguimiento (Esperando contacto) · Salud |
 
 ## Quién la ve
 

@@ -1,9 +1,11 @@
 # Vista · Ficha del caso
 
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
-> si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
+> si algo no cierra, avisá al usuario. Fecha: 2026-11-03 (corregida el mismo día tras la revisión de
+> coherencia).
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -13,7 +15,7 @@
     no le manda a Salud recortado.
   - Ventanas laterales: **Cambiar estado · v2** (`108:5221`), **Desestimar · v2** (`108:5222`),
     **Anotar denuncia · v2** (`108:5223`), **Agregar animal** (`108:5224`), **Cargar tratamiento**
-    (`108:5225`), **Adjuntar documento** (`101:10173`).
+    (`108:5225`), **Adjuntar documento** (`101:10173`). **Editar** no está en Figma: se especifica acá.
 - Piezas, en **Fundamentos**: Dato (`37:208`: Texto · Mono · Sin dato), Archivo adjunto (`37:223`),
   Marca (`4:13`), Estado del caso (`4:29`), Motivo de espera (`4:36`), Organismo, Mensaje (`10:212`),
   Bloque de formulario/Leyenda, Campo (`9:255`), Opción (`9:272`), Casilla (`9:307`), Ventana lateral.
@@ -32,7 +34,7 @@ completa con lo suyo. **Es solo lectura**: cada cambio se hace en una ventana la
   `historial.md`) y la ficha solo tiene un acceso.
 - Entran: contacto responsable, **varios animales** (cada uno con identidad, descripción,
   seguimiento y fotos), tratamiento de Salud, denuncias con estado, lo que declaró la persona,
-  solicitudes vinculadas, documentos y canal de origen.
+  solicitudes sumadas, documentos y canal de origen.
 - Sale el bloque «Denuncia y seguimiento» de la v1 (D1/D2 sí/no, D4, observaciones): ver los bloques
   *Denuncias* y *Lo que declaró la persona*.
 
@@ -43,29 +45,33 @@ completa con lo suyo. **Es solo lectura**: cada cambio se hace en una ventana la
    mordedura · Ushuaia · 12/09/2026») · nota «Datos de ejemplo» · acciones: **Editar** (secundario),
    **Cambiar estado** (primario), menú `⋮`.
 2. **Banda de estado:** píldora de estado (+ motivo de espera si está en seguimiento; «→ C-…» si está
-   unificado) · chip del organismo que lo registró · «Registrado por M. Acosta · 12/09/2026 15:02 ·
-   canal de origen: Zoonosis».
-3. **Aviso de posible duplicado** (solo si el caso tiene la marca): ver «Avisos».
-4. **Víctima:** P1 nombre y apellido · P2 edad · P6 DNI · P4 teléfono · P3 correo · P7 domicilio.
+   unificado; motivo si está desestimado; «Un animal no se ubicó» si está finalizado y algún animal
+   quedó en «No se ubicó») · chip del organismo que lo registró · «Registrado por M. Acosta ·
+   12/09/2026 15:02 · canal de origen: Zoonosis».
+3. **Aviso de posible duplicado** (solo si el caso tiene la marca): ver «Marcas y avisos».
+4. **Víctima:** P1 nombre y apellido · P2 edad (al momento del hecho) · P6 DNI · P4 teléfono · P3
+   correo · P7 domicilio.
 5. **Contacto responsable** (solo si existe): «Informó el hecho por la víctima. Opcional: no existe si
    la víctima se registró sola.» Nombre y apellido · DNI · teléfono · correo.
 6. **Hecho:** H1 fecha · H2 hora · H3 ciudad · H4 dirección · referencias · H5 tipo de lugar · T1 tipo
    de evento · mapa con el pin y sus coordenadas.
-7. **Animales · N:** «Cada animal tiene su identidad (especie, chip) y lo que se supo de él en este
-   caso. Dueño, chip y seguimiento los carga solo Zoonosis.» Un bloque por animal (ver «Animales») y
-   el botón **Agregar animal**.
+7. **Animales · N** (siempre hay al menos uno: el caso nace con la especie): «Cada animal tiene su
+   identidad (especie, chip) y lo que se supo de él en este caso. Dueño, chip, tenencia y seguimiento
+   los carga solo Zoonosis.» Un bloque por animal (ver «Animales») y el botón **Agregar animal**.
 8. **Tratamiento · Salud:** quién y cuándo lo cargó · fecha de la consulta · L3 zona del cuerpo · L2
    gravedad · L7 vacuna antirrábica · antitetánica · L6 antibiótico · L5 sutura · observaciones. Botón
    **Cargar tratamiento** si no hay, **Editar tratamiento** si hay (solo Salud).
-9. **Denuncias · Zoonosis:** «Denuncias anotadas · N»; cada una con ente, número (si hay), fecha,
-   **estado** (píldora), DNI de quien la hizo, observaciones y «Anotada por … · fecha hora». Botón
-   **Anotar denuncia** (solo Zoonosis).
+9. **Denuncias · Zoonosis:** «Denuncias anotadas · N»; cada una con número (si hay), fecha de la
+   denuncia, **estado** (píldora), DNI de quien la hizo, observaciones y «Anotada por … · fecha hora».
+   **No lleva ente** (siempre es Zoonosis). Botón **Anotar denuncia** (solo Zoonosis); cada denuncia
+   tiene un menú `⋮` con **Corregir** (solo Zoonosis).
 10. **Lo que declaró la persona:** «Lo cargó la persona en el formulario público. Ningún agente lo
     edita; si hay varias solicitudes, gana la más reciente.» D1 ¿Hizo denuncia en Zoonosis? · D3 motivo
-    de no denunciar («Solo si respondió No») · Solicitudes (números, con «Registrada el …»).
+    de no denunciar (solo si respondió No; si no, «—») · Solicitudes sumadas (número + «sumada el …» o
+    «registrada el …»). Si el caso no tiene solicitudes, D1 y D3 muestran «Sin dato».
 11. **Documentos:** «Solo nombre del archivo y dónde está alojado. Las fotos del animal van en cada
-    animal.» X1 certificado médico (archivo adjunto) · botón **Adjuntar documento**.
-12. **Historial · acceso:** «5 cambios · el último, 13/09/2026 09:12 por L. Puig (Hospital Regional
+    animal.» Los documentos del caso (el certificado médico) · botón **Adjuntar documento**.
+12. **Historial · acceso:** «13 cambios · el último, 22/09/2026 10:15 por M. Acosta (Zoonosis
     Ushuaia)» · botón **Ver historial** → `/casos/:numero/historial`.
 
 **Cómo se muestra un dato:** etiqueta con su código de la matriz (P1, H3, A2…) cuando lo tiene; valor
@@ -82,19 +88,25 @@ permisos) **no se muestra**.
 - Las marcas (Incompleto · Posible duplicado · **Grave**) van pegadas al número, como en la Bandeja.
   **Llegan calculadas por la API.** Grave = algún animal del caso tiene el día 10 en «Murió o
   enfermó»; aparece sola y queda aunque el caso se finalice. Tooltip igual que en la Bandeja.
-- **Aviso de posible duplicado** (bloque entre la banda de estado y Víctima, estilo advertencia): «Se
-  detectó un caso con datos coincidentes. El caso C-2026-0402 (Hospital Regional Ushuaia, 13/09/2026)
-  comparte datos con este. Revisá ambos antes de seguir.» Chips con lo que coincide (DNI de la
-  víctima; si coinciden, también teléfono y fecha del hecho) · **Comparar casos** (va a la comparación
-  en Posibles duplicados) · **No es duplicado** (resuelve la coincidencia como «casos distintos» sin
-  pasar por la comparación; pide confirmar en un diálogo corto; la marca y el aviso desaparecen).
+- **Aviso de posible duplicado** (bloque entre la banda de estado y Víctima, estilo advertencia):
+  «La víctima tiene el mismo DNI que en C-2026-0402 (Hospital Regional Ushuaia, registrado el
+  12/09/2026 14:50). Revisá los dos casos antes de seguir.» **Sin chips de qué coincide**: la coincidencia es
+  solo por el DNI de la víctima. Acciones:
+  - **Comparar casos**: va a la comparación (`posibles-duplicados.md`) con **este caso como A**: si se
+    consolida, sobrevive el caso desde el que se abrió. Cualquier agente puede consolidar (no hay un
+    permiso propio).
+  - **No es duplicado**: abre la **misma ventana lateral** que en la comparación — «Son casos
+    distintos» con **observación opcional** (p. ej. «otro ataque a la misma persona») · Cancelar ·
+    **Guardar**. Al guardar, la coincidencia queda resuelta como *distintos*: la marca y el aviso
+    desaparecen y no vuelven para ese par.
 - **Grave** no tiene aviso propio en la ficha: alcanza con la marca y con el día 10 «Murió o enfermó»
   en el animal.
 
 ## Animales
 
 Un bloque por animal, en el orden en que se cargaron. Encabezado: «Animal 1 · Perro» y debajo
-«chip 900 123 456 789 012 · **en 2 casos**» o «sin chip · …».
+«chip 900 123 456 789 012 · **en 2 casos**» o «sin chip · …». Menú `⋮` del animal: **Editar animal**
+(ver «Editar animal»).
 
 - **«en N casos» es un enlace** (color de acento, subrayado). Lleva al **detalle del animal**
   (`Consultas › Animales`), donde están todos sus casos. Si el animal aparece solo en este caso, dice
@@ -108,11 +120,16 @@ Un bloque por animal, en el orden en que se cargaron. Encabezado: «Animal 1 · 
     reconocerlo?
   - **Seguimiento · Zoonosis:** observación del día 10 (valor + fecha + quién) · observaciones.
   - **Fotos del animal:** archivos adjuntos (imagen).
-- **Valores de la observación del día 10:** Pendiente · Sin novedad · Murió o enfermó · No se pudo
-  observar. «Murió o enfermó» hace que el caso tenga la marca Grave. «No se pudo observar» (nunca se
-  ubicó) **no** hace incompleto al caso.
-- Editar un animal ya cargado: mismo formulario que **Agregar animal**, con los datos cargados (se abre
-  desde el menú `⋮` del bloque del animal).
+  - **Lo que declaró la persona sobre el animal** (solo para Zoonosis, y solo si una solicitud lo
+    trajo): «Según la solicitud S-2026-0031: dueño “Raúl, vecino de Kuanip 1260 · 2901-55-0101”.» El
+    chip solo se le pregunta a quien dice que el animal es su mascota; para un ajeno conocido, como
+    este, la persona declara el dueño y no el chip. Es texto de referencia: **no se copia** al dueño ni
+    al chip. Zoonosis lo confirma cargándolo con **Editar animal** (RN-32: nada escribe en una persona
+    sin un agente). En el ejemplo, Zoonosis ya cargó al dueño (Raúl Benítez); la referencia sigue en el
+    mock para ver cómo se muestra (ver «Pendiente»).
+- **Valores de la observación del día 10:** Pendiente · Sin novedad · Murió o enfermó · Ubicado, sin
+  acceso · No se ubicó. «Murió o enfermó» hace que el caso tenga la marca Grave. **Ninguno** hace
+  incompleto al caso. Con «Ubicado, sin acceso» o «No se ubicó» el caso se puede finalizar igual.
 
 ## Ventanas laterales
 
@@ -121,6 +138,31 @@ acción a la derecha **deshabilitado hasta que haya cambios**, errores debajo de
 guardar bien: se cierra, mensaje de **éxito** arriba a la derecha (se cierra solo) y la ficha se
 recarga. Si el back rechaza, el error va debajo del campo o, si es general, como mensaje de error en
 la ventana (no se cierra solo). Cancelar con cambios pregunta antes de cerrar (igual que Nuevo caso).
+**Qué campos trae cada ventana lo deciden los permisos que manda la API** (ver «Quién ve qué»): un
+campo que el usuario no puede editar no se muestra en la ventana.
+
+### Editar (datos comunes del caso) — no está en Figma
+
+Se abre con **Editar** del encabezado. La pueden usar **todos los agentes** (Salud, Zoonosis, CADIC).
+Mismo patrón visual que Nuevo caso (`nuevo-caso.md`): un bloque con leyenda por grupo.
+
+- **Víctima:** nombre * · apellido * · DNI * · edad (al momento del hecho, en años) · teléfono ·
+  correo · domicilio.
+- **Contacto responsable:** si hay, sus datos (nombre *, apellido *, DNI *, teléfono, correo) y la
+  acción **Quitar contacto responsable** (la persona no se borra: deja de estar en este caso). Si no
+  hay, **Agregar contacto responsable**.
+- **Hecho:** fecha del hecho · hora · ciudad (Ushuaia · Río Grande · Tolhuin) · ubicación (mapa con
+  pin; al soltarlo se propone la dirección, como en el formulario público) · dirección · referencias ·
+  tipo de lugar (Casa propia · Casa ajena · Vía pública · Espacio público · Zona rural · No sabe).
+- **Tipo de evento** (catálogo que manda la API).
+- **Persona compartida:** si la víctima o el contacto están en otros casos, arriba de su bloque va un
+  mensaje de información: «Carla Sosa está en 2 casos: el cambio se ve en todos.» (RN-20; queda en el
+  historial de la persona).
+- Validaciones: las de Nuevo caso (DNI de 7 u 8 dígitos, víctima y contacto con DNI distinto, fecha
+  no futura). El **DNI de la víctima no se puede vaciar** (RN-21). Si el DNI nuevo ya es de otra persona
+  de SIRAM, el back lo rechaza y el error va debajo del DNI.
+- Es la ventana que permite **completar un caso incompleto**: al guardar, la API recalcula la marca.
+- No edita: estado (es Cambiar estado), animales, tratamiento, denuncias, documentos ni lo declarado.
 
 ### Cambiar estado (`108:5221`)
 
@@ -143,7 +185,8 @@ Encabezado: «Cambiar estado · C-2026-0418 · estado actual: Registrado».
 | En seguimiento | En seguimiento con otro motivo · Finalizado · Desestimado |
 | Finalizado · Desestimado · Unificado | Nada: **Cambiar estado no se muestra** (estados finales, no se reabren) |
 
-Al finalizar o desestimar, el motivo de espera se borra solo. La regla la hace cumplir el back.
+Al finalizar o desestimar, el motivo de espera se borra solo. La regla la hace cumplir el back. Lo
+cambia cualquier agente; el analista y el administrador no.
 
 ### Desestimar (`108:5222`)
 
@@ -168,27 +211,38 @@ alcanzan para ubicarla en su sistema.»
   devuelta” a las 48 h sin certificado queda desestimada.») · Observaciones (opcional).
 - Nota: «El DNI de quien la hizo no se enlaza a ninguna persona de SIRAM: es solo una referencia para
   encontrarla en Zoonosis. Lo que declaró la persona sobre su denuncia es otro dato y no se toca acá.»
-- Una denuncia ya anotada se **corrige** desde el menú `⋮` de la denuncia con este mismo formulario
-  (no se borra).
+- **Corregir una denuncia** (menú `⋮` de la denuncia, solo Zoonosis): esta misma ventana con los datos
+  cargados, título «Corregir denuncia». No se borra; la corrección queda en el historial.
 
 ### Agregar animal (`108:5224`)
 
 Encabezado: «Agregar animal · C-2026-0418. Si el chip ya existe, se vincula ese animal: su identidad
 no se duplica.»
-- **Identidad:** especie * (Perro · Gato) · chip (opcional). Si el chip ya está en SIRAM, aviso de
-  información: «Este chip ya está en SIRAM. El animal aparece en C-2026-0402. Al agregarlo, ese mismo
-  animal queda vinculado también a este caso.»
-- **En este caso:** tenencia * (Propio · Ajeno conocido · Ajeno desconocido · No sabe) · dueño durante
-  el caso (persona, con DNI) · domicilio o zona del animal · vacunado contra la rabia (Sí · No · No sabe).
+- **Identidad:** especie * (Perro · Gato) · chip (opcional; solo Zoonosis). Si el chip ya está en
+  SIRAM, aviso de información con los casos donde ya aparece. P. ej., al cargar el chip
+  900 123 456 789 012 en un animal de otro caso: «Este chip ya está en SIRAM. El animal aparece en
+  C-2026-0418 y C-2026-0402. Al agregarlo, ese mismo animal queda vinculado también a este caso.»
+- **En este caso:** tenencia (opcional; **solo Zoonosis**: Propio · Ajeno conocido · Ajeno
+  desconocido · No sabe) · dueño durante el caso (persona, con DNI; **solo Zoonosis**) · domicilio o
+  zona del animal · vacunado contra la rabia (Sí · No · No sabe).
 - **Descripción:** tamaño · sexo (Macho · Hembra · No sabe) · edad aparente · color · raza ·
   ¿podría reconocerlo? (Sí · No · No sabe).
-- **Seguimiento · Zoonosis:** observación del día 10 (Pendiente · Sin novedad · Murió o enfermó · No
-  se pudo observar; ayuda: «Si murió o enfermó, el caso queda marcado Grave. Si nunca se ubica, queda
-  “No se pudo observar” y el caso se puede finalizar igual.» — **Figma todavía dice “puede finalizar
-  incompleto”: usá este texto**) · observaciones (p. ej. «está en un terreno sin acceso»).
+- **Seguimiento · Zoonosis** (solo Zoonosis): observación del día 10 (Pendiente · Sin novedad · Murió
+  o enfermó · Ubicado, sin acceso · No se ubicó; ayuda: «Si murió o enfermó, el caso queda marcado
+  Grave. Si no se lo pudo observar (ubicado sin acceso, o no se ubicó), el caso se puede finalizar
+  igual.») · observaciones
+  (p. ej. «está en un terreno sin acceso»).
 - **Fotos del animal:** adjuntar foto.
-- Nota: «Dueño, chip y seguimiento los carga solo Zoonosis. Cualquier agente puede agregar el animal y
-  su descripción.» Para quien no es Zoonosis, esos campos **no se muestran** (la API no los permite).
+- **Qué ve cada uno** (la API manda los campos permitidos): **Zoonosis**, todo. **CADIC**: especie,
+  domicilio o zona, vacunado y descripción. **Salud**: especie, domicilio o zona y vacunado (no ve la
+  descripción). Nota en la ventana: «Dueño, chip, tenencia y seguimiento los carga solo Zoonosis.»
+
+### Editar animal (menú `⋮` del animal)
+
+La misma ventana que Agregar animal, con los datos cargados y título «Editar animal · Animal 1». Cada
+organismo edita lo que la API le permite: **todos los agentes**, lo común que ven y la descripción (salvo Salud, que no la ve);
+**solo Zoonosis**, además, tenencia, dueño, chip, día 10 y observaciones. Es donde Zoonosis
+**confirma** lo que la persona declaró sobre el dueño y el chip, cargándolo en los campos.
 
 ### Cargar tratamiento (`108:5225`) — solo Salud
 
@@ -208,7 +262,8 @@ tratamientos de mordeduras distintas.»
 Encabezado: «Adjuntar documento · Se guarda solo el nombre del archivo y la dirección donde está
 alojado.»
 - ¿A qué se adjunta? *: Al caso (certificado médico) · A un animal del caso (fotos; si se elige, se
-  pide cuál).
+  pide cuál). El documento no tiene «tipo»: es certificado si se adjunta al caso, y foto si se adjunta
+  a un animal.
 - Nombre del archivo * · Dirección donde se aloja (URL) *.
 - Nota: «El certificado médico lo carga Zoonosis.»
 
@@ -222,21 +277,23 @@ para orientarte y armar los mocks; las reglas (tentativas) las aplica el back.
 |---|---|---|---|---|
 | Víctima y contacto (nombre, DNI, teléfono, correo) | Ve | Ve | Ve | No |
 | Hecho, tipo de evento, estado, marcas | Ve | Ve | Ve | Ve |
-| Tratamiento completo | Ve | Solo si existe | Solo si existe | No (solo agregados en estadísticas) |
+| Tratamiento completo | Ve | Solo si existe | Solo si existe | Solo agregados (no en la ficha) |
 | Animal: descripción y tenencia | No | Ve | Ve | Ve |
 | Animal: dueño y chip | No | Ve | No | No |
-| Animal: observación del día 10 | Ve | Ve | Ve | No |
-| Denuncias | Solo si existe | Ve | Solo si existe | No |
+| Animal: observación del día 10 | Ve | Ve | Ve | Agregados (no en la ficha) |
+| Denuncias | Solo si existe | Ve | Solo si existe | Agregados (no en la ficha) |
 | Certificado médico | Ve | Ve | No | No |
 | Lo que declaró la persona | Ve | Ve | Ve | Ve |
 
 «Solo si existe» = ve que el dato está, sin el detalle. En pantalla: el bloque muestra una sola línea,
 p. ej. *Tratamiento · Salud* → «Recibió atención en Salud» o *Denuncias · Zoonosis* → «Tiene 1
 denuncia anotada en Zoonosis. El detalle (DNI de quien la hizo, número, observaciones) lo ve solo
-Zoonosis.»
+Zoonosis.» «Agregados» = el analista lo ve solo sumado en Estadísticas: en la ficha, ese bloque o ese
+dato no viene.
 
 **Edición:**
-- **Datos comunes** (hecho, víctima, contacto, estado, animales y su descripción): cualquier agente.
+- **Datos comunes** (hecho, víctima, contacto, estado, animales —especie, domicilio o zona, vacunado— y
+  su descripción): cualquier agente, dentro de lo que ve.
 - **Tratamiento:** solo Salud.
 - **Seguimiento del animal** (día 10, observaciones, dueño, tenencia, chip) y **denuncias:** solo
   Zoonosis.
@@ -252,7 +309,8 @@ puede cambiar el tratamiento antirrábico de la víctima.»
 
 ## Datos de ejemplo
 
-La forma real la define la API. Ejemplo para `src/mocks/` (C-2026-0418, como lo ve Zoonosis):
+La forma real la define la API. Ejemplo para `src/mocks/` (C-2026-0418, como lo ve Zoonosis; es la
+historia común de todas las fichas):
 
 ```json
 {
@@ -261,53 +319,73 @@ La forma real la define la API. Ejemplo para `src/mocks/` (C-2026-0418, como lo 
   "motivoEspera": null,
   "unificadoEn": null,
   "motivoDesestimacion": null,
+  "animalNoUbicado": false,
   "marcas": ["incompleto", "duplicado"],
-  "coincidencia": { "numero": "C-2026-0402", "organismo": "Hospital Regional Ushuaia", "fecha": "2026-09-13", "coinciden": ["dni", "telefono", "fechaHecho"] },
-  "canalOrigen": "ciudadano",
-  "registro": { "organismo": "Zoonosis Ushuaia", "por": "M. Acosta", "fecha": "2026-09-13T22:05" },
-  "victima": { "nombre": "Micaela Sosa", "edad": 7, "dni": "58412336", "telefono": null, "correo": null, "domicilio": "Kuanip 1240, Ushuaia" },
-  "contactoResponsable": { "nombre": "Carla Sosa", "dni": "32114887", "telefono": "2901-54-8820", "correo": null },
-  "hecho": { "fecha": "2026-09-12", "hora": "14:20", "ciudad": "Ushuaia", "direccion": "Kuanip 1240", "referencias": "Frente a la plaza, casa de rejas verdes", "tipoLugar": "Vía pública", "tipoEvento": "Ataque con mordedura", "latitud": -54.8069, "longitud": -68.3073 },
+  "faltantes": ["tipoLugar"],
+  "coincidencia": { "numero": "C-2026-0402", "organismo": "Hospital Regional Ushuaia", "registradoEl": "2026-09-12T14:50" },
+  "canalOrigen": "zoonosis",
+  "registro": { "organismo": "Zoonosis Ushuaia", "por": "M. Acosta", "fecha": "2026-09-12T15:02" },
+  "victima": { "nombre": "Micaela", "apellido": "Sosa", "dni": "58412336", "edad": 7, "telefono": null, "correo": null, "domicilio": "Kuanip 1240, Ushuaia", "enCasos": 2 },
+  "contactoResponsable": { "nombre": "Carla", "apellido": "Sosa", "dni": "32114887", "telefono": "2901-54-8820", "correo": null, "enCasos": 2 },
+  "fechaHecho": "2026-09-12",
+  "horaHecho": "14:20",
+  "lugar": { "ciudad": "Ushuaia", "direccion": "Kuanip 1240", "referencias": "Frente a la plaza, casa de rejas verdes", "latitud": -54.8069, "longitud": -68.3073 },
+  "tipoLugar": null,
+  "tipoEvento": "Ataque con mordedura",
   "animales": [
     {
       "especie": "perro", "chip": "900123456789012", "enCasos": 2,
-      "tenencia": "ajeno_conocido", "dueno": { "nombre": "Raúl Benítez", "dni": "25300114" },
+      "tenencia": "ajeno_conocido", "dueno": { "nombre": "Raúl", "apellido": "Benítez", "dni": "25300114" },
       "zona": "Kuanip al 1200", "vacunado": "no_sabe",
-      "descripcion": { "tamano": "Mediano", "sexo": "Macho", "edadAparente": "Adulto", "color": "Negro con manchas blancas", "raza": "Mestizo", "podriaReconocerlo": "si" },
+      "descripcion": { "tamano": "mediano", "sexo": "macho", "edadAparente": "adulto", "color": "Negro con manchas blancas", "raza": "Mestizo", "podriaReconocerlo": "si" },
       "dia10": { "valor": "sin_novedad", "fecha": "2026-09-22", "por": "M. Acosta" },
       "observaciones": "Está dentro de un terreno con acceso limitado.",
-      "fotos": [{ "nombre": "perro-01.jpg", "url": "https://…" }]
+      "declaradoEnSolicitud": { "solicitud": "S-2026-0031", "dueno": "Raúl, vecino de Kuanip 1260 · 2901-55-0101" },
+      "fotos": [{ "nombre": "perro-01.jpg", "url": "https://…" }, { "nombre": "perro-02.jpg", "url": "https://…" }]
     },
     {
       "especie": "perro", "chip": null, "enCasos": 1,
       "tenencia": "ajeno_desconocido", "dueno": null, "zona": null, "vacunado": null,
-      "descripcion": { "tamano": "Grande", "sexo": "no_sabe", "edadAparente": "Adulto", "color": "Marrón", "raza": null, "podriaReconocerlo": "no_sabe" },
-      "dia10": { "valor": "no_se_pudo_observar", "fecha": "2026-09-22", "por": "M. Acosta" },
+      "descripcion": { "tamano": "grande", "sexo": "no_sabe", "edadAparente": "adulto", "color": "Marrón", "raza": null, "podriaReconocerlo": "no_sabe" },
+      "dia10": { "valor": "no_ubicado", "fecha": "2026-09-22", "por": "M. Acosta" },
       "observaciones": "Se recorrió la zona dos veces sin ubicarlo.",
+      "declaradoEnSolicitud": null,
       "fotos": []
     }
   ],
-  "tratamiento": { "organismo": "Hospital Regional Ushuaia", "por": "L. Puig", "fechaConsulta": "2026-09-14", "zonaCuerpo": "Pierna izquierda", "gravedad": "Herida superficial", "antirrabica": true, "antitetanica": true, "antibiotico": true, "sutura": false, "observaciones": "Se indicó el esquema antirrábico; control en 72 h." },
-  "denuncias": [{ "ente": "Zoonosis Ushuaia", "numero": "ZU-2026-1180", "fecha": "2026-09-14", "estado": "confirmada", "dniDenunciante": "32114887", "observaciones": "Se presentó la madre con el certificado médico.", "anotadaPor": "M. Acosta", "anotadaEn": "2026-09-14T10:05" }],
-  "declarado": { "hizoDenuncia": "no", "motivoNoDenuncia": "No sabía dónde denunciar", "solicitudes": [{ "numero": "S-2026-0034", "registradaEl": "2026-09-13" }] },
-  "documentos": [{ "tipo": "certificado_medico", "nombre": "certificado-medico.pdf", "url": "https://…", "cargadoPor": "Zoonosis Ushuaia", "fecha": "2026-09-14" }],
-  "historial": { "cambios": 5, "ultimo": { "fecha": "2026-09-14T09:12", "por": "L. Puig", "organismo": "Hospital Regional Ushuaia" } },
-  "permisos": ["editar", "cambiar_estado", "agregar_animal", "anotar_denuncia", "adjuntar_documento", "editar_seguimiento"]
+  "tratamiento": { "organismo": "Hospital Regional Ushuaia", "por": "L. Puig", "cargadoEl": "2026-09-13T09:12", "fechaConsulta": "2026-09-12", "zonaCuerpo": "piernas", "gravedad": "herida_superficial", "antirrabica": true, "antitetanica": true, "antibiotico": true, "sutura": false, "observaciones": "Se indicó el esquema antirrábico; control en 72 h." },
+  "denuncias": [{ "numero": "ZU-2026-1180", "fecha": "2026-09-12", "estado": "confirmada", "dniDenunciante": "32114887", "observaciones": "Se presentó la madre con el certificado médico.", "anotadaPor": "M. Acosta", "anotadaEn": "2026-09-12T15:05" }],
+  "declarado": { "hizoDenuncia": "si", "motivoNoDenuncia": null, "solicitudes": [{ "numero": "S-2026-0031", "sumadaEl": "2026-09-12T15:10" }] },
+  "documentos": [{ "nombre": "certificado-medico.pdf", "url": "https://…", "cargadoPor": "Zoonosis Ushuaia", "fecha": "2026-09-13T10:00" }],
+  "historial": { "cambios": 13, "ultimo": { "fecha": "2026-09-22T10:15", "por": "M. Acosta", "organismo": "Zoonosis Ushuaia" } },
+  "permisos": ["editar", "cambiar_estado", "agregar_animal", "editar_animal", "anotar_denuncia", "adjuntar_documento"]
 }
 ```
 
-- **Ojo con el ejemplo de Figma:** tiene fechas que no cierran entre sí (el caso dice «registrado el
-  12/09 15:02» pero nace de una solicitud enviada el 13/09 21:40, y el tratamiento y la denuncia son
-  del 12/09). El JSON de arriba ya las corrige: usá esas.
+- **Por qué es incompleto:** le falta el **tipo de lugar** (`tipoLugar: null`, `faltantes`). Lo demás
+  que cuenta para la marca está cargado.
+- **La solicitud S-2026-0034** (pendiente, enviada el 13/09 por Carla Sosa) todavía **no** está sumada:
+  no aparece en esta ficha (está en la cola de Solicitudes).
+- `declaradoEnSolicitud` (por animal), cuando hay: `{ "solicitud": "S-…", "dueno": "texto libre",
+  "tieneChip": "si|no|no_sabe", "chip": "…" }`; `tieneChip` y `chip` solo vienen si la persona dijo
+  que el animal es su mascota. Solo lo recibe Zoonosis.
+- Los datos son «al 25/09/2026»: la última modificación (22/09 10:15, M. Acosta) es la carga del día 10
+  del animal 2. El certificado médico lo adjuntó Zoonosis el 13/09 a las 10:00.
 - Cada valor ausente (`null`) se muestra «Sin dato». Un bloque que no viene (`tratamiento` ausente,
   no `null`) es que la API no lo manda para ese usuario: no se muestra.
-- Para la vista Salud, el mismo caso sin `dueno`, `chip`, `descripcion` ni `fotos` en los animales,
-  y con `denuncias` reemplazado por `"denunciasCantidad": 1`.
+- Para la vista Salud, el mismo caso sin `dueno`, `chip`, `tenencia`, `descripcion` ni `fotos` en los
+  animales, y con `denuncias` reemplazado por `"denunciasCantidad": 1`.
+- Los enumerados van en `snake_case` (`herida_superficial`, `no_sabe`, `no_ubicado`, `mediano`,
+  `piernas`); el texto en pantalla, con mayúscula inicial y sin guiones. Color y raza son texto libre.
 
 ## Pendiente: no lo implementes todavía
 
-- **Editar** los datos comunes del caso: la ventana no está diseñada en la v2. El botón se muestra
-  deshabilitado con tooltip «En diseño».
 - **Esquema de la vacuna antirrábica** (dosis y fechas): hoy es sí/no.
 - El criterio exacto para **Finalizar** (hoy no tiene condiciones).
-- **Personas sin DNI argentino** (dueño o denunciante extranjero).
+- **Personas sin DNI argentino** (víctima, dueño o denunciante extranjero).
+- **Persona que ya existe al editar:** si el DNI que se carga en Editar ya es de otra persona, hoy el
+  back lo rechaza; si en cambio hay que ofrecer «usar esa persona», está por definirse con el back.
+- **Agregar animal con un chip que ya es de un animal de este mismo caso:** qué responde la ventana no
+  está definido.
+- **Lo declarado sobre el animal después de confirmarlo:** si la referencia «Según la solicitud S-…»
+  sigue a la vista una vez que Zoonosis cargó el dueño o el chip, o deja de mostrarse.

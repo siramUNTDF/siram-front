@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -32,11 +33,11 @@ secciones.
    | Nivel (rótulo · aclaración) | Tarjeta | Cifra de ejemplo | Texto | Detalle | Al hacer clic |
    |---|---|---|---|---|---|
    | Bloquea el registro · «el caso no avanza hasta que alguien lo resuelva» | Incompletos (grande, rojo) | 23 | casos incompletos | Faltan datos obligatorios | `/casos/incompletos` |
-   | | Esperando contacto (grande, azul) | 17 | casos esperando contacto | Hay que llamar a la persona para completar y verificar | Bandeja con estado *en seguimiento* y motivo *contacto* |
-   | | **Graves** (grande, rojo, ícono de error) | 1 | caso grave | Un animal murió o enfermó en la observación | Bandeja con el chip *Graves* |
+   | | Esperando contacto (grande, azul) | 17 | casos esperando contacto | Hay que llamar a la persona para completar y verificar | `/casos?filtro=en_seguimiento&motivo=contacto` (Bandeja con el chip *En seguimiento* y el filtro aplicado «Motivo: Esperando contacto») |
+   | | **Graves** (grande, rojo, ícono de error) | 1 | caso grave | Un animal murió o enfermó en la observación | `/casos?filtro=graves` (Bandeja con el chip *Graves*) |
    | Espera tu revisión · «solicitudes para registrar y posibles duplicados para decidir» | **Solicitudes** (compacta, azul) | 3 | solicitudes pendientes | Del formulario público | `/casos/solicitudes` (chip *Pendientes*) |
    | | Posibles duplicados (compacta, violeta) | 8 | posibles duplicados | Esperan revisión | `/casos/duplicados` |
-   | En curso · «no urge, pero no se cierra solo» | En seguimiento (compacta, ámbar) | 41 | casos en seguimiento | · con acción pendiente | Bandeja con el chip *En seguimiento* |
+   | En curso · «no urge, pero no se cierra solo» | En seguimiento (compacta, ámbar) | 41 | casos en seguimiento | · con acción pendiente | `/casos?filtro=en_seguimiento` |
 
    - Toda la tarjeta es el enlace (la flecha → es decoración).
    - Singular/plural según la cifra («1 caso grave», «3 casos graves»).
@@ -86,21 +87,21 @@ secciones.
     "anio": 2026,
     "totalVigentes": 127,
     "casosPorMes": [
-      { "mes": "2026-01", "casos": 13 }, { "mes": "2026-02", "casos": 11 }, { "mes": "2026-03", "casos": 9 },
-      { "mes": "2026-04", "casos": 7 }, { "mes": "2026-05", "casos": 8 }, { "mes": "2026-06", "casos": 6 },
-      { "mes": "2026-07", "casos": 10 }, { "mes": "2026-08", "casos": 22 },
+      { "mes": "2026-01", "casos": 13 }, { "mes": "2026-02", "casos": 13 }, { "mes": "2026-03", "casos": 11 },
+      { "mes": "2026-04", "casos": 9 }, { "mes": "2026-05", "casos": 8 }, { "mes": "2026-06", "casos": 8 },
+      { "mes": "2026-07", "casos": 11 }, { "mes": "2026-08", "casos": 22 },
       { "mes": "2026-09", "casos": 32, "parcial": true, "proyectado": 38 }
     ],
-    "zonaDelCuerpo": [
-      { "zona": "Piernas", "casos": 44 }, { "zona": "Manos", "casos": 28 }, { "zona": "Brazos", "casos": 21 },
-      { "zona": "Cara", "casos": 16 }, { "zona": "Tronco", "casos": 9 }, { "zona": "Múltiples", "casos": 9 }
-    ],
+    "zonaDelCuerpo": { "conTratamiento": 118, "valores": [
+      { "valor": "piernas", "casos": 41 }, { "valor": "manos", "casos": 26 }, { "valor": "brazos", "casos": 19 },
+      { "valor": "cara", "casos": 16 }, { "valor": "tronco", "casos": 8 }, { "valor": "multiples", "casos": 8 }
+    ] },
     "franjaEtaria": [
       { "franja": "0–9", "casos": 31 }, { "franja": "10–19", "casos": 22 }, { "franja": "20–39", "casos": 34 },
       { "franja": "40–59", "casos": 26 }, { "franja": "60+", "casos": 14 }
     ],
     "canalOrigen": [
-      { "canal": "zoonosis", "casos": 41 }, { "canal": "salud", "casos": 33 }, { "canal": "cadic", "casos": 9 },
+      { "canal": "zoonosis", "casos": 41 }, { "canal": "salud", "casos": 58 }, { "canal": "cadic", "casos": 9 },
       { "canal": "ciudadano", "casos": 12 }, { "canal": "historico", "casos": 7 }
     ]
   }
@@ -108,15 +109,19 @@ secciones.
 ```
 
 (En Figma, febrero, marzo, abril, junio y julio no tienen cifra visible: los valores de arriba son
-inventados para completar.)
+inventados para completar.) Las cifras cierran entre sí: los meses, la franja etaria y el canal de
+origen suman los 127 casos vigentes; la zona del cuerpo suma los **118 casos vigentes con tratamiento**
+(los mismos de Estadísticas: los que no pasaron por Salud no tienen el dato). Los valores van en
+`snake_case` (`piernas`, `multiples`, `historico`); la etiqueta de pantalla («Piernas», «Múltiples»,
+«Histórico») es aparte.
 
 ## Qué cuenta cada tarjeta
 
 - **Incompletos, Posibles duplicados:** casos vigentes con esa marca (como las listas de trabajo).
 - **Esperando contacto:** estado *en seguimiento* con motivo *contacto*.
-- **Graves:** casos con la marca *grave* que **siguen abiertos** (*registrado* o *en seguimiento*): es
-  «para resolver hoy». Ojo: el chip *Graves* de la Bandeja cuenta en cualquier estado, así que las dos
-  cifras pueden no coincidir.
+- **Graves:** casos con la marca *grave* en estado *registrado* o *en seguimiento*. Es **el mismo
+  criterio que el chip *Graves* de la Bandeja**, así que la cifra de la tarjeta y la de la lista a la que
+  lleva coinciden. Los graves finalizados conservan la marca, pero no entran acá.
 - **Solicitudes pendientes:** solicitudes en estado *pendiente*.
 - **En seguimiento:** todos los casos *en seguimiento* (con cualquier motivo).
 
@@ -124,8 +129,8 @@ inventados para completar.)
 
 El front muestra lo que llega:
 - **Agentes:** todo.
-- **Analista / comité:** no trabaja casos. Si la API no manda `pendientes`, la sección «Para resolver
-  hoy» **no se muestra**; ve el panorama y los accesos.
+- **Analista** (rol `analista`, en pantalla «Consulta»): no trabaja casos. Si la API no manda
+  `pendientes`, la sección «Para resolver hoy» **no se muestra**; ve el panorama y los accesos.
 - **Administrador:** no ve casos. Sin `pendientes` ni `panorama`, el Inicio muestra solo **Secciones**
   (y Casos y Consultas no aparecen si no tiene permiso; queda Administración).
 

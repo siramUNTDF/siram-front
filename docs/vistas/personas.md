@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -32,7 +33,7 @@ para ver si alguien ya estuvo en otros casos y para corregir sus datos en un sol
 
    | Columna | Línea principal | Segunda línea |
    |---|---|---|
-   | Persona | Nombre y apellido (destacado) | Edad (`47 años`); sin segunda línea si no hay edad |
+   | Persona | Nombre y apellido (destacado) | — (la persona **no tiene edad**: la edad es de la víctima en cada caso) |
    | Casos | `2 casos` / `1 caso` | — |
    | En qué rol aparece | `Víctima en 1 · contacto responsable en 1` | — |
    | Último caso | Número del caso más reciente (enlace a la ficha del caso) | Fecha del hecho de ese caso |
@@ -52,8 +53,8 @@ personales). Se puede **buscar** por DNI, pero no se muestra.
    sus casos y queda en el historial de la persona.»
 2. **Acciones:** **Editar** (abre una ventana lateral con los datos de la persona) · **Ver historial**
    (el historial de la persona: quién cambió qué y desde qué caso).
-3. **Bloque «Datos»:** nombre y apellido, DNI, edad · teléfono, correo electrónico, domicilio. Lo que
-   falta se muestra «Sin dato», en rojo.
+3. **Bloque «Datos»:** nombre y apellido, DNI · teléfono, correo electrónico, domicilio. Lo que falta
+   se muestra «Sin dato», en rojo. **Sin edad** (la edad está en cada caso).
 4. **Bloque «Casos de esta persona · N»:** tabla con Caso (enlace) · Rol en el caso (Víctima / Contacto
    responsable / Dueño de un animal) · Fecha del hecho (+ hora) · Víctima (nombre + edad) · Estado
    (píldora; si está unificado, «→ C-…» debajo).
@@ -80,10 +81,9 @@ Fila de la lista:
 ```json
 {
   "id": 17,
-  "nombre": "Carla Sosa",
-  "edad": 47,
+  "nombre": "Carla", "apellido": "Sosa",
   "casos": 2,
-  "roles": { "victima": 0, "contactoResponsable": 2, "duenio": 0 },
+  "roles": { "victima": 0, "contactoResponsable": 2, "dueno": 0 },
   "ultimoCaso": { "numero": "C-2026-0418", "fechaHecho": "2026-09-12" },
   "ultimaModificacion": { "fecha": "2026-09-12T16:10", "por": "M. Acosta" }
 }
@@ -95,27 +95,31 @@ Detalle:
 {
   "id": 17,
   "nombre": "Carla", "apellido": "Sosa",
-  "dni": "32114887", "edad": 47,
-  "telefono": "2901-54-8820", "correo": "carla.sosa@correo.com", "domicilio": "Kuanip 1240, Ushuaia",
+  "dni": "32114887",
+  "telefono": "2901-54-8820", "correo": null, "domicilio": "Kuanip 1240, Ushuaia",
   "casos": [
     { "numero": "C-2026-0418", "rol": "contacto_responsable", "fechaHecho": "2026-09-12", "horaHecho": "14:20",
-      "victima": { "nombre": "Micaela Sosa", "edad": 7 }, "estado": "registrado" },
+      "victima": { "nombre": "Micaela", "apellido": "Sosa", "edad": 7 }, "estado": "registrado" },
     { "numero": "C-2026-0411", "rol": "contacto_responsable", "fechaHecho": "2026-09-06", "horaHecho": "11:15",
-      "victima": { "nombre": "Joaquín Ojeda", "edad": 12 }, "estado": "unificado", "unificadoEn": "C-2026-0402" }
+      "victima": { "nombre": "Joaquín", "apellido": "Ojeda", "edad": 12 }, "estado": "unificado", "unificadoEn": "C-2026-0408" }
   ]
 }
 ```
 
-Filas de Figma para el mock (Todas 148 · Víctimas 131 · Contactos responsables 24 · Dueños 17):
+`correo: null` se muestra «Sin dato»: Carla Sosa no tiene correo en SIRAM. El que escribió en la
+solicitud S-2026-0034 (pendiente) no se copia a la persona hasta que un agente la sume. C-2026-0411
+quedó unificado en C-2026-0408 (otro caso de Joaquín Ojeda).
+
+Filas para el mock (Todas 148 · Víctimas 131 · Contactos responsables 24 · Dueños 17):
 
 | Persona | Casos | Rol | Último caso | Últ. modificación |
 |---|---|---|---|---|
-| Carla Sosa, 47 | 2 | Contacto responsable en 2 | C-2026-0418 · 12/09 | 12/09 16:10 · M. Acosta |
-| Micaela Sosa, 7 | 1 | Víctima en 1 | C-2026-0418 · 12/09 | 12/09 15:02 · M. Acosta |
-| Raúl Benítez, 51 | 2 | Dueño de un animal en 2 | C-2026-0418 · 12/09 | 12/09 15:47 · M. Acosta |
-| Ramiro Beltrán, 34 | 2 | Víctima en 1 · contacto responsable en 1 | C-2026-0417 · 11/09 | 12/09 18:02 · M. Acosta |
-| Tomás Ibarra, 52 | 1 | Víctima en 1 | C-2026-0421 · 03/09 | 13/09 08:30 · D. Marchisoney |
-| Lucía Ferreyra, 29 | 1 | Víctima en 1 | C-2026-0420 · 10/09 | 12/09 16:40 · J. Valle |
+| Carla Sosa | 2 | Contacto responsable en 2 | C-2026-0418 · 12/09 | 12/09 16:10 · M. Acosta |
+| Micaela Sosa | 2 | Víctima en 2 | C-2026-0418 · 12/09 | 12/09 14:50 · J. Benítez |
+| Raúl Benítez | 2 | Dueño de un animal en 2 | C-2026-0418 · 12/09 | 12/09 15:04 · M. Acosta |
+| Ramiro Beltrán | 2 | Víctima en 1 · contacto responsable en 1 | C-2026-0417 · 11/09 | 12/09 18:02 · M. Acosta |
+| Tomás Ibarra | 1 | Víctima en 1 | C-2026-0421 · 03/09 | 13/09 08:30 · D. Marchisoney |
+| Lucía Ferreyra | 1 | Víctima en 1 | C-2026-0420 · 10/09 | 12/09 16:40 · J. Valle |
 
 ## Quién la ve (las reglas viven en el servidor)
 
@@ -123,8 +127,8 @@ Filas de Figma para el mock (Todas 148 · Víctimas 131 · Contactos responsable
   (busca víctimas para completar el contacto).
 - **Salud y CADIC no reciben los dueños de animales**: si la API no los manda, el chip «Dueños de
   animales» no aparece y esas filas no llegan.
-- **Analista / comité:** no ve datos personales. La vista no le aparece (la API no le devuelve
-  personas).
+- **Analista** (rol `analista`, en pantalla «Consulta»): no ve datos personales. La vista no le
+  aparece (la API no le devuelve personas).
 - **Administrador:** no ve personas.
 - **Editar:** cualquier agente puede editar los datos de una víctima o de un contacto responsable;
   los de un **dueño**, solo Zoonosis. La API dice si se puede editar; si no, el botón no aparece.

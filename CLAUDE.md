@@ -10,6 +10,16 @@ proyecto parte de una base existente, no de cero.**
 - Todavía no hay API. Los datos de ejemplo van aislados (p. ej. `src/mocks/`). No los trates como
   definitivos: la forma real de los datos la va a definir el backend.
 
+## Reglas de negocio (obligatorias)
+- Las reglas de negocio de `docs/narrativa.md` («Reglas de negocio», RN-xx) se cumplen siempre. Están
+  por encima de Figma y de las fichas de `docs/vistas/`.
+- **Verificá antes de dar algo por hecho:** antes de terminar una vista o un cambio, revisá que cumple
+  las reglas que le tocan y que no contradice lo que ya está implementado. «Terminado» significa
+  verificado contra esas reglas, no solo que compila o se ve bien.
+- Si una ficha, Figma o un pedido choca con una regla, **no elijas vos ni lo implementes así**:
+  avisale al usuario.
+- Si delegás trabajo en otro agente, pasale estas reglas en el encargo y verificá su resultado igual.
+
 ## Límites
 - Tu fuente es `docs/`. No la edites: la mantiene el agente de diseño desde otro repo.
 - No conocés el modelo de datos ni los otros repos (`../proyecto`, `../back`). No los leas ni los

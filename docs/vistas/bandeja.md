@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -47,7 +48,7 @@ se lo abre y desde acá se registra uno nuevo. **Arriba queda lo que alguien toc
    | Incompletos | Vigentes con la marca *incompleto* |
    | Posibles duplicados | Vigentes con la marca *posible duplicado* |
    | En seguimiento | Estado *en seguimiento* |
-   | Graves | Con la marca *grave*, **en cualquier estado** (un caso grave sigue siéndolo después de finalizar) |
+   | Graves | Con la marca *grave* y estado *registrado* o *en seguimiento* (los mismos que cuenta la tarjeta de Inicio). Un grave finalizado conserva la marca y se ve con «Todos», pero no entra en este chip. |
 
    *Vigente* = ni desestimado ni unificado (como hoy en `criterios.js`). Las cantidades se calculan
    sobre lo que deja la búsqueda, como hoy.
@@ -62,11 +63,11 @@ se lo abre y desde acá se registra uno nuevo. **Arriba queda lo que alguien toc
 |---|---|---|---|
 | Marcas | Íconos de marca, pegados, a la izquierda | — | Puede haber varias o ninguna. Orden: incompleto, posible duplicado, grave. |
 | Caso | Número (`C-2026-0418`), enlace a la ficha | — | Mono. |
-| Última modificación | Fecha y hora (`13/09/2026 09:12`) | Quién (`L. Puig`) | Mono. Quién puede ser «Sistema». |
+| Última modificación | Fecha y hora (`22/09/2026 10:15`) | Quién (`M. Acosta`) | Mono. Quién puede ser «Sistema». |
 | Fecha del hecho | Fecha (`12/09/2026`) | Hora (`14:20`) | Mono. Cualquiera de las dos puede faltar: se muestra «Sin dato». |
-| Víctima | Nombre (destacado) | Edad (`7 años`) | Si la edad falta, sin segunda línea. |
+| Víctima | Nombre y apellido (destacado) | Edad al momento del hecho (`7 años`) | Si la edad falta, sin segunda línea. |
 | Lugar | Dirección | Ciudad | |
-| Animales | Especie del primer animal (`Perro`) | `1 animal` si hay uno; `+N animal`/`+N animales` si hay más | Un caso puede no tener animales cargados todavía: «Sin dato». |
+| Animales | Especie del primer animal (`Perro`) | `1 animal` si hay uno; `+N animal`/`+N animales` si hay más | Un caso **siempre** tiene al menos un animal: nace con la especie del formulario inicial. |
 | Tipo de evento | Texto (`Ataque con mordedura`) | — | Catálogo administrable; el valor viene de la API. |
 | Estado | Píldora de estado | Ver abajo | Nunca se junta con las marcas. |
 | Canal de origen | Chip (`Zoonosis`, `Salud`, `CADIC`, `Ciudadano`, `Histórico`) | — | Es un dato, no un color del sistema. |
@@ -75,10 +76,11 @@ se lo abre y desde acá se registra uno nuevo. **Arriba queda lo que alguien toc
 **Segunda línea de la columna Estado:**
 - *En seguimiento* → el motivo de espera: «Esperando contacto», «Esperando respuesta» o «Esperando
   certificado» (color de advertencia).
-- *Unificado* → «→ C-2026-0402», el caso que lo absorbió (mono).
+- *Unificado* → «→ C-2026-0408», el caso que lo absorbió (mono).
 - *Desestimado* → el motivo de desestimación (p. ej. «Hecho no verificable»).
-- *Finalizado* con algún animal cuya observación del día 10 quedó «No se pudo observar» → «Un animal
-  no se pudo observar (día 10)». Es una aclaración, **no** una marca: el caso no es incompleto por eso.
+- *Finalizado* con algún animal cuya observación del día 10 quedó en **«No se ubicó»** → «Un animal no
+  se ubicó». Es una aclaración, **no** una marca: el caso no es incompleto por eso. («Ubicado, sin
+  acceso» no lleva aclaración.)
 - *Registrado* → nada.
 
 ## Marcas
@@ -100,10 +102,10 @@ pensada para que la tabla no tenga que calcular nada:
 ```json
 {
   "numero": "C-2026-0418",
-  "ultimaModificacion": { "fecha": "2026-09-13T09:12", "por": "L. Puig" },
+  "ultimaModificacion": { "fecha": "2026-09-22T10:15", "por": "M. Acosta" },
   "fechaHecho": "2026-09-12",
   "horaHecho": "14:20",
-  "victima": { "nombre": "Micaela Sosa", "edad": 7 },
+  "victima": { "nombre": "Micaela", "apellido": "Sosa", "edad": 7 },
   "lugar": { "direccion": "Kuanip 1240", "ciudad": "Ushuaia" },
   "animales": [{ "especie": "perro" }, { "especie": "perro" }],
   "tipoEvento": "Ataque con mordedura",
@@ -111,30 +113,37 @@ pensada para que la tabla no tenga que calcular nada:
   "motivoEspera": null,
   "unificadoEn": null,
   "motivoDesestimacion": null,
-  "animalNoObservado": false,
+  "animalNoUbicado": false,
   "canalOrigen": "zoonosis",
   "marcas": ["incompleto", "duplicado"]
 }
 ```
 
+`animalNoUbicado` es verdadero si algún animal del caso tiene el día 10 en `no_ubicado` (solo se
+muestra en finalizados). Valores del día 10: `pendiente · sin_novedad · murio_o_enfermo ·
+ubicado_sin_acceso · no_ubicado`.
+
 Valores: `estado` ∈ registrado · en_seguimiento · finalizado · desestimado · unificado ·
 `motivoEspera` ∈ contacto · respuesta · certificado (solo en seguimiento) · `canalOrigen` ∈
 ciudadano · salud · zoonosis · cadic · historico · `marcas` ⊂ incompleto · duplicado · grave.
 
-Las filas de Figma, para armar el mock (de más reciente a más vieja por última modificación):
+Filas para armar el mock, datos al 25/09/2026 (de más reciente a más vieja por última modificación):
 
 | Caso | Últ. modificación | Hecho | Víctima | Lugar | Animales | Tipo de evento | Estado (2.ª línea) | Canal | Marcas |
 |---|---|---|---|---|---|---|---|---|---|
-| C-2026-0418 | 13/09 09:12 · L. Puig | 12/09 14:20 | Micaela Sosa, 7 | Kuanip 1240, Ushuaia | Perro +1 | Ataque con mordedura | Registrado | Zoonosis | incompleto, duplicado |
+| C-2026-0418 | 22/09 10:15 · M. Acosta | 12/09 14:20 | Micaela Sosa, 7 | Kuanip 1240, Ushuaia | Perro +1 | Ataque con mordedura | Registrado | Zoonosis | incompleto, duplicado |
 | C-2026-0421 | 13/09 08:30 · D. Marchisoney | 03/09 19:30 | Tomás Ibarra, 52 | San Martín 820, Ushuaia | Perro, 1 | Ataque con mordedura | En seguimiento (respuesta) | Salud | grave |
 | C-2026-0417 | 12/09 18:02 · M. Acosta | 11/09 09:05 | Ramiro Beltrán, 34 | Gobernador Paz 845, Ushuaia | Perro, 1 | Ataque con mordedura | En seguimiento (certificado) | Zoonosis | — |
 | C-2026-0420 | 12/09 16:40 · J. Valle | 10/09 18:40 | Lucía Ferreyra, 29 | Perito Moreno 320, Río Grande | Gato, 1 | Lesión compatible | Registrado | Ciudadano | — |
 | C-2026-0404 | 11/09 10:15 · C. Iraola | 01/09 08:30 | Tomás Aguirre, 45 | Alem 2190, Río Grande | Perro, 1 | Intento sin lesión | En seguimiento (contacto) | Salud | incompleto |
-| C-2026-0411 | 10/09 12:00 · M. Acosta | 06/09 11:15 | Joaquín Ojeda, 12 | San Martín 1502, Río Grande | Perro, 1 | Ataque con mordedura | Unificado (→ C-2026-0402) | CADIC | — |
-| C-2026-0398 | 08/09 09:40 · M. Acosta | 27/08 16:55 | Valentina Núñez, 8 | Karukinká 540, Tolhuin | Perro, 1 | Lesión derivada | Finalizado (un animal no se pudo observar) | Zoonosis | — |
+| C-2026-0411 | 10/09 12:00 · M. Acosta | 06/09 11:15 | Joaquín Ojeda, 12 | San Martín 1502, Río Grande | Perro, 1 | Ataque con mordedura | Unificado (→ C-2026-0408) | CADIC | — |
+| C-2026-0398 | 08/09 09:40 · M. Acosta | 27/08 16:55 | Valentina Núñez, 8 | Karukinká 540, Tolhuin | Perro, 1 | Lesión derivada | Finalizado (un animal no se ubicó) | Zoonosis | — |
 | C-2026-0393 | 02/09 15:20 · D. Marchisoney | 22/08 13:25 | Héctor Maldonado, 52 | Rivadavia 610, Ushuaia | Perro, 1 | Lesión compatible | Desestimado (Hecho no verificable) | Histórico | incompleto |
 
-Todas las fechas son de 2026.
+Todas las fechas son de 2026. La tabla es una muestra: **C-2026-0402** (canal Salud, última
+modificación 13/09 11:20 · M. Acosta (reconciliación de su animal), víctima Micaela Sosa (la misma persona que en 0418: única por DNI), estado Registrado, marca duplicado) y
+**C-2026-0408** (Joaquín Ojeda, Hospital Regional RG, vigente) también existen; el resto de sus datos
+todavía no está fijado en la historia de ejemplo.
 
 ## Comportamiento
 
@@ -144,8 +153,15 @@ Todas las fechas son de 2026.
   solo para simularla, sin mostrarlo.
 - **Filtro + búsqueda:** se combinan; cambiar cualquiera vuelve a la página 1 (como hoy).
 - **Clic en el número de caso:** abre la ficha (`/casos/:numero`).
-- **Nuevo caso:** abre el formulario inicial (ficha propia, pendiente de entregar). Por ahora sigue
-  navegando a `/casos/nuevo`.
+- **Nuevo caso:** abre la ventana del formulario inicial **sobre la Bandeja** (ruta `/casos/nuevo`; ver
+  `nuevo-caso.md`).
+- **Filtros por URL** (los usa Inicio para llevar a una lista ya filtrada):
+  - `?filtro=graves|incompletos|duplicados|en_seguimiento` activa ese chip.
+  - `?motivo=contacto|respuesta|certificado` activa el chip «En seguimiento» y agrega, junto a los
+    chips, un **filtro aplicado** quitable: «Motivo: Esperando contacto» (×). Al quitarlo queda solo
+    «En seguimiento».
+  - Cambiar de chip borra el filtro de motivo. La URL se actualiza al cambiar de chip, para poder
+    compartirla.
 - **Vacío:** «No hay casos que coincidan con la búsqueda.» (como hoy).
 
 ## Lo que depende de quién mira (las reglas viven en el servidor)
@@ -158,5 +174,5 @@ El front muestra lo que llega y no decide por rol. En esta vista:
 
 ## Fuera de esta ficha
 
-Filtros avanzados y columnas visibles (siguen «en diseño»), el formulario de Nuevo caso y la ficha del
-caso: tienen o van a tener su propia ficha.
+Filtros avanzados y columnas visibles (siguen «en diseño»). El formulario de Nuevo caso y la ficha del
+caso tienen su propia ficha (`nuevo-caso.md`, `ficha-del-caso.md`).

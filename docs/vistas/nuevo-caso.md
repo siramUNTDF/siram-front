@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -46,8 +47,9 @@ Bandeja**: la ruta `/casos/nuevo` muestra la Bandeja con la ventana abierta, y a
    informa en nombre de la víctima y a quien se contacta. No se guarda la relación entre ambas.»
    Nombre, apellido, DNI, teléfono, correo electrónico.
 5. **Bloque «Hecho»** — fecha del hecho; especie del animal (Perro · Gato).
-6. **Nota al pie del cuerpo:** «Al guardar, si el DNI coincide con otro caso se avisa antes de crear el
-   registro. Ubicación, animales, tratamiento y denuncia se completan después en la ficha del caso.»
+6. **Nota al pie del cuerpo:** «Al guardar, si el DNI de la víctima coincide con otro caso se avisa antes
+   de crear el registro. Ubicación, animales, tratamiento y denuncia se completan después en la ficha
+   del caso.»
 7. **Pie:** Cancelar (izquierda) · Guardar (derecha, deshabilitado hasta que haya cambios).
 
 Mientras no se respondió la primera pregunta, se muestra solo el bloque Víctima (como si fuera «Sí»).
@@ -98,28 +100,41 @@ Depende del **canal**, que es el organismo de quien carga. El front lo sabe por 
    El canal de origen no se manda: lo pone el back según el organismo del usuario.
 
 2. **Si el DNI de la víctima ya es víctima en otro caso**, el back **no crea el caso todavía** y
-   responde con el caso que coincide. Ejemplo:
+   responde con el caso que coincide. Ejemplo (M. Acosta registra a Micaela Sosa el 12/09 a las 15:02;
+   Salud ya la había registrado a las 14:50):
    ```json
-   { "coincidencia": { "numero": "C-2026-0418", "organismo": "Zoonosis Ushuaia", "fechaHecho": "2026-09-12" } }
+   { "coincidencia": { "numero": "C-2026-0402", "organismo": "Hospital Regional Ushuaia", "fechaHecho": "2026-09-12" } }
    ```
    El front muestra, **arriba del cuerpo de la ventana**, un mensaje de **advertencia** (no se cierra
    solo), con los datos tal cual llegan:
    > **La víctima ya está en un caso**
-   > El DNI 58.412.336 es víctima en C-2026-0418 (Zoonosis Ushuaia, hecho del 12/09/2026). Si es el
-   > mismo hecho, completá ese caso; si es otro ataque, guardá igual.
+   > El DNI 58.412.336 es víctima en C-2026-0402 (Hospital Regional Ushuaia, hecho del 12/09/2026). Si
+   > es el mismo hecho, completá ese caso; si es otro ataque, guardá igual. Si no estás seguro, guardalo
+   > y revisalo después en Posibles duplicados.
 
-   Con dos acciones en el mensaje:
-   - **«Abrir C-2026-0418»** (secundario): va a la ficha de ese caso. Si había cambios, antes pregunta
-     si se descartan.
-   - **«Es otro ataque, guardar igual»** (texto): vuelve a enviar confirmando. El back crea el caso con
-     la marca **posible duplicado**; la decisión final (consolidar o no) se toma después en Posibles
-     duplicados.
+   Con **tres** acciones en el mensaje:
+   - **«Abrir C-2026-0402»** (secundario): va a la ficha de ese caso **sin crear** el nuevo. Si había
+     cambios, antes pregunta si se descartan.
+   - **«Es otro ataque, guardar igual»** (texto): vuelve a enviar confirmando que **son casos
+     distintos**. El back crea el caso **sin** la marca de posible duplicado y deja la coincidencia
+     resuelta como «distintos» (el aviso no vuelve a salir para ese par). Es el mismo desenlace que
+     «No es duplicado» en Posibles duplicados.
+   - **«Guardar y revisar después»** (texto): vuelve a enviar pidiendo que se cree igual, **con** la
+     marca de posible duplicado. La coincidencia queda **pendiente** y el Sistema la anota en el
+     historial del caso en el mismo momento del alta. Se decide después, en Posibles duplicados
+     (`posibles-duplicados.md`). Es lo que eligió M. Acosta con C-2026-0418.
+
+   Lo que se vuelve a enviar es el mismo formulario más la decisión (forma de ejemplo):
+   `"coincidencia": { "caso": "C-2026-0402", "decision": "distintos" }` o
+   `"decision": "revisar_despues"`.
 
    El aviso compara **solo el DNI de la víctima**: nunca el de quien informa. Los casos históricos sin
    DNI no generan aviso.
 3. **Si sale bien:** se cierra la ventana, aparece un mensaje de **éxito** arriba a la derecha (se cierra
    solo): «Caso C-2026-0425 registrado» y se abre **la ficha del caso nuevo** para seguir completándolo.
    El caso nace *Registrado* y, casi siempre, con la marca *Incompleto* (le faltan ciudad, lugar, etc.).
+   Si se eligió «Guardar y revisar después», nace además con la marca *Posible duplicado* y la ficha
+   muestra el aviso con el caso que coincide.
 
 ## Cancelar
 
@@ -130,8 +145,10 @@ Depende del **canal**, que es el organismo de quien carga. El front lo sabe por 
 ## Datos de ejemplo
 
 Para el mock, alcanza con: el organismo del usuario conectado (para el canal y la obligatoriedad) y
-una lista de DNI de víctimas existentes para simular el aviso. Con los datos de la Bandeja: el DNI
-`58412336` (Micaela Sosa) es víctima en C-2026-0418.
+una lista de DNI de víctimas existentes para simular el aviso. En la historia de ejemplo, al momento de
+registrar C-2026-0418 (12/09/2026 15:02) el DNI `58412336` (Micaela Sosa) solo era víctima en
+C-2026-0402. Con los datos al 25/09/2026 es víctima en dos casos (C-2026-0418 y C-2026-0402): ver
+«Pendiente».
 
 ## Quién la ve
 
@@ -147,3 +164,6 @@ una lista de DNI de víctimas existentes para simular el aviso. Con los datos de
 - **Persona que ya existe:** cada persona es única por DNI. Si el DNI ya es de alguien en SIRAM (como
   víctima o contacto en otro caso), qué muestra el formulario (¿autocompleta nombre y apellido? ¿avisa
   si no coinciden?) está por definirse con el back. Por ahora, el formulario no hace nada especial.
+- **DNI que ya es víctima en más de un caso** (en los datos de ejemplo, 58.412.336 está en C-2026-0418
+  y en C-2026-0402): qué casos nombra el aviso, cuál abre «Abrir C-…» y con cuál queda la coincidencia
+  al elegir «Guardar y revisar después» o «Es otro ataque». Lo define el back.

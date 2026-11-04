@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -22,8 +23,7 @@ a Exportar. La Bandeja es para trabajar; la Búsqueda, para consultar con varios
 ## Estructura
 
 1. **Encabezado de página:** «Búsqueda» · bajada «Casos según cuándo y dónde pasó, la persona, el
-   animal y la lesión.» (dice «lesión» por la zona del cuerpo, que hoy no se filtra; ver Pendiente) ·
-   nota «Datos de ejemplo».
+   animal y el registro.» · nota «Datos de ejemplo».
 2. **Panel de filtros** — cabecera «Filtros · completá solo lo que quieras usar» · botón texto «Ocultar
    filtros». Cuatro bloques:
 
@@ -63,8 +63,8 @@ con mordedura») · Limpiar · **Modificar filtros** (secundario, vuelve a despl
 - **Al entrar** se busca con los valores por defecto (estado *Vigentes*, lo demás vacío): se ven todos
   los casos vigentes y los filtros quedan desplegados.
 - **La búsqueda corre al tocar Buscar** (o Enter en un campo de texto), no mientras se escribe.
-- **Los filtros se combinan** (todos a la vez). Los del animal se cumplen si **algún** animal del caso
-  los cumple.
+- **Los filtros se combinan** (todos a la vez). Los del animal (especie, tamaño, color o raza, tenencia) se
+  cumplen **todos en un mismo animal**: el caso entra si alguno de sus animales los cumple a la vez.
 - **Fechas:** si «Desde» es posterior a «Hasta», error en «Hasta»: «Tiene que ser igual o posterior a
   Desde». Lo mismo con la edad.
 - **Limpiar** vuelve a los valores por defecto y busca.
@@ -91,9 +91,11 @@ Con esos filtros, los resultados de Figma son **C-2026-0418, C-2026-0421 y C-202
 
 ## Lo que depende de quién mira
 
-- **Agentes:** todo.
-- **Analista / comité:** busca y exporta. La API no le manda nombre ni DNI de la víctima: la columna
-  Víctima muestra solo la edad.
+- **Agentes de Zoonosis y CADIC:** todo.
+- **Agentes de Salud:** la API no les manda la **descripción** ni la **tenencia** del animal, así que
+  los filtros **Tamaño**, **Color o raza** y **Tenencia** no se muestran. Los demás filtros, igual.
+- **Analista** (rol `analista`, en pantalla «Consulta»): busca y exporta. La API no le manda nombre
+  ni DNI de la víctima: la columna Víctima muestra solo la edad.
 - **Administrador:** no ve casos; la Búsqueda no le aparece.
 
 ## Responsive
@@ -103,5 +105,5 @@ columna; la tabla scrollea en horizontal con la columna de acciones clavada.
 
 ## Pendiente: no lo implementes todavía
 
-- **Filtros por datos del tratamiento** (zona del cuerpo, gravedad) y por **tipo de lesión**: hoy no
-  existen (el tipo de lesión espera su lista de valores). Pueden volver más adelante.
+- **Filtros por datos del tratamiento** (zona del cuerpo, gravedad): hoy no existen. Pueden volver
+  más adelante. (El tipo de lesión ya no existe como dato: lo reemplaza el tipo de evento.)

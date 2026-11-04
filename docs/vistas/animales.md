@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -37,7 +38,7 @@ mismo animal.
    | Casos | `2 casos` / `1 caso` |
    | Último caso | Número del caso más reciente en que apareció (enlace a la ficha del caso) |
    | Descripción en el último caso | Tamaño · sexo · edad aparente; segunda línea: color |
-   | Día 10 del último caso | Sin novedad · Murió o enfermó · No se ubicó · Pendiente · `—` si no hay dato |
+   | Día 10 del último caso | Pendiente · Sin novedad · Murió o enfermó · Ubicado, sin acceso · No se ubicó · `—` si no hay dato |
    | Vigencia | Píldora Activo / Inactivo; si está absorbido, debajo: «Absorbido por chip …» |
 
    Orden: por el último caso, del más reciente al más viejo. «Todos» **no** muestra los absorbidos;
@@ -87,8 +88,8 @@ típico es el de arriba: cargar un chip que ya tiene otro.
    …») y se abre el **detalle del que sobrevivió**, que ya muestra todos los casos.
 
 Cómo se elige el otro animal cuando se entra desde «Reconciliar con otro animal» (sin chip repetido):
-se busca por chip o por número de caso y se elige uno de la lista. Figma no lo muestra; usá la misma
-búsqueda de la lista de Animales.
+se busca por chip o por número de caso y se elige uno de la lista, con la misma búsqueda de la lista
+de Animales (no está en Figma).
 
 ## Datos de ejemplo
 
@@ -102,21 +103,27 @@ búsqueda de la lista de Animales.
   "absorbio": [{ "id": 58, "fecha": "2026-09-13" }],
   "casos": [
     { "numero": "C-2026-0418", "tenencia": "ajeno_conocido",
-      "duenio": { "nombre": "Raúl Benítez", "dni": "25300114" },
-      "descripcion": { "tamanio": "mediano", "sexo": "macho", "edadAparente": "adulto", "color": "Negro con manchas blancas" },
-      "dia10": "sin_novedad", "estado": "registrado", "vinoDeAbsorbido": false },
+      "dueno": { "nombre": "Raúl", "apellido": "Benítez", "dni": "25300114" },
+      "descripcion": { "tamano": "mediano", "sexo": "macho", "edadAparente": "adulto", "color": "Negro con manchas blancas" },
+      "dia10": { "valor": "sin_novedad", "fecha": "2026-09-22", "por": "M. Acosta" },
+      "estado": "registrado", "vinoDeAbsorbido": false },
     { "numero": "C-2026-0402", "tenencia": "ajeno_conocido",
-      "duenio": { "nombre": "Raúl Benítez", "dni": "25300114" },
-      "descripcion": { "tamanio": "mediano", "sexo": "macho", "edadAparente": "adulto", "color": "Negro" },
-      "dia10": "sin_novedad", "estado": "registrado", "vinoDeAbsorbido": true }
+      "dueno": { "nombre": "Raúl", "apellido": "Benítez", "dni": "25300114" },
+      "descripcion": { "tamano": "mediano", "sexo": "macho", "edadAparente": "adulto", "color": "Negro" },
+      "dia10": { "valor": "pendiente", "fecha": null, "por": null },
+      "estado": "registrado", "vinoDeAbsorbido": true }
   ]
 }
 ```
 
 Valores: `especie` ∈ perro · gato · `tenencia` ∈ propio · ajeno_conocido · ajeno_desconocido · no_sabe ·
-`dia10` ∈ pendiente · sin_novedad · murio_o_enfermo · no_se_pudo_observar.
+`dia10` es siempre un objeto `{ valor, fecha, por }` (como en la ficha del caso), con `valor` ∈
+pendiente · sin_novedad · murio_o_enfermo · ubicado_sin_acceso · no_ubicado (en pantalla: Pendiente ·
+Sin novedad · Murió o enfermó · Ubicado, sin acceso · No se ubicó); mientras no se cargó, `pendiente`
+con `fecha` y `por` en `null`. Los enumerados van en `snake_case` (`mediano`, `macho`, `adulto`); el
+color es texto libre.
 
-Filas de Figma para el mock (Todos 96 · Perros 88 · Gatos 8 · Con chip 21 · Sin chip 75 · Absorbidos 2):
+Filas para el mock (Todos 96 · Perros 88 · Gatos 8 · Con chip 21 · Sin chip 75 · Absorbidos 2):
 
 | Animal | Casos | Último caso | Descripción | Día 10 | Vigencia |
 |---|---|---|---|---|---|
@@ -124,14 +131,21 @@ Filas de Figma para el mock (Todos 96 · Perros 88 · Gatos 8 · Con chip 21 · 
 | Perro · sin chip | 1 | C-2026-0418 | Grande · adulto / Marrón | No se ubicó | Activo |
 | Perro · chip 900 554 210 337 001 | 1 | C-2026-0421 | Grande · hembra · adulto / Atigrado | Murió o enfermó | Activo |
 | Gato · sin chip | 1 | C-2026-0420 | Chico · macho / Gris | Sin novedad | Activo |
-| Perro · sin chip | 1 | C-2026-0402 | Mediano · macho · adulto / Negro | — | Inactivo · Absorbido por chip 900 123 456 789 012 |
+| Perro · sin chip | **0** | — | — | — | Inactivo · Absorbido por chip 900 123 456 789 012 |
+
+La tenencia, el dueño y la descripción del animal en C-2026-0402 los cargó **Zoonosis** (M. Acosta) el
+13/09 a las 11:20, al reconciliar (Salud, que registró ese caso, no los carga ni los ve).
+El absorbido queda con **0 casos**: al reconciliar, su caso (C-2026-0402) pasó a apuntar al perro con
+chip, que por eso tiene 2.
 
 ## Quién la ve (las reglas viven en el servidor)
 
 - **Zoonosis:** todo, y es el único que **reconcilia** y edita la identidad (chip).
 - **CADIC:** ve la lista y el detalle **sin chip ni dueño**.
 - **Salud:** no recibe chip, dueño ni descripción: la lista solo muestra especie, casos y día 10.
-- **Analista:** ve descripción, tenencia y especie; no ve chip ni dueño.
+- **Analista** (rol `analista`, en pantalla «Consulta»): ve especie, descripción y tenencia; **no** ve
+  chip, dueño ni el día 10 por caso (el día 10 solo en agregados, en Estadísticas). La columna «Día 10
+  del último caso» no le llega.
 - Lo que la API no manda, no se muestra (la columna o el dato desaparecen). Los botones Editar identidad
   y Reconciliar aparecen solo si la API dice que se puede.
 

@@ -3,7 +3,8 @@
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
 > si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
-> Si Figma y esta ficha no coinciden, gana la ficha.
+> Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
+> (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
 
 ## Dónde verla
 
@@ -88,21 +89,21 @@ Coincidencia muestra a qué caso fue a parar (registradas) o nada (descartadas).
   "resuelta": null,
   "caso": null,
   "informaLaVictima": false,
-  "quienEnvia": { "nombre": "Carla", "apellido": "Sosa", "dni": "32114887" },
+  "quienInforma": { "nombre": "Carla", "apellido": "Sosa", "dni": "32114887" },
   "victima": { "nombre": "Micaela", "apellido": "Sosa", "dni": "58412336" },
   "fechaHecho": "2026-09-12",
   "horaHecho": "14:20",
   "especie": "perro",
   "seccionesCompletas": 4,
-  "coincidencias": [{ "numero": "C-2026-0418" }]
+  "coincidencias": [{ "numero": "C-2026-0418" }, { "numero": "C-2026-0402" }]
 }
 ```
 
-Las filas de Figma (filtro Pendientes, 3 de 22):
+Filas para el mock (filtro Pendientes, 3 de 22):
 
 | Solicitud | Enviada | Quién la envía | Víctima | Hecho | Especie | Detallado | Coincidencia |
 |---|---|---|---|---|---|---|---|
-| S-2026-0034 | 13/09 21:40 | Carla Sosa · informa por otra persona | Micaela Sosa · 58.412.336 | 12/09 14:20 | Perro | Completo 4/4 | C-2026-0418 |
+| S-2026-0034 | 13/09 21:40 | Carla Sosa · informa por otra persona | Micaela Sosa · 58.412.336 | 12/09 14:20 | Perro | Completo 4/4 | C-2026-0418 +1 |
 | S-2026-0035 | 14/09 08:12 | Lucía Paz · es quien sufrió el ataque | Lucía Paz · 40.221.908 | 13/09 — | Gato | Solo inicial 0/4 | — |
 | S-2026-0036 | 14/09 10:47 | Pedro Gómez · es quien sufrió el ataque | Pedro Gómez · 28.904.551 | 14/09 07:50 | Perro | Parcial 2/4 | — |
 
@@ -122,10 +123,12 @@ Es una **página** (no una ventana lateral), porque se lee entera antes de decid
    **Sumar a un caso existente** (secundario) · **Registrar como caso nuevo** (primario).
 3. **Aviso de víctima ya en un caso** (solo si hay coincidencia), mensaje de **advertencia**:
    > **La víctima ya está en un caso**
-   > El DNI 58.412.336 es víctima en C-2026-0418 (Zoonosis, hecho del 12/09/2026). Si es el mismo
-   > hecho, sumala a ese caso; si no, registrala como caso nuevo.
+   > El DNI 58.412.336 es víctima en C-2026-0418 (Zoonosis Ushuaia, hecho del 12/09/2026) y en
+   > C-2026-0402 (Hospital Regional Ushuaia, hecho del 12/09/2026). Si es el mismo hecho, sumala a ese
+   > caso; si no, registrala como caso nuevo.
 
-   El número de caso es un enlace a la ficha (se abre en otra pestaña, para no perder la solicitud).
+   Cada número de caso es un enlace a la ficha (se abre en otra pestaña, para no perder la solicitud).
+   En el ejemplo, los dos casos son a su vez un posible duplicado sin resolver entre ellos.
 4. Bajada: «Lo que declaró la persona, tal cual. Al registrarla se copia al caso sin transcribir.
    Hasta que un agente decide, no escribe en ningún caso ni persona.»
 5. **Bloques de solo lectura**, en este orden. Un bloque aparece solo si la persona respondió algo de
@@ -137,9 +140,12 @@ Es una **página** (no una ventana lateral), porque se lee entera antes de decid
      lado, en qué tipo de evento se traduce: «Me mordió → Ataque con mordedura»), cuántos animales.
    - **Animal 1 de N**, uno por animal: especie, de quién es, dueño **según la persona**, dónde vive,
      vacunado, ¿podría reconocerlo?, tamaño, sexo, edad aparente, color, raza, fotos (adjuntos).
+     **Salud no recibe la descripción** (tamaño, sexo, edad aparente, color, raza) **ni la tenencia**
+     («de quién es»): si la API no las manda, esas filas no se muestran.
    - **La denuncia:** ¿hizo la denuncia en Zoonosis?, motivo de no denunciar.
-6. Si la solicitud ya está resuelta: en lugar de las acciones, una línea «Registrada el 13/09/2026 por
-   M. Acosta → C-2026-0418» o «Descartada el 14/09/2026 por M. Acosta».
+6. Si la solicitud ya está resuelta: en lugar de las acciones, una línea «Registrada el 12/09/2026 15:10
+   por M. Acosta → C-2026-0418» (es S-2026-0031, enviada el 12/09 a las 14:50 y sumada a ese caso) o
+   «Descartada el 14/09/2026 por M. Acosta».
 
 Las respuestas «No sé» de la persona se muestran como «No sé» (son una respuesta, no un dato faltante).
 
@@ -149,15 +155,22 @@ Las respuestas «No sé» de la persona se muestran como «No sé» (son una res
 borra: queda guardada con sus datos, pero no va a llegar a ningún caso.» · Cancelar · **Descartar**
 (peligro). Al confirmar: mensaje de éxito «Solicitud descartada», vuelve a la cola.
 
-**Registrar como caso nuevo.** Pide confirmación en ventana lateral: «Se crea un caso nuevo con todo lo
-que declaró la persona. El canal de origen queda como Ciudadano.» · Cancelar · **Registrar**.
+**Registrar como caso nuevo.** Pide confirmación en ventana lateral: «Se crea un caso nuevo con lo que
+declaró la persona. El canal de origen queda como Ciudadano.» · Cancelar · **Registrar**.
+- Lo que la persona dijo del **dueño y del chip** de un animal **no se copia** a esos datos: queda en la
+  solicitud hasta que Zoonosis lo confirme (igual que al sumar, ver abajo).
 - Si hay coincidencia, la ventana repite el aviso y el botón dice **«Es otro ataque, registrar igual»**:
-  el caso nace con la marca **posible duplicado**, y se decide después en Posibles duplicados.
+  confirma que **son casos distintos**. El caso nace **sin** la marca de posible duplicado y la
+  coincidencia queda resuelta como «distintos» (mismo desenlace que «No es duplicado»). Si es el mismo
+  hecho, la salida es **Sumar a un caso existente**.
+- **No hay «Guardar y revisar después»** (la tercera salida de Nuevo caso): una solicitud no crea un
+  caso marcado como posible duplicado. Si es el mismo hecho, se suma; si no, se registra igual.
 - Al confirmar: mensaje de éxito «Caso C-2026-0425 registrado» y se abre **la ficha del caso nuevo**.
   La solicitud pasa a *registrada* y apunta al caso.
 
 **Sumar a un caso existente.** Lleva a la pantalla Sumar (abajo).
-- Si hay coincidencia, va directo con ese caso. Si hay varios, pregunta a cuál.
+- Si hay coincidencia, va directo con ese caso. Si hay varios, pregunta a cuál (en el ejemplo, entre
+  C-2026-0418 y C-2026-0402; el agente elige C-2026-0418).
 - Si no hay coincidencia, primero pide el caso: una ventana lateral con un campo «Número de caso»
   (`C-2026-…`) que muestra, al escribirlo, víctima y fecha del hecho para confirmar que es ese.
 
@@ -185,13 +198,21 @@ que declaró la persona. El canal de origen queda como Ciudadano.» · Cancelar 
    Lo marcado en violeta es lo que queda en el caso. Se compara: víctima (nombre, DNI, edad), contacto
    (teléfono, correo), hecho (hora, dirección, referencias…) y los animales.
 4. **Animales:** cada animal de la solicitud se compara con el animal del caso que le corresponde. Un
-   animal que el caso no tiene aparece como fila «Solo en la solicitud» («Animal 2 · Perro grande,
-   marrón (ajeno desconocido)») y **se agrega como animal nuevo del caso**.
+   animal que el caso no tiene aparece como fila «Solo en la solicitud» y **se agrega como animal nuevo
+   del caso**. En el ejemplo, los dos animales de S-2026-0034 se comparan con los dos de C-2026-0418: el
+   animal 2 («Perro grande, marrón (ajeno desconocido)») es el mismo perro del caso, así que **no se
+   agrega ninguno**. Cómo se emparejan los animales en general está pendiente (ver abajo).
+   **Salud no recibe la descripción ni la tenencia del animal**: esas filas no se muestran si la API
+   no las manda.
 5. **Confirmar:** casilla «Confirmo que la solicitud es del mismo hecho que el caso.» · Cancelar ·
    **Sumar al caso**.
-6. Debajo, en texto chico, lo que falta: «Falta elegir el teléfono del contacto.» y qué va a pasar: «Al
-   sumarla, la solicitud queda “registrada” y apunta al caso; el animal 2 se agrega como un animal
-   nuevo del caso.»
+6. Debajo, en texto chico, lo que falta elegir (p. ej. «Falta elegir el color del animal 1.»; en el
+   ejemplo no falta nada) y qué va a pasar: «Al sumarla, la solicitud queda “registrada” y apunta al
+   caso; sus dos animales son los del caso, no se agrega ninguno.»
+   En el ejemplo, todas las filas son **iguales** salvo dos que están solo en la solicitud y se
+   conservan: el **correo del contacto** (Carla Sosa pasa a tener correo en SIRAM) y el **tipo de lugar**
+   («Vía pública»). Como el tipo de lugar era lo único que le faltaba a C-2026-0418, **al sumar la
+   solicitud el caso deja de ser incompleto**.
 
 ### Comportamiento
 
@@ -200,7 +221,8 @@ que declaró la persona. El canal de origen queda como Ciudadano.» · Cancelar 
 - **Lo declarado sobre la denuncia** («¿Hizo denuncia?» y motivo) **no aparece como fila para
   elegir**: se copia siempre, porque gana la solicitud más reciente.
 - **Lo que la persona dijo del dueño y del chip** no se copia a los datos del animal: queda en la
-  solicitud, y Zoonosis lo confirma después desde la ficha del caso.
+  solicitud. En la ficha del caso, Zoonosis lo ve en ese animal como «Según la solicitud S-…: dueño …,
+  chip …» y lo pasa a los datos con **Editar animal**.
 - Al sumar: mensaje de éxito «S-2026-0034 sumada a C-2026-0418», se abre la ficha del caso. El cambio
   queda en el historial del caso.
 - **Cancelar** vuelve a Revisar solicitud sin cambiar nada.
@@ -211,14 +233,23 @@ que declaró la persona. El canal de origen queda como Ciudadano.» · Cancelar 
 {
   "solicitud": "S-2026-0034",
   "caso": "C-2026-0418",
-  "elecciones": { "contacto.telefono": "solicitud", "lugar.direccion": "caso", "animales[0].color": "solicitud" },
+  "elecciones": {},
   "confirmado": true
 }
 ```
 
 ## Quién la ve
 
-- **Agentes** (Salud, Zoonosis, CADIC): todo.
+- **Agentes** (Salud, Zoonosis, CADIC): todo, salvo lo que la API recorta por campo. **Salud no recibe la
+  descripción ni la tenencia de los animales** (ni en Revisar ni en Sumar): esas filas no se muestran.
 - **Analista / comité** y **administrador**: no ven la cola (la API no les devuelve solicitudes) y el
   menú no muestra «Solicitudes» si el permiso no llega.
 - Como siempre: si un dato no viene en la respuesta, no se muestra.
+
+## Pendiente: no lo implementes todavía
+
+- **Cómo se emparejan los animales** de la solicitud con los del caso al sumar (cuál con cuál, y quién
+  lo decide): está abierto. En el ejemplo, el emparejamiento ya viene dado.
+- **Lo que la persona dijo del dueño y del chip, en Revisar y Sumar:** en la ficha del caso eso lo ve
+  solo Zoonosis, y Salud y CADIC no ven el dueño ni el chip. Si en la solicitud lo ven todos los agentes
+  o también se recorta, está por definirse. Mostrá lo que mande la API.
