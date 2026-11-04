@@ -38,6 +38,9 @@ Ya **no hay** puntaje, señales de coincidencia ni «vincular»: si los ves en a
   una **lista de trabajo**: su cantidad es el contador del menú. Un caso llega acá cuando, al
   registrarlo, el agente eligió **«Guardar y revisar después»** en el aviso de DNI repetido (ver
   `nuevo-caso.md`).
+- **Los dos casos del par tienen que estar vigentes** *(2026-11-04)*: si uno se desestima, la marca
+  desaparece de los dos y el otro sale de la lista. La coincidencia queda guardada sin decisión (no se
+  marca «distintos»). Solo se consolidan casos registrados, en seguimiento o finalizados.
 - **Tabla:** las **mismas columnas que la Bandeja** (ver `bandeja.md`: marcas, caso, última
   modificación, fecha del hecho, víctima, lugar, animales, tipo de evento, estado, canal de origen).
   Mismo orden: última modificación, más reciente arriba. Búsqueda igual que en la Bandeja. Sin filtros

@@ -1,7 +1,7 @@
 # SIRAM — guía del front
 
 > Entregado por el agente de diseño (repo `../proyecto`). No lo edites desde el front: si algo no
-> cierra, avisá al usuario. Última actualización: 2026-11-03.
+> cierra, avisá al usuario. Última actualización: 2026-11-04.
 
 ## Qué es SIRAM
 
@@ -115,15 +115,6 @@ Ajustes que el código del front todavía no refleja. **Registralos como pendien
 un change de openspec). Cuando estén hechos no hace falta avisar: el agente de diseño revisa el código
 y borra el aviso de acá.
 
-- **2026-11-03 · Bandeja** (`vistas/bandeja.md`). Orden por última modificación, columnas nuevas
-  (última modificación, animales, tipo de evento, canal de origen), marca **Grave** en lugar de
-  «Posible evento relacionado», chip «Graves» en lugar de «Eventos relacionados», búsqueda por DNI y
-  motivos de espera como «Esperando …». También sale «Eventos relacionados» del menú y de los
-  contadores, e «Importar CSV» de Administración.
-- **2026-11-03 · Nuevo caso** (`vistas/nuevo-caso.md`). Reemplaza el formulario completo de la v1 por
-  el **formulario inicial** (víctima, contacto responsable si lo hay, fecha y especie), con
-  obligatoriedad según el canal y el aviso de DNI de víctima repetido antes de guardar.
-- **2026-11-03 · Las 16 fichas restantes** (ver «Fichas de vista»). Son todas vistas nuevas o
-  rehechas: implementalas de a una, empezando por las de Casos. Implican cambios en la navegación
-  (`src/navegacion.js`): entran Solicitudes, Personas y Animales; salen Eventos relacionados e
-  Importar CSV.
+- **2026-11-04 · Posibles duplicados** (`vistas/posibles-duplicados.md`). La marca de posible
+  duplicado solo se muestra si **los dos casos del par están vigentes**: si uno se desestima, la marca
+  se va de los dos y el otro sale de la lista. La coincidencia queda sin decisión.
