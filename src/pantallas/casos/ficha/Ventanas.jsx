@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material'
 import VentanaLateral from '@/componentes/VentanaLateral'
 import Bloque from '@/componentes/Bloque'
 import Mensaje from '@/componentes/Mensaje'
-import { Fila, Nota, Opciones, Seleccion, Texto } from '@/componentes/formulario/Campos'
+import { CampoFecha, Fila, Nota, Opciones, Seleccion, Texto } from '@/componentes/formulario/Campos'
 import useFormulario from '@/componentes/formulario/useFormulario'
 import { useAvisar } from '@/componentes/avisos'
 import Mapa from '@/componentes/mapa/Mapa'
@@ -13,7 +13,7 @@ import {
 } from '@/componentes/caso/catalogos'
 import { api, ErrorApi } from '@/mocks'
 import { soloDigitos } from '@/utiles/formato'
-import { correoValido, dniValido, fechaFutura, mensajeDni, telefonoValido, vacio } from '@/utiles/validacion'
+import { correoValido, dniValido, fechaFutura, fechaInvalida, mensajeDni, mensajeFechaInvalida, telefonoValido, vacio } from '@/utiles/validacion'
 
 const ciudades = { Ushuaia: 'Ushuaia', 'Río Grande': 'Río Grande', Tolhuin: 'Tolhuin' }
 const siNo = { si: 'Sí', no: 'No' }
@@ -77,7 +77,8 @@ function Editar({ caso, onCerrar }) {
       if (!e['contactoResponsable.dni'] && soloDigitos(x.contactoResponsable.dni) === soloDigitos(x.victima.dni)) e['contactoResponsable.dni'] = 'Es el mismo DNI que la víctima.'
     }
     if (x.victima.edad !== '' && !/^\d{1,3}$/.test(String(x.victima.edad))) e['victima.edad'] = 'La edad va en años, solo números'
-    if (fechaFutura(x.hecho.fechaHecho)) e['hecho.fechaHecho'] = 'La fecha del hecho no puede ser futura'
+    if (fechaInvalida(x.hecho.fechaHecho)) e['hecho.fechaHecho'] = mensajeFechaInvalida
+    else if (fechaFutura(x.hecho.fechaHecho)) e['hecho.fechaHecho'] = 'La fecha del hecho no puede ser futura'
     return e
   }
 
@@ -139,7 +140,7 @@ function Editar({ caso, onCerrar }) {
 
       <Bloque titulo="Hecho">
         <Fila>
-          <Texto etiqueta="Fecha del hecho" tipo="date" mono {...hecho('fechaHecho')} />
+          <CampoFecha etiqueta="Fecha del hecho" sinFuturas mono {...hecho('fechaHecho')} />
           <Texto etiqueta="Hora" tipo="time" mono {...hecho('horaHecho')} />
           <Seleccion etiqueta="Ciudad" opciones={ciudades} {...hecho('lugar.ciudad')} />
           <Seleccion etiqueta="Tipo de lugar" opciones={tiposLugar} {...hecho('tipoLugar')} />
@@ -282,6 +283,7 @@ function Denuncia({ caso, denuncia, onCerrar }) {
     if (vacio(x.dniDenunciante)) e.dniDenunciante = 'Falta el DNI de quien la hizo'
     else if (!dniValido(x.dniDenunciante)) e.dniDenunciante = mensajeDni
     if (vacio(x.fecha)) e.fecha = 'Falta la fecha de la denuncia'
+    else if (fechaInvalida(x.fecha)) e.fecha = mensajeFechaInvalida
     else if (fechaFutura(x.fecha)) e.fecha = 'La fecha no puede ser futura'
     if (!x.estado) e.estado = 'Elegí el estado de la denuncia'
     return e
@@ -299,7 +301,7 @@ function Denuncia({ caso, denuncia, onCerrar }) {
       <Bloque titulo="Denuncia">
         <Fila>
           <Texto etiqueta="DNI de quien la hizo" requerido ayuda="Solo números, 7 u 8, con o sin puntos." {...enlace(f, 'dniDenunciante')} />
-          <Texto etiqueta="Fecha de la denuncia" requerido tipo="date" mono {...enlace(f, 'fecha')} />
+          <CampoFecha etiqueta="Fecha de la denuncia" requerido sinFuturas mono {...enlace(f, 'fecha')} />
           <Texto etiqueta="Número de trámite" placeholder="Opcional" {...enlace(f, 'numero')} />
         </Fila>
         <Opciones etiqueta="Estado de la denuncia" requerido opciones={estadosDenuncia} ayuda="Tentativo. P. ej., una denuncia «desglosada y devuelta» a las 48 h sin certificado queda desestimada." {...enlace(f, 'estado')} />
@@ -437,6 +439,7 @@ function Tratamiento({ caso, onCerrar }) {
   function validar(x) {
     const e = {}
     if (vacio(x.fechaConsulta)) e.fechaConsulta = 'Falta la fecha de la consulta'
+    else if (fechaInvalida(x.fechaConsulta)) e.fechaConsulta = mensajeFechaInvalida
     else if (fechaFutura(x.fechaConsulta)) e.fechaConsulta = 'La fecha no puede ser futura'
     return e
   }
@@ -455,7 +458,7 @@ function Tratamiento({ caso, onCerrar }) {
     >
       <Bloque titulo="Consulta">
         <Fila>
-          <Texto etiqueta="Fecha de la consulta" requerido tipo="date" mono {...enlace(f, 'fechaConsulta')} />
+          <CampoFecha etiqueta="Fecha de la consulta" requerido sinFuturas mono {...enlace(f, 'fechaConsulta')} />
           <Seleccion etiqueta="Zona del cuerpo" vacio="Sin dato" opciones={zonasCuerpo} {...enlace(f, 'zonaCuerpo')} />
         </Fila>
         <Opciones etiqueta="Gravedad" opciones={gravedades} {...enlace(f, 'gravedad')} />

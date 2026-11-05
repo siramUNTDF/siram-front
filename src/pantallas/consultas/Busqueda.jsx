@@ -8,11 +8,12 @@ import EncabezadoPagina, { NotaDatosEjemplo } from '@/componentes/EncabezadoPagi
 import Panel from '@/componentes/Panel'
 import Bloque from '@/componentes/Bloque'
 import FiltroAplicado from '@/componentes/FiltroAplicado'
-import { Fila, Seleccion, Texto } from '@/componentes/formulario/Campos'
+import { CampoFecha, Fila, Seleccion, Texto } from '@/componentes/formulario/Campos'
 import TablaCasos from '@/componentes/caso/TablaCasos'
 import { especies, estados, tamanos, tenencias, tiposLugar } from '@/componentes/caso/catalogos'
 import { api, useApi } from '@/mocks'
 import { fechaCorta } from '@/utiles/formato'
+import { fechaInvalida, mensajeFechaInvalida } from '@/utiles/validacion'
 import HerramientasTabla from '../casos/bandeja/HerramientasTabla'
 import LeyendaMarcas from '../casos/bandeja/LeyendaMarcas'
 import useDensidad from '../casos/bandeja/useDensidad'
@@ -77,7 +78,10 @@ export default function Busqueda() {
 
   function buscar(f = borrador) {
     const e = {}
-    if (f.desde && f.hasta && f.desde > f.hasta) e.hasta = 'Tiene que ser igual o posterior a Desde'
+    // Una fecha a medio escribir no se aplica ni llega a la URL.
+    if (fechaInvalida(f.desde)) e.desde = mensajeFechaInvalida
+    if (fechaInvalida(f.hasta)) e.hasta = mensajeFechaInvalida
+    else if (f.desde && f.hasta && !e.desde && f.desde > f.hasta) e.hasta = 'Tiene que ser igual o posterior a Desde'
     if (f.edadDesde && f.edadHasta && Number(f.edadDesde) > Number(f.edadHasta)) e.edadHasta = 'Tiene que ser igual o mayor a Desde'
     setErrores(e)
     if (Object.keys(e).length) return
@@ -116,8 +120,8 @@ export default function Busqueda() {
           <Box sx={{ p: 2, display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, minmax(0, 1fr))' } }}>
             <Bloque titulo="Cuándo y dónde">
               <Fila>
-                <Texto etiqueta="Fecha del hecho: desde" tipo="date" mono {...poner('desde')} />
-                <Texto etiqueta="Hasta" tipo="date" mono {...poner('hasta')} />
+                <CampoFecha etiqueta="Fecha del hecho: desde" mono {...poner('desde')} />
+                <CampoFecha etiqueta="Hasta" mono {...poner('hasta')} />
                 <Seleccion etiqueta="Ciudad" vacio="Cualquiera" opciones={ciudades} {...poner('ciudad')} />
                 <Seleccion etiqueta="Tipo de lugar" vacio="Cualquiera" opciones={lugaresBusqueda} {...poner('tipoLugar')} />
               </Fila>

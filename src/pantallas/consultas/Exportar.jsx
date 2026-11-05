@@ -6,13 +6,14 @@ import EncabezadoPagina, { NotaDatosEjemplo } from '@/componentes/EncabezadoPagi
 import Panel from '@/componentes/Panel'
 import Bloque from '@/componentes/Bloque'
 import Mensaje from '@/componentes/Mensaje'
-import { Casilla, Fila, Nota, Opciones, Seleccion, Texto } from '@/componentes/formulario/Campos'
+import { CampoFecha, Casilla, Fila, Nota, Opciones, Seleccion, Texto } from '@/componentes/formulario/Campos'
 import { useAvisar } from '@/componentes/avisos'
 import { estados } from '@/componentes/caso/catalogos'
 import { api, ErrorApi, useApi } from '@/mocks'
 import { hoy } from '@/mocks/datos'
 import { fuentes } from '@/tema/tokens'
 import { fechaCorta } from '@/utiles/formato'
+import { fechaInvalida } from '@/utiles/validacion'
 
 const ciudades = { Ushuaia: 'Ushuaia', 'Río Grande': 'Río Grande', Tolhuin: 'Tolhuin' }
 const opcionesEstado = [['vigentes', 'Vigentes'], ['todos', 'Todos'], ...Object.entries(estados).map(([k, v]) => [k, v.etiqueta])]
@@ -40,7 +41,10 @@ export default function Exportar() {
   const [error, setError] = useState(null)
   const [trabajando, setTrabajando] = useState(false)
 
-  const filtros = { ...casos, ...extra }
+  // Una fecha a medio escribir no filtra: se cuenta y se exporta como si no estuviera.
+  const sinInvalida = (v) => (fechaInvalida(v) ? null : v)
+  const fechas = { desde: sinInvalida(casos.desde), hasta: sinInvalida(casos.hasta) }
+  const filtros = { ...casos, ...fechas, ...extra }
   const total = api.contarParaExportar(filtros)
   const elegidos = bloques.filter((b) => marcados[b.clave])
   const columnas = elegidos.reduce((s, b) => s + b.columnas, 0)
@@ -71,7 +75,7 @@ export default function Exportar() {
   }
 
   const textoFiltros = [
-    `Fecha del hecho: ${fechaCorta(casos.desde) ?? '…'} – ${fechaCorta(casos.hasta) ?? '…'}`,
+    `Fecha del hecho: ${fechaCorta(fechas.desde) ?? '…'} – ${fechaCorta(fechas.hasta) ?? '…'}`,
     casos.ciudad || casos.organismo ? [casos.ciudad ?? 'Todas las ciudades', casos.organismo ?? 'todos los organismos'].join(' · ') : 'Todas las ciudades y todos los organismos',
     casos.tipoEvento ?? 'Todos los tipos de evento',
   ]
@@ -83,8 +87,8 @@ export default function Exportar() {
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <Bloque titulo="Casos">
             <Fila>
-              <Texto etiqueta="Fecha del hecho: desde" tipo="date" mono {...poner('desde')} />
-              <Texto etiqueta="Hasta" tipo="date" mono {...poner('hasta')} />
+              <CampoFecha etiqueta="Fecha del hecho: desde" mono {...poner('desde')} />
+              <CampoFecha etiqueta="Hasta" mono {...poner('hasta')} />
               <Seleccion etiqueta="Ciudad" vacio="Todas" opciones={ciudades} {...poner('ciudad')} />
               <Seleccion etiqueta="Organismo" vacio="Todos" opciones={api.nombresOrganismos().map((o) => [o, o])} {...poner('organismo')} />
               <Seleccion etiqueta="Estado del caso" vacio={null} opciones={opcionesEstado} {...poner('estado')} />

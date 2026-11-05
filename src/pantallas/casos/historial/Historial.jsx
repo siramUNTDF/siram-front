@@ -8,7 +8,8 @@ import Panel from '@/componentes/Panel'
 import ChipFiltro from '@/componentes/ChipFiltro'
 import ChipDato from '@/componentes/ChipDato'
 import Mensaje from '@/componentes/Mensaje'
-import { Texto } from '@/componentes/formulario/Campos'
+import { CampoFechaHora } from '@/componentes/formulario/Campos'
+import { fechaInvalida } from '@/utiles/validacion'
 import { api, useApi } from '@/mocks'
 import { fuentes } from '@/tema/tokens'
 import { fechaHora } from '@/utiles/formato'
@@ -89,7 +90,7 @@ export default function Historial() {
   const corteValido = corte && corte >= creacion
 
   function verEnFecha() {
-    setCorte(fechaElegida.replace(' ', 'T'))
+    setCorte(fechaElegida)
     setAncla(null)
   }
 
@@ -109,8 +110,8 @@ export default function Historial() {
         </Button>
         <Popover open={Boolean(ancla)} anchorEl={ancla} onClose={() => setAncla(null)} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
           <Box sx={{ p: 2, width: 280 }}>
-            <Texto etiqueta="Fecha y hora" tipo="datetime-local" mono valor={fechaElegida} onCambio={setFechaElegida} />
-            <Button variant="contained" fullWidth disabled={!fechaElegida} onClick={verEnFecha}>Ver</Button>
+            <CampoFechaHora etiqueta="Fecha y hora" mono valor={fechaElegida} onCambio={setFechaElegida} />
+            <Button variant="contained" fullWidth disabled={!fechaElegida || fechaInvalida(fechaElegida)} onClick={verEnFecha}>Ver</Button>
           </Box>
         </Popover>
       </Box>

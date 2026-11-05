@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router'
 import { Box } from '@mui/material'
 import Bloque from '@/componentes/Bloque'
 import Mensaje from '@/componentes/Mensaje'
-import { Opciones, Texto } from '@/componentes/formulario/Campos'
+import { CampoFecha, Opciones, Texto } from '@/componentes/formulario/Campos'
 import useFormulario from '@/componentes/formulario/useFormulario'
 import { especies } from '@/componentes/caso/catalogos'
 import { api } from '@/mocks'
 import { soloDigitos } from '@/utiles/formato'
-import { correoValido, dniValido, fechaFutura, mensajeDni, telefonoValido, vacio } from '@/utiles/validacion'
+import { correoValido, dniValido, fechaFutura, fechaInvalida, mensajeDni, mensajeFechaInvalida, telefonoValido, vacio } from '@/utiles/validacion'
 import { Acciones, PielPublica, SimularFallas, Titulo } from './piezas'
 import { sesionReporte } from './sesionReporte'
 
@@ -36,6 +36,7 @@ function validar(v) {
     else if (soloDigitos(vi.dni) === soloDigitos(p.dni)) e['victima.dni'] = 'Es tu mismo DNI. Si fuiste vos, respondé “Sí” arriba.'
   }
   if (vacio(v.fechaHecho)) e.fechaHecho = 'Falta cuándo pasó'
+  else if (fechaInvalida(v.fechaHecho)) e.fechaHecho = mensajeFechaInvalida
   else if (fechaFutura(v.fechaHecho)) e.fechaHecho = 'La fecha no puede ser futura'
   if (!v.especie) e.especie = 'Contanos qué animal fue'
   return e
@@ -97,7 +98,7 @@ export default function FormularioInicial() {
             </Bloque>
           )}
           <Bloque titulo="El hecho">
-            <Texto etiqueta="¿Cuándo pasó?" requerido tipo="date" {...campo('fechaHecho')} />
+            <CampoFecha etiqueta="¿Cuándo pasó?" requerido sinFuturas {...campo('fechaHecho')} />
             <Opciones etiqueta="¿Qué animal fue?" requerido opciones={especies} {...campo('especie')} />
           </Bloque>
         </Box>

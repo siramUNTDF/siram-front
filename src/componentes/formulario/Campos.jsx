@@ -1,7 +1,11 @@
-import { useId } from 'react'
+import { useId, useRef, useState } from 'react'
 import { Box, Checkbox, InputBase, MenuItem, Radio, Select, Tooltip } from '@mui/material'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutlineOutlined'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { format, isValid, parse } from 'date-fns'
 import { fuentes } from '@/tema/tokens'
+import { FECHA_INVALIDA, fechaInvalida, mensajeFechaInvalida } from '@/utiles/validacion'
 
 const estiloEntrada = {
   width: '100%',
@@ -65,6 +69,84 @@ export function Texto({ etiqueta, valor, onCambio, error, requerido, ayuda, tipo
       <Error>{error}</Error>
     </Box>
   )
+}
+
+// ─── Fechas ──────────────────────────────────────────────────────────────────────────────
+// Siempre dd/mm/aaaa, sin importar el idioma del navegador (el selector nativo no lo garantiza).
+// Hacia el formulario la fecha viaja como 'AAAA-MM-DD' (o 'AAAA-MM-DDTHH:mm'), en hora local;
+// vacía, como ''; incompleta o inexistente, como FECHA_INVALIDA.
+
+function CampoFechaBase({ selector, formatoCampo, formatoValor, etiqueta, valor, onCambio, error, requerido, ayuda, mono = false, sx, ...props }) {
+  const Picker = selector
+  const id = useId()
+  // El error propio («no existe o está incompleta») se muestra al salir del campo, no mientras se escribe.
+  const [salio, setSalio] = useState(false)
+  // Texto que muestra el campo (vacío si no se escribió nada). MUI no avisa una fecha a medio
+  // escribir si antes estaba vacío: se detecta al salir del campo.
+  const textoCampo = useRef(null)
+  // Con una fecha inválida se le devuelve al selector lo último que él mismo informó: si recibiera
+  // otro valor, redibujaría el campo y borraría lo que la persona escribió a medias.
+  const [ultimoDelSelector, setUltimoDelSelector] = useState(null)
+  const fecha = !valor ? null : fechaInvalida(valor) ? ultimoDelSelector : parse(valor, formatoValor, new Date())
+  const mensaje = error ?? (salio && fechaInvalida(valor) ? mensajeFechaInvalida : null)
+
+  function cambiar(nueva) {
+    setUltimoDelSelector(nueva)
+    if (nueva == null) onCambio('')
+    else if (!isValid(nueva)) onCambio(FECHA_INVALIDA)
+    else onCambio(format(nueva, formatoValor))
+  }
+
+  function salir() {
+    setSalio(true)
+    const escrito = textoCampo.current?.value ?? ''
+    if (!valor && escrito) onCambio(FECHA_INVALIDA)
+    else if (fechaInvalida(valor) && !escrito) onCambio('')
+  }
+
+  return (
+    <Box sx={{ minWidth: 0, ...sx }}>
+      <Etiqueta id={`${id}-etiqueta`} componente="div" texto={etiqueta} requerido={requerido} ayuda={ayuda} />
+      <Picker
+        value={fecha}
+        onChange={cambiar}
+        format={formatoCampo}
+        slotProps={{
+          textField: {
+            id,
+            // Sin etiqueta propia de MUI: así el campo vacío muestra dd/mm/aaaa. Lo nombra la nuestra.
+            InputProps: { 'aria-labelledby': `${id}-etiqueta` },
+            inputRef: textoCampo,
+            required: requerido,
+            error: Boolean(mensaje),
+            fullWidth: true,
+            size: 'small',
+            onBlur: salir,
+            sx: {
+              '& .MuiPickersOutlinedInput-notchedOutline': { display: 'none' },
+              '& .MuiPickersInputBase-root': { ...estiloEntrada, pr: 0.5 },
+              '& .MuiPickersInputBase-sectionsContainer': { py: '8px' },
+              // Cada parte (dd, mm, aaaa) fija su propia fuente: la mono va en todas.
+              ...(mono && { '& .MuiPickersInputBase-sectionsContainer, & .MuiPickersInputBase-sectionsContainer *': { fontFamily: fuentes.mono, fontVariantNumeric: 'tabular-nums' } }),
+              '& .MuiInputAdornment-root .MuiSvgIcon-root': { fontSize: 19, color: 'text.tertiary' },
+            },
+          },
+          openPickerButton: { size: 'small' },
+        }}
+        {...props}
+      />
+      <Error>{mensaje}</Error>
+    </Box>
+  )
+}
+
+// `sinFuturas`: el calendario no ofrece días posteriores a hoy (el formulario igual lo valida).
+export function CampoFecha({ sinFuturas = false, ...props }) {
+  return <CampoFechaBase selector={DatePicker} formatoCampo="dd/MM/yyyy" formatoValor="yyyy-MM-dd" disableFuture={sinFuturas} {...props} />
+}
+
+export function CampoFechaHora(props) {
+  return <CampoFechaBase selector={DateTimePicker} formatoCampo="dd/MM/yyyy HH:mm" formatoValor="yyyy-MM-dd'T'HH:mm" ampm={false} {...props} />
 }
 
 // `opciones`: objeto { valor: etiqueta } o lista de [valor, etiqueta].
