@@ -43,10 +43,10 @@ export class ErrorApi extends Error {
 // ─── Sesión (quién mira). Solo para la demo: con la API, el usuario lo da el login ────────
 export const perfiles = {
   zoonosis: { nombre: 'Daniela Marchisoney', corto: 'D. Marchisoney', iniciales: 'DM', rol: 'agente', organismo: 'Zoonosis Ushuaia', tipo: 'zoonosis' },
-  salud: { nombre: 'Laura Puig', corto: 'L. Puig', iniciales: 'LP', rol: 'agente', organismo: 'Hospital Regional Ushuaia', tipo: 'salud' },
-  cadic: { nombre: 'Julián Valle', corto: 'J. Valle', iniciales: 'JV', rol: 'agente', organismo: 'CADIC', tipo: 'cadic' },
-  analista: { nombre: 'Federico Luna', corto: 'F. Luna', iniciales: 'FL', rol: 'analista', organismo: null, tipo: null },
-  administrador: { nombre: 'S. Valle', corto: 'S. Valle', iniciales: 'SV', rol: 'administrador', organismo: null, tipo: null },
+  salud: { nombre: 'Ricardo Iraola', corto: 'R. Iraola', iniciales: 'RI', rol: 'agente', organismo: 'Hospital Regional Ushuaia', tipo: 'salud' },
+  cadic: { nombre: 'Martin Acosta', corto: 'M. Acosta', iniciales: 'MA', rol: 'agente', organismo: 'CADIC', tipo: 'cadic' },
+  analista: { nombre: 'Dario Cabrera', corto: 'D. Cabrera', iniciales: 'DC', rol: 'analista', organismo: null, tipo: null },
+  administrador: { nombre: 'Antonella Valle', corto: 'A. Valle', iniciales: 'AV', rol: 'administrador', organismo: null, tipo: null },
 }
 let perfilActual = 'zoonosis'
 const perfil = () => perfiles[perfilActual]
