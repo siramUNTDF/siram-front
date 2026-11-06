@@ -9,6 +9,7 @@ import Mensaje from '@/componentes/Mensaje'
 import Dato, { Datos } from '@/componentes/Dato'
 import { ArchivoAdjunto } from '@/componentes/ChipDato'
 import VentanaLateral from '@/componentes/VentanaLateral'
+import Mapa from '@/componentes/mapa/Mapa'
 import { Opciones, Texto } from '@/componentes/formulario/Campos'
 import { useAvisar } from '@/componentes/avisos'
 import {
@@ -143,6 +144,13 @@ export default function RevisarSolicitud() {
             <Si etiqueta="Qué pasó" valor={etiqueta(quePaso, s.hecho.quePaso)} nota={quePaso[s.hecho.quePaso]?.tipoEvento ? `→ ${quePaso[s.hecho.quePaso].tipoEvento}` : null} />
             <Si etiqueta="Cuántos animales atacaron" valor={s.hecho.cantidadAnimales} />
           </Datos>
+          {/* Solo lectura: mover el mapa no cambia la solicitud. Sin coordenadas no se muestra nada. */}
+          {s.hecho.latitud != null && (
+            <Box sx={{ mt: 2.5 }}>
+              <Mapa alto={220} centro={[s.hecho.latitud, s.hecho.longitud]} puntos={[{ id: s.numero, latitud: s.hecho.latitud, longitud: s.hecho.longitud }]} />
+              <Box sx={{ mt: '6px', fontFamily: fuentes.mono, fontSize: 12, color: 'text.tertiary' }}>Pin del hecho ({s.hecho.latitud}; {s.hecho.longitud})</Box>
+            </Box>
+          )}
         </Bloque>
 
         {s.animales.map((a, i) => (
