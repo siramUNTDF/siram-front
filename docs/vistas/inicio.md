@@ -128,7 +128,8 @@ origen suman los 127 casos vigentes; la zona del cuerpo suma los **118 casos vig
 ## Lo que depende de quién mira
 
 El front muestra lo que llega:
-- **Agentes:** todo.
+- **Agentes:** todo, salvo la tarjeta **Solicitudes**, que solo llega a Zoonosis (2026-11-06: solo
+  Zoonosis ve las solicitudes). Si la API no manda `solicitudesPendientes`, la tarjeta no se muestra.
 - **Analista** (rol `analista`, en pantalla «Consulta»): no trabaja casos. Si la API no manda
   `pendientes`, la sección «Para resolver hoy» **no se muestra**; ve el panorama y los accesos.
 - **Administrador:** no ve casos. Sin `pendientes` ni `panorama`, el Inicio muestra solo **Secciones**

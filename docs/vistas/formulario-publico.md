@@ -1,7 +1,8 @@
 # Vista · Formulario público (canal ciudadano)
 
 > Ficha de vista entregada por el agente de diseño (repo `../proyecto`). No la edites desde el front:
-> si algo no cierra, avisá al usuario. Fecha: 2026-11-03.
+> si algo no cierra, avisá al usuario. Fecha: 2026-11-03; actualizada el 2026-11-06 (ciudad en el
+> inicial y mapa oscurecido en «¿Dónde fue?»; Figma todavía no lo tiene: gana la ficha).
 > **Lo visual está en Figma; esta ficha dice lo que Figma no dice** (comportamiento, datos, estados).
 > Si Figma y esta ficha no coinciden, gana la ficha. Por encima de las dos están las reglas de negocio
 > (`../narrativa.md`, «Reglas de negocio»): si algo las contradice, avisá al usuario.
@@ -78,7 +79,9 @@ de Salud, Zoonosis o CADIC. Te lleva dos minutos.» · aviso de **advertencia** 
 2. **Tus datos:** nombre \*, apellido \*, DNI \* (con ayuda), teléfono \*, correo electrónico \*.
 3. **Quién sufrió el ataque** — solo si respondió «No»: nombre \*, apellido \*, DNI \*. Debajo: «No
    hace falta su teléfono ni su correo: te contactamos a vos.»
-4. **El hecho:** «¿Cuándo pasó? \*» (fecha) · «¿Qué animal fue? \*» Perro · Gato.
+4. **El hecho:** «¿Cuándo pasó? \*» (fecha) · «¿Qué animal fue? \*» Perro · Gato · «Ciudad \*»
+   Ushuaia · Río Grande · Tolhuin. **No hay «Otra»**; ayuda: «Si fue fuera de las tres ciudades,
+   marcá la más cercana».
 5. Botón **Enviar** · pie: «Usamos tus datos solo para registrar el hecho y contactarte (Ley 25.326 de
    protección de datos personales).»
 
@@ -86,7 +89,7 @@ Mientras no se respondió la primera pregunta, se muestra «Tus datos» y el blo
 ataque» queda oculto.
 
 **Obligatorio en el canal ciudadano** (es el más exigente de los cuatro canales): nombre, apellido,
-DNI, teléfono, correo, especie y fecha del hecho de **quien completa**; y nombre, apellido y DNI de la
+DNI, teléfono, correo, especie, fecha del hecho y ciudad de **quien completa**; y nombre, apellido y DNI de la
 víctima si es otra persona. La regla final la hace cumplir el back; el front valida antes de enviar.
 
 **Validaciones** (errores en los 20 px debajo de cada campo):
@@ -94,6 +97,7 @@ víctima si es otra persona. La regla final la hace cumplir el back; el front va
 - DNI de la víctima igual al de quien completa: «Es tu mismo DNI. Si fuiste vos, respondé “Sí” arriba.»
 - Correo con formato de correo; teléfono con al menos 6 dígitos.
 - Fecha del hecho: no puede ser futura.
+- Ciudad sin elegir: «Contanos en qué ciudad fue».
 
 **Al enviar** (crea la solicitud). Ejemplo de lo que se manda:
 
@@ -103,7 +107,8 @@ víctima si es otra persona. La regla final la hace cumplir el back; el front va
   "quienInforma": { "nombre": "Carla", "apellido": "Sosa", "dni": "32114887", "telefono": "2901-54-8820", "correo": "carla.sosa@correo.com" },
   "victima": { "nombre": "Micaela", "apellido": "Sosa", "dni": "58412336" },
   "fechaHecho": "2026-09-12",
-  "especie": "perro"
+  "especie": "perro",
+  "ciudad": "ushuaia"
 }
 ```
 
@@ -143,9 +148,11 @@ Comunes a las cuatro:
 
   ```json
   { "parte": "donde", "punto": { "lat": -54.8069, "lon": -68.3073 }, "direccion": "Kuanip 1240",
-    "referencias": "Frente a la plaza, casa de rejas verdes", "ciudad": "ushuaia",
+    "referencias": "Frente a la plaza, casa de rejas verdes",
     "tipoLugar": "via_publica", "hora": "14:20" }
   ```
+  `punto` es opcional: va solo si la persona movió el mapa (ver pantalla 3). La ciudad no va: vino en
+  el inicial.
 - Si el guardado falla por red: mensaje de **error** con «Reintentar»; la persona no pierde lo cargado
   ni avanza hasta que se guarde (o elige «Terminar acá», que intenta guardar una vez y, si falla,
   igual muestra Gracias avisando que esa parte no llegó).
@@ -157,21 +164,28 @@ Comunes a las cuatro:
 hace falta.»
 
 - **Mapa** (OpenStreetMap con Leaflet) con un pin fijo al centro: la persona mueve el mapa, no el pin.
-  Arranca centrado en Ushuaia (o en la ciudad que elija más abajo, si la elige antes). Atribución
-  **siempre visible**: «© OpenStreetMap».
-- **Dirección**: al **soltar** el mapa (no mientras se arrastra, no por cada tecla) se pide **una**
-  geocodificación inversa y se completa el campo, con la nota «La propuso el mapa al soltar el pin.».
-  La persona la puede corregir a mano; si la corrige, mover el mapa de nuevo **no** la pisa sin
+  Arranca centrado en **la ciudad que eligió en el inicial**. Atribución **siempre visible**: «©
+  OpenStreetMap».
+- **Arranca oscurecido**, con el aviso «Mové el mapa y dejá el pin donde fue el ataque». El
+  oscurecido no bloquea: el primer gesto ya mueve el mapa. El aviso se va con el **primer gesto de la
+  persona** (arrastrar, pellizcar, botones de zoom, flechas del teclado) y no vuelve. Un recentrado
+  automático **no cuenta** como gesto. Si la persona vuelve a esta parte con atrás después de
+  moverlo, el mapa se ve sin oscurecer, donde lo dejó.
+- **Sin gesto no hay punto:** si al apretar Siguiente o Terminar acá la persona no movió el mapa, la
+  parte se guarda **sin punto** (y sin dirección propuesta). Lo que escribió a mano (dirección,
+  referencias, tipo de lugar, hora) se guarda igual. Así no queda como lugar del hecho un centro de
+  ciudad que nadie eligió.
+- **Dirección**: al **soltar** el mapa **después de ese primer gesto** (nunca al abrir la parte ni por
+  un recentrado; no mientras se arrastra, no por cada tecla) se pide **una** geocodificación inversa
+  y se completa el campo, con la nota «La propuso el mapa al soltar el pin.». La persona la puede corregir a mano; si la corrige, mover el mapa de nuevo **no** la pisa sin
   preguntar. El pedido va **al back** (que tiene un proxy con caché de Nominatim),
   nunca directo a Nominatim desde el navegador. Si la geocodificación falla o tarda, el campo queda
   vacío y editable; no se muestra error.
 - **Referencias** (texto libre): «casa roja», «plaza en la esquina».
-- **Ciudad**: Ushuaia · Río Grande · Tolhuin. **No hay «Otra»**: un hecho fuera de las tres ciudades
-  se marca con la más cercana y el punto del mapa dice dónde fue.
 - **¿Qué tipo de lugar era?**: Casa propia · Casa ajena · Vía pública · Espacio público · Zona rural ·
   No sé.
 - **Hora aproximada** (texto o selector de hora).
-- La **fecha** no se vuelve a preguntar: vino en el inicial.
+- La **fecha** y la **ciudad** no se vuelven a preguntar: vinieron en el inicial.
 
 ### Pantalla 4 · Qué pasó (2 de 4)
 

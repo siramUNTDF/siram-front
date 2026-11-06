@@ -46,15 +46,16 @@ dar una vista por terminada, revisá que cumple todas las que le tocan.
    intentos de ataque y las lesiones derivadas (p. ej. una caída al huir).
 2. El hecho entra a SIRAM por uno de **cuatro canales**: Salud, Zoonosis, CADIC o el **canal
    ciudadano** (un formulario público). Todos empiezan con el mismo **formulario inicial**, corto a
-   propósito: nombre, apellido, DNI, teléfono, correo, especie del animal y fecha del hecho. Qué es
-   obligatorio depende del canal.
+   propósito: nombre, apellido, DNI, teléfono, correo, especie del animal, fecha del hecho y
+   **ciudad** (Ushuaia · Río Grande · Tolhuin, sin «Otra»). Qué es obligatorio depende del canal,
+   salvo la ciudad, que es obligatoria en los cuatro: ningún caso ni solicitud nace sin ciudad.
 3. **Si lo carga un agente de un organismo, es un caso.** **Si lo carga un ciudadano, es una
    solicitud**: lo que declaró la persona, tal cual, a la espera de que un agente la revise.
 4. Después de enviar, el ciudadano puede seguir con un **formulario detallado** opcional, en cuatro
    partes (dónde fue, qué pasó, cómo era el animal, la denuncia). Cada parte se guarda al pasar a la
    siguiente. Es **una sola oportunidad**: el enlace vence en una hora y después solo los organismos
    agregan datos.
-5. Un agente revisa la solicitud: la **descarta** o la **registra**, creando un caso nuevo o
+5. Un agente **de Zoonosis** revisa la solicitud: la **descarta** o la **registra**, creando un caso nuevo o
    **sumándola a un caso que ya existe**. Nada de lo que manda un ciudadano llega a un caso sin un
    agente de por medio.
 6. Cada organismo completa el caso con lo suyo: **Salud** carga la atención de la víctima
@@ -118,7 +119,8 @@ no vino, la sección o la columna no se muestra (o muestra solo lo que llegó). 
 pantalla no lo protege.
 
 Para orientarte (las reglas son tentativas y las aplica el back):
-- **Agentes** (Salud, Zoonosis, CADIC): ven todos los casos y todas las solicitudes.
+- **Agentes** (Salud, Zoonosis, CADIC): ven todos los casos. **Las solicitudes, solo Zoonosis**
+  (2026-11-06): a Salud y CADIC la API no se las devuelve.
   - Salud **no** recibe dueño, chip, tenencia, descripción ni fotos de los animales, ni el detalle de
     las denuncias (solo «tiene 1 denuncia anotada»).
   - CADIC no recibe dueño ni chip, ni el certificado médico, ni el detalle del tratamiento ni el de

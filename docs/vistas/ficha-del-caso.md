@@ -68,7 +68,8 @@ completa con lo suyo. **Es solo lectura**: cada cambio se hace en una ventana la
 10. **Lo que declaró la persona:** «Lo cargó la persona en el formulario público. Ningún agente lo
     edita; si hay varias solicitudes, gana la más reciente.» D1 ¿Hizo denuncia en Zoonosis? · D3 motivo
     de no denunciar (solo si respondió No; si no, «—») · Solicitudes sumadas (número + «sumada el …» o
-    «registrada el …»). Si el caso no tiene solicitudes, D1 y D3 muestran «Sin dato».
+    «registrada el …»; el número es enlace a la solicitud solo para Zoonosis, que es quien ve las
+    solicitudes; para el resto, texto). Si el caso no tiene solicitudes, D1 y D3 muestran «Sin dato».
 11. **Documentos:** «Solo nombre del archivo y dónde está alojado. Las fotos del animal van en cada
     animal.» Los documentos del caso (el certificado médico) · botón **Adjuntar documento**.
 12. **Historial · acceso:** «13 cambios · el último, 22/09/2026 10:15 por M. Acosta (Zoonosis
@@ -93,12 +94,20 @@ permisos) **no se muestra**.
   12/09/2026 14:50). Revisá los dos casos antes de seguir.» **Sin chips de qué coincide**: la coincidencia es
   solo por el DNI de la víctima. Acciones:
   - **Comparar casos**: va a la comparación (`posibles-duplicados.md`) con **este caso como A**: si se
-    consolida, sobrevive el caso desde el que se abrió. Cualquier agente puede consolidar (no hay un
-    permiso propio).
-  - **No es duplicado**: abre la **misma ventana lateral** que en la comparación — «Son casos
+    consolida, sobrevive el caso desde el que se abrió. Todos los agentes pueden comparar; **consolidar
+    es solo de Zoonosis** (2026-11-06).
+  - **No es duplicado** (**solo Zoonosis**: si el permiso no llega, no se muestra): abre la **misma
+    ventana lateral** que en la comparación — «Son casos
     distintos» con **observación opcional** (p. ej. «otro ataque a la misma persona») · Cancelar ·
     **Guardar**. Al guardar, la coincidencia queda resuelta como *distintos*: la marca y el aviso
     desaparecen y no vuelven para ese par.
+- **Caso que absorbió a otro** (2026-11-06): si el caso sobrevivió a una consolidación, mensaje de
+  **información** fijo entre la banda de estado y Víctima: «Este caso absorbió a C-2026-0402
+  (consolidado el 15/09/2026 por M. Acosta, Zoonosis Ushuaia). Parte de sus datos vienen de ese caso.»
+  El número es enlace al caso unificado. Lo ven todos los que ven el caso: sirve, p. ej., para que
+  Salud entienda por qué el tratamiento puede ser otro (al consolidar queda el que tenga más datos).
+  La API lo manda como `absorbio: [{ "numero", "fecha", "por", "organismo" }]` (vacío si no absorbió
+  ninguno).
 - **Grave** no tiene aviso propio en la ficha: alcanza con la marca y con el día 10 «Murió o enfermó»
   en el animal.
 
@@ -125,8 +134,11 @@ Un bloque por animal, en el orden en que se cargaron. Encabezado: «Animal 1 · 
     chip solo se le pregunta a quien dice que el animal es su mascota; para un ajeno conocido, como
     este, la persona declara el dueño y no el chip. Es texto de referencia: **no se copia** al dueño ni
     al chip. Zoonosis lo confirma cargándolo con **Editar animal** (RN-32: nada escribe en una persona
-    sin un agente). En el ejemplo, Zoonosis ya cargó al dueño (Raúl Benítez); la referencia sigue en el
-    mock para ver cómo se muestra (ver «Pendiente»).
+    sin un agente). **La referencia queda siempre a la vista**, también después de que Zoonosis cargó el
+    dueño o el chip: es de dónde salió el dato y permite comparar lo dicho con lo confirmado. En el
+    ejemplo, Zoonosis ya cargó al dueño (Raúl Benítez) y la referencia sigue. **Si dos solicitudes
+    declararon sobre el mismo animal** (un caso tiene como mucho dos), se muestran las dos, la más
+    reciente primero.
 - **Valores de la observación del día 10:** Pendiente · Sin novedad · Murió o enfermó · Ubicado, sin
   acceso · No se ubicó. «Murió o enfermó» hace que el caso tenga la marca Grave. **Ninguno** hace
   incompleto al caso. Con «Ubicado, sin acceso» o «No se ubicó» el caso se puede finalizar igual.
@@ -340,7 +352,7 @@ historia común de todas las fichas):
       "descripcion": { "tamano": "mediano", "sexo": "macho", "edadAparente": "adulto", "color": "Negro con manchas blancas", "raza": "Mestizo", "podriaReconocerlo": "si" },
       "dia10": { "valor": "sin_novedad", "fecha": "2026-09-22", "por": "M. Acosta" },
       "observaciones": "Está dentro de un terreno con acceso limitado.",
-      "declaradoEnSolicitud": { "solicitud": "S-2026-0031", "dueno": "Raúl, vecino de Kuanip 1260 · 2901-55-0101" },
+      "declaradoEnSolicitudes": [{ "solicitud": "S-2026-0031", "dueno": "Raúl, vecino de Kuanip 1260 · 2901-55-0101" }],
       "fotos": [{ "nombre": "perro-01.jpg", "url": "https://…" }, { "nombre": "perro-02.jpg", "url": "https://…" }]
     },
     {
@@ -349,7 +361,7 @@ historia común de todas las fichas):
       "descripcion": { "tamano": "grande", "sexo": "no_sabe", "edadAparente": "adulto", "color": "Marrón", "raza": null, "podriaReconocerlo": "no_sabe" },
       "dia10": { "valor": "no_ubicado", "fecha": "2026-09-22", "por": "M. Acosta" },
       "observaciones": "Se recorrió la zona dos veces sin ubicarlo.",
-      "declaradoEnSolicitud": null,
+      "declaradoEnSolicitudes": [],
       "fotos": []
     }
   ],
@@ -366,9 +378,11 @@ historia común de todas las fichas):
   que cuenta para la marca está cargado.
 - **La solicitud S-2026-0034** (pendiente, enviada el 13/09 por Carla Sosa) todavía **no** está sumada:
   no aparece en esta ficha (está en la cola de Solicitudes).
-- `declaradoEnSolicitud` (por animal), cuando hay: `{ "solicitud": "S-…", "dueno": "texto libre",
-  "tieneChip": "si|no|no_sabe", "chip": "…" }`; `tieneChip` y `chip` solo vienen si la persona dijo
-  que el animal es su mascota. Solo lo recibe Zoonosis.
+- `declaradoEnSolicitudes` (por animal): lista de 0 a 2 elementos, la más reciente primero, cada uno
+  `{ "solicitud": "S-…", "dueno": "texto libre", "tieneChip": "si|no|no_sabe", "chip": "…" }`; `tieneChip` y `chip` solo vienen si la persona dijo
+  que el animal es su mascota. Solo lo recibe Zoonosis. Llega en el animal que corresponde tanto si la
+  solicitud creó el caso como si se sumó a uno existente (el back guarda el emparejamiento al
+  resolverla, ver `solicitudes.md`).
 - Los datos son «al 25/09/2026»: la última modificación (22/09 10:15, M. Acosta) es la carga del día 10
   del animal 2. El certificado médico lo adjuntó Zoonosis el 13/09 a las 10:00.
 - Cada valor ausente (`null`) se muestra «Sin dato». Un bloque que no viene (`tratamiento` ausente,
@@ -387,5 +401,3 @@ historia común de todas las fichas):
   back lo rechaza; si en cambio hay que ofrecer «usar esa persona», está por definirse con el back.
 - **Agregar animal con un chip que ya es de un animal de este mismo caso:** qué responde la ventana no
   está definido.
-- **Lo declarado sobre el animal después de confirmarlo:** si la referencia «Según la solicitud S-…»
-  sigue a la vista una vez que Zoonosis cargó el dueño o el chip, o deja de mostrarse.

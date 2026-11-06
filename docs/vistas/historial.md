@@ -51,7 +51,9 @@ sumaron. También los avisos automáticos del sistema (p. ej. «Avisó una coinc
 mismo DNI de la víctima.»).
 
 Tipos de cambio: **creación** · **modificación** · **baja lógica** (p. ej. un animal absorbido por otro
-al reconciliar). No hay borrados.
+al reconciliar) · **consolidación** (2026-11-06: lo que cambió por consolidar dos casos, p. ej. el
+tratamiento que pasó al que sobrevive; se muestra con el agente de Zoonosis que consolidó, pero como
+consolidación, no como edición a mano). No hay borrados.
 
 ## «Ver cómo estaba en una fecha»
 

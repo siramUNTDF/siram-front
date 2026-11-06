@@ -115,4 +115,31 @@ Ajustes que el código del front todavía no refleja. **Registralos como pendien
 un change de openspec). Cuando estén hechos no hace falta avisar: el agente de diseño revisa el código
 y borra el aviso de acá.
 
-_Sin avisos pendientes._
+- **2026-11-06 · Ciudad en el formulario inicial y mapa sin tocar.** Actualizadas `narrativa.md` §1
+  (paso 2), `vistas/formulario-publico.md` (pantallas 1 y 3, envíos de ejemplo), `vistas/nuevo-caso.md`
+  (bloque «Hecho», tabla de obligatorios, validación) y `vistas/solicitudes.md` (mapa del pin en
+  Revisar solicitud, datos de ejemplo). Recoge los changes `ciudad-inicial-y-mapa-sin-tocar` y
+  `mapa-en-revisar-solicitud`.
+- **2026-11-06 · Emparejar animales al sumar.** `vistas/solicitudes.md`, pantalla Sumar, paso 4: por
+  cada animal de la solicitud, un selector «Es en el caso:» (animales del caso de la misma especie, sin
+  repetir) más «Es otro animal» y «No va al caso». «Sumar al caso» se habilita con todos emparejados.
+  El envío suma `animales` (`animalCaso`: número, `"nuevo"` o `null`). `vistas/ficha-del-caso.md`:
+  `declaradoEnSolicitudes` llega en el animal correcto también al sumar (arregla el hueco de
+  `sumarSolicitud` en el mock).
+- **2026-11-06 · Hasta 2 solicitudes por caso, solo a casos abiertos.** `vistas/solicitudes.md`: solo se
+  suma a un caso *Registrado* o *En seguimiento* con menos de 2 solicitudes; los demás se muestran sin
+  poder elegirse, con el motivo. `vistas/ficha-del-caso.md`: `declaradoEnSolicitud` pasa a ser la lista
+  `declaradoEnSolicitudes` (0 a 2, la más reciente primero), y la referencia queda siempre a la vista,
+  también después de que Zoonosis confirma el dueño. Al consolidar, las solicitudes del caso absorbido se quedan en él
+  (`vistas/posibles-duplicados.md`, «Pendiente»).
+- **2026-11-06 · Zoonosis decide sobre los duplicados.** `vistas/posibles-duplicados.md`: Consolidar y
+  No es duplicado solo para Zoonosis; Salud y CADIC ven la lista y la comparación sin acciones.
+  `vistas/ficha-del-caso.md`: «No es duplicado» solo Zoonosis, y un mensaje nuevo en el caso que
+  sobrevive a una consolidación («Este caso absorbió a C-…», campo `absorbio`). `vistas/nuevo-caso.md`:
+  con DNI repetido, Salud y CADIC no tienen «Es otro ataque, guardar igual» y el texto del aviso cambia. `vistas/historial.md`:
+  tipo de cambio nuevo, **consolidación**.
+- **2026-11-06 · Solo Zoonosis ve las solicitudes.** A Salud y CADIC la API no les devuelve la cola: sin
+  menú «Solicitudes», sin tarjeta en Inicio, y en la ficha del caso el número de solicitud es texto, no
+  enlace. Actualizadas `narrativa.md`, `vistas/solicitudes.md`, `vistas/inicio.md` y
+  `vistas/ficha-del-caso.md`. Reemplaza el recorte del dueño declarado para Salud y CADIC: ya no lo
+  necesitan, porque no ven solicitudes.

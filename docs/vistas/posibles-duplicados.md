@@ -157,21 +157,22 @@ Y al marcar como distintos: `{ "coincidencia": 7, "desenlace": "distintos", "obs
 
 ## Quién la ve
 
-- **Agentes** (Salud, Zoonosis, CADIC): ven la lista, comparan y deciden. **Cualquier agente puede
-  consolidar**: no hay un permiso propio mientras no se defina quién es la «persona autorizada» (ver
-  «Pendiente»). La casilla de confirmación es lo único que se pide.
+- **Agentes de Zoonosis:** ven la lista, comparan y **deciden** (Consolidar · No es duplicado). Son la
+  «persona autorizada» de RN-15 (2026-11-06). La casilla de confirmación sigue siendo obligatoria.
+- **Agentes de Salud y CADIC:** ven la lista y la comparación, **sin las acciones**: si el permiso no
+  llega, los botones no se muestran. En su lugar, una línea: «Lo decide Zoonosis».
 - **Analista / comité** y **administrador:** no ven esta lista.
 
 ## Pendiente: no lo implementes todavía
 
-- **Qué pasa con lo demás de B al consolidar** (sus animales, tratamiento, denuncias, solicitudes y
-  documentos): todavía no está definido si se suman a A o se eligen. La comparación solo muestra los
-  datos del caso. Por ahora, implementá la comparación de los datos de la tabla.
+- **Qué pasa con lo demás de B al consolidar** (sus animales, denuncias y documentos): todavía no está
+  definido si se suman a A o se eligen. Ya definido (2026-11-06), lo hace el back sin pantalla: las
+  **solicitudes** de B se quedan en B (que queda *Unificado* y apunta a A) y no se muestran en A; del
+  **tratamiento** queda uno, entero, el que tenga más datos (no hay filas para elegir). La comparación
+  solo muestra los datos del caso. Por ahora, implementá la comparación de los datos de la tabla.
 - **Casos con varios animales:** la comparación muestra un solo animal por caso. Cómo se emparejan los
   animales de A y de B está por definirse (en el ejemplo, A tiene dos y B uno, el perro con chip que
   ya comparten).
-- **Quién puede consolidar** («persona autorizada», RN-15): sin definir. Mientras tanto, cualquier
-  agente.
 - **Los datos de la víctima en los dos casos:** la persona es única por DNI, así que nombre, teléfono y
   correo de la víctima son los mismos en A y en B; lo que puede variar entre casos es la edad al
   momento del hecho. Por eso las filas de *Persona afectada* salen siempre iguales, salvo la edad.
