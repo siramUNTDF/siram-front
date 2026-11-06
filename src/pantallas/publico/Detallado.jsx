@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { Box, Button, IconButton } from '@mui/material'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
@@ -17,7 +17,6 @@ import { sesionReporte } from './sesionReporte'
 
 const noSe = { no_sabe: 'No sé' }
 const siNoNoSe = { si: 'Sí', no: 'No', ...noSe }
-const ciudades = { ushuaia: 'Ushuaia', rio_grande: 'Río Grande', tolhuin: 'Tolhuin' }
 const centroCiudad = { ushuaia: centros.Ushuaia, rio_grande: centros['Río Grande'], tolhuin: centros.Tolhuin }
 const motivos = {
   animal_propio_o_conocido: 'El animal es propio o conocido', no_sabia_donde: 'No sabía dónde denunciar', no_sabia_que_habia: 'No sabía que había que denunciar',
@@ -76,22 +75,39 @@ function Enviada({ numero }) {
 }
 
 // Pantalla 3 · Dónde fue.
+// La ciudad ya vino en el inicial: el mapa arranca ahí. El punto cuenta solo si la persona movió el
+// mapa; si no, la parte se guarda sin coordenadas (no es un lugar que alguien eligió).
 function DondeFue() {
-  const p = useParte('donde', { ciudad: null, direccion: '', referencias: '', tipoLugar: null, hora: '', punto: centros.Ushuaia, aMano: false, propuesta: false })
-  const { valores: v } = p
+  const ciudad = sesionReporte.obtener()?.ciudad
+  const p = useParte('donde', { direccion: '', referencias: '', tipoLugar: null, hora: '', punto: null, movido: false, aMano: false, propuesta: false })
+  const { valores: v, setValores } = p
+  const alPrimerGesto = useCallback(() => setValores((x) => ({ ...x, movido: true })), [setValores])
   function mover([lat, lon]) {
-    p.setValores((x) => (x.aMano ? { ...x, punto: [lat, lon] } : { ...x, punto: [lat, lon], direccion: api.geocodificar(lat, lon), propuesta: true }))
+    p.setValores((x) => {
+      if (!x.movido) return x
+      return x.aMano ? { ...x, punto: [lat, lon] } : { ...x, punto: [lat, lon], direccion: api.geocodificar(lat, lon), propuesta: true }
+    })
   }
-  const datos = () => ({ punto: { lat: v.punto[0], lon: v.punto[1] }, latitud: v.punto[0], longitud: v.punto[1], direccion: v.direccion || null, referencias: v.referencias || null, ciudad: v.ciudad, tipoLugar: v.tipoLugar, horaHecho: v.hora || null })
+  const conPunto = v.movido && v.punto
+  const datos = () => ({
+    ...(conPunto ? { punto: { lat: v.punto[0], lon: v.punto[1] }, latitud: v.punto[0], longitud: v.punto[1] } : {}),
+    direccion: v.direccion || null, referencias: v.referencias || null, tipoLugar: v.tipoLugar, horaHecho: v.hora || null,
+  })
   return (
     <Box component="form" noValidate onSubmit={(e) => { e.preventDefault(); p.guardar(datos(), 'que') }}>
       <Progreso parte={1} />
       <Titulo bajada="Mové el mapa hasta dejar el pin donde pasó. Te proponemos la dirección; corregila si hace falta.">¿Dónde fue?</Titulo>
-      <Mapa alto={260} pinFijo centro={v.ciudad ? centroCiudad[v.ciudad] : v.punto} onMover={mover} />
+      <Mapa
+        alto={260}
+        pinFijo
+        centro={v.punto ?? centroCiudad[ciudad] ?? centros.Ushuaia}
+        onMover={mover}
+        aviso={v.movido ? null : 'Mové el mapa y dejá el pin donde fue el ataque'}
+        onPrimerGesto={v.movido ? undefined : alPrimerGesto}
+      />
       <Box sx={{ mt: 2 }}>
         <Texto etiqueta="Dirección" nota={v.propuesta && !v.aMano ? 'La propuso el mapa al soltar el pin.' : null} valor={v.direccion} onCambio={(x) => p.setValores((y) => ({ ...y, direccion: x, aMano: true }))} />
         <Texto etiqueta="Referencias" ayuda="Por ejemplo: casa roja, plaza en la esquina." placeholder="casa roja, plaza en la esquina" {...p.poner('referencias')} />
-        <Opciones etiqueta="Ciudad" opciones={ciudades} ayuda="Si fue fuera de las tres ciudades, marcá la más cercana: el punto del mapa dice dónde fue." {...p.poner('ciudad')} />
         <Opciones etiqueta="¿Qué tipo de lugar era?" vertical opciones={{ casa_propia: 'Casa propia', casa_ajena: 'Casa ajena', via_publica: 'Vía pública', espacio_publico: 'Espacio público', zona_rural: 'Zona rural', ...noSe }} {...p.poner('tipoLugar')} />
         <Texto etiqueta="Hora aproximada" tipo="time" {...p.poner('hora')} />
       </Box>
