@@ -7,13 +7,13 @@ import Mensaje from '@/componentes/Mensaje'
 import { CampoFecha, Fila, Nota, Opciones, Texto } from '@/componentes/formulario/Campos'
 import useFormulario from '@/componentes/formulario/useFormulario'
 import { useAvisar } from '@/componentes/avisos'
-import { canalesOrigen, especies } from '@/componentes/caso/catalogos'
+import { canalesOrigen, ciudades, especies } from '@/componentes/caso/catalogos'
 import { api, useSesion } from '@/mocks'
 import { dni as formatoDni, fechaCorta, soloDigitos } from '@/utiles/formato'
 import { correoValido, dniValido, fechaFutura, fechaInvalida, mensajeDni, mensajeFechaInvalida, telefonoValido, vacio } from '@/utiles/validacion'
 
 const persona = { nombre: '', apellido: '', dni: '', telefono: '', correo: '' }
-const inicial = { informaLaVictima: null, victima: persona, contactoResponsable: persona, fechaHecho: '', especie: null }
+const inicial = { informaLaVictima: null, victima: persona, contactoResponsable: persona, fechaHecho: '', especie: null, ciudad: null }
 
 // Qué es obligatorio según el canal (nuevo-caso.md). El back hace cumplir la regla final.
 const obligatorio = {
@@ -45,6 +45,8 @@ function validar(v, canal) {
   if (fechaInvalida(v.fechaHecho)) e.fechaHecho = mensajeFechaInvalida
   else if (fechaFutura(v.fechaHecho)) e.fechaHecho = 'La fecha del hecho no puede ser futura'
   if (!v.especie) e.especie = 'Elegí la especie del animal'
+  // Ningún caso nace sin ciudad, en ningún canal (decisión del usuario, 2026-11-06).
+  if (!v.ciudad) e.ciudad = 'Elegí la ciudad del hecho'
   return e
 }
 
@@ -82,6 +84,7 @@ export default function NuevoCaso({ onCerrar }) {
       contactoResponsable: conContacto ? limpiar(v.contactoResponsable) : null,
       fechaHecho: v.fechaHecho || null,
       especie: v.especie,
+      lugar: { ciudad: ciudades[v.ciudad] },
     }
   }
 
@@ -172,6 +175,7 @@ export default function NuevoCaso({ onCerrar }) {
         <Fila>
           <CampoFecha etiqueta="Fecha del hecho" sinFuturas requerido={obligatorio.fechaHecho(canal)} valor={v.fechaHecho} onCambio={(x) => f.poner('fechaHecho', x)} error={f.errores.fechaHecho} mono />
           <Opciones etiqueta="Especie del animal" requerido valor={v.especie} onCambio={(x) => f.poner('especie', x)} opciones={especies} error={f.errores.especie} />
+          <Opciones etiqueta="Ciudad" requerido ayuda="Si fue fuera de las tres ciudades, marcá la más cercana." valor={v.ciudad} onCambio={(x) => f.poner('ciudad', x)} opciones={ciudades} error={f.errores.ciudad} />
         </Fila>
       </Bloque>
 

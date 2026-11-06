@@ -5,7 +5,7 @@ import Bloque from '@/componentes/Bloque'
 import Mensaje from '@/componentes/Mensaje'
 import { CampoFecha, Opciones, Texto } from '@/componentes/formulario/Campos'
 import useFormulario from '@/componentes/formulario/useFormulario'
-import { especies } from '@/componentes/caso/catalogos'
+import { ciudades, especies } from '@/componentes/caso/catalogos'
 import { api } from '@/mocks'
 import { soloDigitos } from '@/utiles/formato'
 import { correoValido, dniValido, fechaFutura, fechaInvalida, mensajeDni, mensajeFechaInvalida, telefonoValido, vacio } from '@/utiles/validacion'
@@ -13,6 +13,7 @@ import { Acciones, PielPublica, SimularFallas, Titulo } from './piezas'
 import { sesionReporte } from './sesionReporte'
 
 const ayudaDni = 'Solo números, 7 u 8, con o sin puntos. Por ejemplo: 32.114.887'
+const ayudaCiudad = 'Si fue fuera de las tres ciudades, marcá la más cercana.'
 
 // En el canal ciudadano es obligatorio todo lo de quien completa (formulario-publico.md).
 function validar(v) {
@@ -39,6 +40,7 @@ function validar(v) {
   else if (fechaInvalida(v.fechaHecho)) e.fechaHecho = mensajeFechaInvalida
   else if (fechaFutura(v.fechaHecho)) e.fechaHecho = 'La fecha no puede ser futura'
   if (!v.especie) e.especie = 'Contanos qué animal fue'
+  if (!v.ciudad) e.ciudad = 'Contanos en qué ciudad fue'
   return e
 }
 
@@ -46,7 +48,7 @@ function validar(v) {
 export default function FormularioInicial() {
   const navigate = useNavigate()
   const vacioPersona = { nombre: '', apellido: '', dni: '' }
-  const f = useFormulario({ informaLaVictima: null, quienInforma: { ...vacioPersona, telefono: '', correo: '' }, victima: vacioPersona, fechaHecho: '', especie: null })
+  const f = useFormulario({ informaLaVictima: null, quienInforma: { ...vacioPersona, telefono: '', correo: '' }, victima: vacioPersona, fechaHecho: '', especie: null, ciudad: null })
   const [enviando, setEnviando] = useState(false)
   const [error, setError] = useState(null)
   const v = f.valores
@@ -66,7 +68,7 @@ export default function FormularioInicial() {
           throw new Error('red')
         }
         const r = api.enviarSolicitud(v)
-        sesionReporte.iniciar(r.numero, r.token, v.especie)
+        sesionReporte.iniciar(r.numero, r.token, v.especie, v.ciudad)
         // `replace`: el botón atrás no vuelve al formulario ni reenvía nada.
         navigate('/reportar/detalle', { replace: true })
       } catch {
@@ -100,6 +102,7 @@ export default function FormularioInicial() {
           <Bloque titulo="El hecho">
             <CampoFecha etiqueta="¿Cuándo pasó?" requerido sinFuturas {...campo('fechaHecho')} />
             <Opciones etiqueta="¿Qué animal fue?" requerido opciones={especies} {...campo('especie')} />
+            <Opciones etiqueta="Ciudad" requerido ayuda={ayudaCiudad} opciones={ciudades} {...campo('ciudad')} />
           </Bloque>
         </Box>
         {error && <Mensaje tipo="error" sx={{ mt: 2 }} onCerrar={() => setError(null)}>{error}</Mensaje>}

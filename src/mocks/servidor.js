@@ -1280,7 +1280,7 @@ export function enviarSolicitud(form) {
     informaLaVictima: form.informaLaVictima,
     quienInforma: { ...form.quienInforma, dni: soloDigitos(form.quienInforma.dni) },
     victima: form.informaLaVictima ? null : { ...form.victima, dni: soloDigitos(form.victima.dni), edad: null, domicilio: null },
-    hecho: { fechaHecho: form.fechaHecho, horaHecho: null, ciudad: null, direccion: null, referencias: null, tipoLugar: null, quePaso: null, cantidadAnimales: null },
+    hecho: { fechaHecho: form.fechaHecho, horaHecho: null, ciudad: form.ciudad, direccion: null, referencias: null, tipoLugar: null, quePaso: null, cantidadAnimales: null },
     animales: [{ especie: form.especie, deQuienEs: null, duenoDeclarado: null, tieneChip: null, chip: null, zona: null, vacunado: null, podriaReconocerlo: null, tamano: null, sexo: null, edadAparente: null, color: null, raza: null, fotos: [] }],
     denuncia: { hizoDenuncia: null, motivoNoDenuncia: null },
     seccionesCompletas: 0,

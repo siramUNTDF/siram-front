@@ -3,8 +3,8 @@
 let actual = null
 
 export const sesionReporte = {
-  iniciar(numero, token, especie) {
-    actual = { numero, token, especie, partes: {}, animales: 1 }
+  iniciar(numero, token, especie, ciudad) {
+    actual = { numero, token, especie, ciudad, partes: {}, animales: 1 }
   },
   obtener: () => actual,
   guardarLocal(parte, valores) {
