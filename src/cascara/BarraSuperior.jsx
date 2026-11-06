@@ -5,6 +5,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import CheckIcon from '@mui/icons-material/Check'
 import { cascara, fuentes } from '@/tema/tokens'
 import { api, perfiles } from '@/mocks'
+import { AtajoIrAReportar } from '@/temporal/AtajosPruebas' // TEMPORAL-PRUEBAS: eliminar
 
 const textoPerfil = {
   zoonosis: 'Agente de Zoonosis',
@@ -77,6 +78,7 @@ export default function BarraSuperior({ usuario, onAlternarMenu, etiquetaMenu })
       </Box>
 
       <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <AtajoIrAReportar /> {/* TEMPORAL-PRUEBAS: eliminar */}
         <Typography
           component="span"
           sx={{ fontSize: 14, color: 'text.secondary', whiteSpace: 'nowrap', display: { xs: 'none', md: 'inline' } }}

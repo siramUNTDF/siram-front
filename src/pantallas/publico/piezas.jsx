@@ -1,6 +1,7 @@
 import { Box, Button, LinearProgress } from '@mui/material'
 import { fuentes } from '@/tema/tokens'
 import { api } from '@/mocks'
+import { AtajoVolverAlPanel } from '@/temporal/AtajosPruebas' // TEMPORAL-PRUEBAS: eliminar
 
 // Piel del formulario público: sin la cáscara del backoffice, 390 px de ancho máximo, centrado.
 export function PielPublica({ children }) {
@@ -13,6 +14,7 @@ export function PielPublica({ children }) {
         </Box>
         {children}
       </Box>
+      <AtajoVolverAlPanel /> {/* TEMPORAL-PRUEBAS: eliminar */}
     </Box>
   )
 }
