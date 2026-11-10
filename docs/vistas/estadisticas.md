@@ -44,7 +44,7 @@ y los unificados ya están contados en el caso que los absorbió.
 | **Animal** · El animal que atacó | Especie y tamaño | Dos grupos de barras | Especie: Perro · Gato · Tamaño: Chico · Mediano · Grande · No sabe · Sin dato |
 | | Tenencia del animal | Barras | Ajeno desconocido · Ajeno conocido · Propio · No sabe · Sin dato |
 | | Vacunación del animal | Barras | Vacuna antirrábica: Sí · No · No sabe · Sin dato |
-| **Lesión** · Zona del cuerpo y gravedad, del tratamiento | Zona del cuerpo lesionada | Barras | Piernas · Manos · Brazos · Cara · Tronco · Múltiples |
+| **Lesión** · Zona del cuerpo y gravedad, del tratamiento | Zona del cuerpo lesionada | Barras | Piernas · Manos · Brazos · Cabeza · Tronco · Múltiples |
 | | Gravedad de la lesión | Barras | Excoriación · Herida superficial · Herida profunda · Amputación · Sin dato |
 | **Registro** · No son datos epidemiológicos | Origen del registro | Barras con cantidad y % | Un organismo por barra |
 | | Datos sin completar | Barras con cantidad y % | Vacuna del animal · Hora · Tamaño · Tipo de lugar (casos sin ese dato) |
@@ -63,7 +63,7 @@ y los unificados ya están contados en el caso que los absorbió.
   dos y otro caso más también): especie Perro 114 · Gato 15; tenencia y vacunación suman 129. El pie dice «animales de los casos vigentes en 2026». La suma puede
   superar el total de casos.
 - **Categorías con 0** no se dibujan (p. ej. si no hubo amputaciones, no hay barra).
-- **Destacados fijos** (no se calculan): «0–9» en la franja etaria, «Cara» en zona del cuerpo, «Sáb» y
+- **Destacados fijos** (no se calculan): «0–9» en la franja etaria, «Cabeza» en zona del cuerpo, «Sáb» y
   «Dom» en día de la semana, y la franja horaria con más casos.
 - **Notas:** solo las fijas (qué cuenta el gráfico, aclaraciones como las de arriba). Las frases de
   Figma con cifras («Fin de semana: 47 casos (37 %)…», «Vía pública: 58 casos, casi la mitad…») son
@@ -98,7 +98,7 @@ y los unificados ya están contados en el caso que los absorbió.
     ],
     "zonaDelCuerpo": { "conTratamiento": 118, "valores": [
       { "valor": "piernas", "casos": 41 }, { "valor": "manos", "casos": 26 }, { "valor": "brazos", "casos": 19 },
-      { "valor": "cara", "casos": 16 }, { "valor": "tronco", "casos": 8 }, { "valor": "multiples", "casos": 8 }
+      { "valor": "cabeza", "casos": 16 }, { "valor": "tronco", "casos": 8 }, { "valor": "multiples", "casos": 8 }
     ] },
     "gravedad": { "conTratamiento": 118, "valores": [
       { "valor": "herida_superficial", "casos": 71 }, { "valor": "herida_profunda", "casos": 29 },

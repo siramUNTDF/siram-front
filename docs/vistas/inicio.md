@@ -33,7 +33,7 @@ secciones.
    | Nivel (rótulo · aclaración) | Tarjeta | Cifra de ejemplo | Texto | Detalle | Al hacer clic |
    |---|---|---|---|---|---|
    | Bloquea el registro · «el caso no avanza hasta que alguien lo resuelva» | Incompletos (grande, rojo) | 23 | casos incompletos | Faltan datos obligatorios | `/casos/incompletos` |
-   | | Esperando contacto (grande, azul) | 17 | casos esperando contacto | Hay que llamar a la persona para completar y verificar | `/casos?filtro=en_seguimiento&motivo=contacto` (Bandeja con el chip *En seguimiento* y el filtro aplicado «Motivo: Esperando contacto») |
+   | | Esperando contacto (grande, azul) | 17 | casos esperando contacto | Falta un teléfono: hay que buscarlo por DNI | `/casos?filtro=en_seguimiento&motivo=contacto` (Bandeja con el chip *En seguimiento* y el filtro aplicado «Motivo: Esperando contacto») |
    | | **Graves** (grande, rojo, ícono de error) | 1 | caso grave | Un animal murió o enfermó en la observación | `/casos?filtro=graves` (Bandeja con el chip *Graves*) |
    | Espera tu revisión · «solicitudes para registrar y posibles duplicados para decidir» | **Solicitudes** (compacta, azul) | 3 | solicitudes pendientes | Del formulario público | `/casos/solicitudes` (chip *Pendientes*) |
    | | Posibles duplicados (compacta, violeta) | 8 | posibles duplicados | Esperan revisión | `/casos/duplicados` |
@@ -50,7 +50,7 @@ secciones.
    | Gráfico | Bajada | Tipo | Notas |
    |---|---|---|---|
    | Casos por mes | Epidemiología · fecha del hecho | Columnas, ene → mes actual | El mes en curso va **punteado** («parcial · al 25/09») con la proyección («≈38 · proyectado») |
-   | Zona del cuerpo lesionada | Epidemiología · lesión principal | Barras horizontales | «Cara» destacada. Nota fija: «Sale del tratamiento que carga Salud: los casos que no pasaron por Salud no tienen este dato.» |
+   | Zona del cuerpo lesionada | Epidemiología · lesión principal | Barras horizontales | «Cabeza» destacada. Nota fija: «Sale del tratamiento que carga Salud: los casos que no pasaron por Salud no tienen este dato.» |
    | Franja etaria de la víctima | Epidemiología · edad al momento del ataque | Columnas: 0–9 · 10–19 · 20–39 · 40–59 · 60+ | «0–9» destacada |
    | Canal de origen | Cobertura · quién carga los casos | Barras con cantidad y % | Zoonosis · Salud · CADIC · Ciudadano · Histórico. Nota fija: «Por dónde entró cada caso. “Ciudadano” son las solicitudes registradas; “Histórico”, registros viejos cargados a mano.» |
 
@@ -66,7 +66,7 @@ secciones.
 - **«+ Ver los datos del gráfico»** despliega, debajo del gráfico, una tabla simple con las mismas
   cifras (categoría · casos, y % donde haya). Es la alternativa accesible al gráfico. El texto pasa a
   «− Ocultar los datos».
-- **Destacados:** son fijos por diseño, no se calculan: «0–9» en la franja etaria y «Cara» en zona del
+- **Destacados:** son fijos por diseño, no se calculan: «0–9» en la franja etaria y «Cabeza» en zona del
   cuerpo (los grupos más sensibles).
 - **Notas:** van solo las notas **fijas** (las que explican qué cuenta el gráfico). Las frases de Figma
   con cifras («Septiembre está incompleto: 32 casos en 25 de los 30 días…», «0 a 9 años no es la barra
@@ -94,7 +94,7 @@ secciones.
     ],
     "zonaDelCuerpo": { "conTratamiento": 118, "valores": [
       { "valor": "piernas", "casos": 41 }, { "valor": "manos", "casos": 26 }, { "valor": "brazos", "casos": 19 },
-      { "valor": "cara", "casos": 16 }, { "valor": "tronco", "casos": 8 }, { "valor": "multiples", "casos": 8 }
+      { "valor": "cabeza", "casos": 16 }, { "valor": "tronco", "casos": 8 }, { "valor": "multiples", "casos": 8 }
     ] },
     "franjaEtaria": [
       { "franja": "0–9", "casos": 31 }, { "franja": "10–19", "casos": 22 }, { "franja": "20–39", "casos": 34 },

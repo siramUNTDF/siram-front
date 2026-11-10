@@ -1,8 +1,8 @@
 # SIRAM: narrativa de uso
 
 > Lo entrega el agente de diseño (repo `../proyecto`). No lo edites desde el front: si algo no
-> cierra, avisá al usuario. Última actualización: 2026-11-03 (reescrita entera; reemplaza la del
-> 2026-10-08).
+> cierra, avisá al usuario. Última actualización: 2026-11-10 (§7, qué significa cada valor). Reescrita entera el
+> 2026-11-03; reemplaza la del 2026-10-08.
 >
 > Este documento cuenta **qué hace el usuario y qué ve**. No describe el modelo de datos: los datos
 > llegan por la API, y las dudas sobre su forma se resuelven con el back. Lo visual está en Figma y el
@@ -91,12 +91,14 @@ validación*, *sin confirmar*, *confirmado*, *grave* como estado, *auditoría* (
 
 ## 3. Cómo se muestra un caso
 
+> Qué significa cada estado, motivo y marca: §7.
+
 Un caso tiene **tres indicadores independientes**. Nunca se juntan en un solo campo ni en un solo
 componente.
 
 | Indicador | Valores | En pantalla |
 |---|---|---|
-| **Estado** (uno solo) | Registrado · En seguimiento · Finalizado · Desestimado · Unificado | Píldora en su propia columna. Un caso nace *Registrado*. |
+| **Estado** (uno solo) | Registrado · En seguimiento · Finalizado · Desestimado · Unificado en otro caso | Píldora en su propia columna. Un caso nace *Registrado*. |
 | **Motivo de espera** (solo en *En seguimiento*) | Esperando contacto · respuesta · certificado | Debajo del estado. |
 | **Marcas** (pueden ser varias) | Incompleto · Posible duplicado · **Grave** | Íconos pegados al número de caso, a la izquierda. |
 
@@ -195,3 +197,210 @@ mapa), agradecimiento y «enlace vencido».
 - **Personas sin DNI argentino** (p. ej. turistas): todavía no hay cómo cargarlas.
 - **Tema oscuro**: va en una segunda pasada, vista por vista (los tokens ya están).
 - Filtros avanzados y columnas visibles de las tablas (siguen «en diseño»).
+
+## 7. Qué significa cada valor
+
+Lo que el usuario ve como una etiqueta, explicado. **Es la base de toda ayuda en pantalla** (el ícono
+junto a una etiqueta, el texto al pasar el mouse) **y de un futuro manual**: no se escriben otras
+definiciones. Si un valor no está acá o la definición no alcanza, avisá al usuario; no la completes vos.
+Los marcados *tentativo* pueden cambiar.
+
+### «No sabe» y «Sin dato» (valen para todas las preguntas)
+
+- **No sabe** (en el formulario público, «No sé»): la persona **respondió** que no sabe. Es una
+  respuesta: se muestra como un valor más y se cuenta en las estadísticas.
+- **Sin dato**: la pregunta **no se hizo o no se respondió**. Se muestra en rojo y se cuenta aparte.
+- Aparece en tenencia, tipo de lugar, tamaño, sexo, edad aparente, vacunado, «¿Podría reconocerlo?»
+  y «¿Tiene chip?». En las tablas de abajo no se repite.
+
+### Estado del caso (uno solo)
+
+| Valor | Significa |
+|---|---|
+| **Registrado** | El caso se dio de alta y todavía nadie lo puso en seguimiento. Todo caso nace así. |
+| **En seguimiento** | Alguien está trabajando el caso y está detenido esperando algo. Siempre tiene un motivo de espera. |
+| **Finalizado** | Se terminó de trabajar el caso. *Tentativo:* todavía no hay un criterio para finalizar (§6); hoy lo decide el agente. Puede finalizarse aunque falten datos (p. ej. nunca se ubicó a la víctima), y entonces no cuenta como incompleto. No se reabre. |
+| **Desestimado** | El caso no debía estar en el registro (ver los motivos abajo). Es la «baja»: no se borra, sale de las estadísticas y de las listas de trabajo. No se reabre. |
+| **Unificado en otro caso** (con «→ C-…» en la segunda línea) | Era un duplicado y se consolidó en otro caso, al que apunta («→ C-…»). Sus datos se cuentan en ese otro caso. No se elige: resulta de consolidar. No se reabre. |
+
+### Motivo de espera (solo en *En seguimiento*)
+
+| Valor | Significa |
+|---|---|
+| **Esperando contacto** | No hay un teléfono para comunicarse con la víctima ni con su contacto responsable, y alguien lo busca por DNI en las bases de su organismo. Que falte solo el correo no detiene el caso. |
+| **Esperando respuesta** | Hay teléfono, pero la persona no atiende o no contesta. |
+| **Esperando certificado** | Se espera que la persona presente el certificado médico de la mordedura; Zoonosis lo adjunta al caso. |
+
+Los tres son *tentativos*: más adelante el caso va a poder esperar varias cosas a la vez, y este campo
+probablemente cambie.
+
+### Marcas (pueden ser varias; llegan calculadas)
+
+| Valor | Significa |
+|---|---|
+| **Incompleto** | Le falta algún dato del caso: fecha del hecho, ciudad, lugar, tipo de lugar, edad de la víctima o tipo de evento (aprobada de momento, puede cambiar). Los datos de los animales, del tratamiento y de la denuncia no cuentan. |
+| **Posible duplicado** | La víctima tiene el mismo DNI que la de otro caso vigente. Puede ser el mismo hecho cargado dos veces o dos ataques distintos a la misma persona; lo decide Zoonosis. |
+| **Grave** | Algún animal del caso murió o enfermó en la observación del día 10. Pide atención especial al tratamiento de la víctima. Nadie la pone a mano y sigue aunque el caso se finalice. |
+
+### Observación del día 10 (por animal; la carga Zoonosis) · *tentativo*
+
+Los animales que muerden se observan durante 10 días para descartar la rabia.
+
+| Valor | Significa |
+|---|---|
+| **Pendiente** | Todavía no se cargó la observación (no pasaron los 10 días o Zoonosis aún no la registró). |
+| **Sin novedad** | A los 10 días el animal estaba vivo y sano. |
+| **Murió o enfermó** | El animal murió o enfermó dentro de los 10 días. Marca el caso como Grave. |
+| **Ubicado, sin acceso** | Se sabe dónde está, pero no se lo pudo observar (p. ej. está en un terreno cerrado). |
+| **No se ubicó** | Nunca se encontró al animal. |
+
+«Ubicado, sin acceso» y «No se ubicó» no hacen incompleto al caso: se puede finalizar igual.
+
+### Tenencia del animal (en ese caso)
+
+| Valor | Significa |
+|---|---|
+| **Propio** | Es de la víctima o de quien informó por ella (p. ej. el perro de la familia). |
+| **Ajeno conocido** | Es de otra persona y se sabe de quién (p. ej. el perro del vecino). |
+| **Ajeno desconocido** | Es de otra persona o de nadie, y no se sabe de quién (p. ej. un perro suelto que no se conoce). |
+| **No sabe** | La persona respondió que no sabe. Distinto de *sin dato* (no se preguntó o no se respondió). |
+
+### Motivos para desestimar un caso · *tentativo*
+
+| Valor | Significa |
+|---|---|
+| **Fuera de alcance** | No fue un ataque de perro o gato a una persona (p. ej. una mordedura entre animales o de fauna silvestre). |
+| **Fuera de la provincia** | El hecho ocurrió fuera de Tierra del Fuego. |
+| **Hecho inexistente o no verificable** | Al verificarlo, no ocurrió o los datos eran falsos. |
+| **Cargado por error** | Se registró por accidente o de prueba. |
+
+No son motivos: un **duplicado** (se consolida y queda *Unificado*) ni **faltan datos** (es la marca
+Incompleto; desestimarlo haría que el caso no se cuente).
+
+### Posible duplicado: qué decide Zoonosis
+
+| Decisión | Significa |
+|---|---|
+| **Consolidar** | Los dos casos son el mismo hecho cargado dos veces: quedan en uno, eligiendo campo por campo. El otro queda *Unificado*. Irreversible. |
+| **No es duplicado** | Son dos ataques distintos a la misma persona. La marca se quita y el aviso no vuelve. |
+
+### Tipo de evento · *tentativo* (los valores se revisan con el cliente)
+
+| Valor | Significa |
+|---|---|
+| **Ataque con mordedura** | El animal mordió a la persona. |
+| **Lesión compatible** | Una lesión compatible con un ataque, sin certeza de mordedura (p. ej. un arañazo). |
+| **Intento sin lesión** | El animal atacó o intentó atacar sin lastimar a la persona. |
+| **Lesión derivada** | La persona se lastimó por el ataque sin que el animal la tocara (p. ej. al caerse huyendo). |
+
+### Tipo de lugar (dónde fue el ataque)
+
+| Valor | Significa |
+|---|---|
+| **Casa propia** | La casa de la víctima, incluido el patio o el jardín. |
+| **Casa ajena** | La casa de otra persona. |
+| **Vía pública** | La calle o la vereda. |
+| **Espacio público** | Un lugar público que no es la calle: plaza, parque, playa, sendero. |
+| **Zona rural** | Fuera de la zona urbana. |
+
+### Zona del cuerpo (tratamiento; la carga Salud) · *tentativo*
+
+Agrupa en 6 las 10 zonas del formulario de Schiavini (F1), para que la lista sea corta.
+
+| Valor | Significa |
+|---|---|
+| **Piernas** | Desde la cadera hasta los pies, incluidos los pies. |
+| **Manos** | Manos y dedos. |
+| **Brazos** | Desde el hombro hasta la muñeca. |
+| **Cabeza** | Cabeza, cara o cuello. |
+| **Tronco** | Pecho, espalda, abdomen, glúteos o genitales. |
+| **Múltiples** | Lesiones en más de una zona. |
+
+### Gravedad de la lesión (tratamiento; la carga Salud) · *tentativo, a validar con Salud*
+
+| Valor | Significa |
+|---|---|
+| **Excoriación** | Raspón: la piel quedó raspada, sin corte. |
+| **Herida superficial** | Corte o perforación que no pasa de la piel. |
+| **Herida profunda** | Corte o perforación que llega por debajo de la piel (músculo, tendón o hueso). |
+| **Amputación** | Se perdió una parte del cuerpo (p. ej. un dedo o parte de una oreja). |
+
+### Cómo era el animal (descripción)
+
+A ojo de quien lo vio: no es una medición.
+
+| Valor | Significa |
+|---|---|
+| **Tamaño: Chico** | Le llega por debajo de la rodilla a un adulto (p. ej. un caniche). |
+| **Tamaño: Mediano** | Le llega más o menos a la rodilla (p. ej. un beagle). |
+| **Tamaño: Grande** | Le pasa la rodilla (p. ej. un ovejero alemán). En gatos, se compara con un gato común. |
+| **Edad aparente: Cachorro** | Una cría: parece tener menos de un año. |
+| **Edad aparente: Adulto** | Ni cachorro ni viejo. |
+| **Edad aparente: Viejo** | Muestra la edad: hocico canoso, se mueve lento. |
+| **¿Podría reconocerlo?** | Si la persona cree que lo reconocería al volver a verlo. Le sirve a Zoonosis para identificarlo. |
+
+### Formulario público: cómo se traduce lo que eligió la persona
+
+| La persona eligió | Queda como |
+|---|---|
+| ¿Qué pasó? · Me mordió | Tipo de evento: Ataque con mordedura |
+| ¿Qué pasó? · Arañazo | Tipo de evento: Lesión compatible |
+| ¿Qué pasó? · Intentó atacar, sin lastimar | Tipo de evento: Intento sin lesión |
+| ¿Qué pasó? · Se lastimó al escapar | Tipo de evento: Lesión derivada |
+| ¿Qué pasó? · No sé | Sin tipo de evento: el caso queda Incompleto hasta que un agente lo cargue. |
+| ¿De quién es? · Es mío | Tenencia: Propio |
+| ¿De quién es? · De alguien que conozco | Tenencia: Ajeno conocido |
+| ¿De quién es? · No sé de quién es | Tenencia: Ajeno desconocido (la persona sabe que no es suyo; lo que no sabe es de quién) |
+
+### Motivo por el que no hizo la denuncia (lo declaró la persona)
+
+| Valor | Significa |
+|---|---|
+| **El animal es propio o conocido** | No quiso denunciar a su propio animal o al de alguien cercano. |
+| **No sabía dónde denunciar** | Quería, pero no sabía a dónde ir. |
+| **No sabía que había que denunciar** | No sabía que correspondía hacerlo. |
+| **No me tomaron la denuncia** | Fue a denunciar y no se la recibieron. |
+| **Razones económicas** | Hacerlo le costaba dinero. |
+| **No pasa nada después con la denuncia** | Cree que denunciar no sirve. |
+| **Otros** | Otro motivo. |
+
+Miden por qué los casos no llegan a Zoonosis (el subregistro).
+
+### Roles de usuario y tipos de organismo
+
+| Valor | Significa |
+|---|---|
+| **Administrador** | Gestiona usuarios, organismos y tipos de evento. No ve casos. |
+| **Agente** | Personal de un organismo: registra y trabaja casos. Lo que ve y lo que edita depende del tipo de su organismo. |
+| **Consulta** | Ve casos sin datos personales, busca, mira estadísticas y exporta. No edita y no pertenece a un organismo. |
+| **Tipo Salud** | Hospitales y centros de salud: cargan el tratamiento de la víctima. |
+| **Tipo Zoonosis** | Direcciones de zoonosis: siguen al animal, anotan denuncias, revisan solicitudes y deciden los duplicados. |
+| **Tipo CADIC** | Completa los datos comunes del caso; no tiene datos propios. |
+
+### Canal de origen
+
+| Valor | Significa |
+|---|---|
+| **Ciudadano** | Nació de una solicitud del formulario público que registró Zoonosis. |
+| **Salud · Zoonosis · CADIC** | Lo cargó directamente un agente de ese organismo. |
+| **Histórico** | Un registro viejo cargado a mano. Es el único que puede no tener DNI. |
+
+### Solicitud
+
+| Valor | Significa |
+|---|---|
+| **Pendiente** | La mandó un ciudadano y Zoonosis todavía no la revisó. |
+| **Registrada** | Zoonosis la pasó a un caso: creó uno nuevo o la sumó a uno que ya existía. Muestra a qué caso fue. |
+| **Descartada** | Zoonosis decidió que no corresponde (p. ej. basura, o una tercera solicitud del mismo hecho). Queda guardada, no se borra. |
+
+### Denuncia anotada · *tentativo*
+
+| Valor | Significa |
+|---|---|
+| **Pendiente de confirmación** | Zoonosis tomó la denuncia y espera que la persona presente el certificado médico (tiene 48 h hábiles). |
+| **Confirmada** | Se presentó el certificado y la denuncia sigue su curso. |
+| **Desestimada** | No llegó el certificado a tiempo: Zoonosis la desglosó y la devolvió. Queda anotada igual. |
+
+Una denuncia anotada siempre tiene el DNI de quien la hizo y la fecha. Lo que la persona **declaró**
+(«¿Hizo denuncia?» y por qué no) es otra cosa: es su respuesta en la solicitud, no la denuncia.
+

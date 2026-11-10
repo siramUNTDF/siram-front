@@ -98,7 +98,7 @@ Un caso tiene tres indicadores independientes. **No los juntes en un solo compon
 
 | Indicador | Cómo se ve | Valores (de ejemplo, los definitivos vienen de la API) |
 |---|---|---|
-| Estado | Píldora en su propia columna | Registrado · En seguimiento · Finalizado · Desestimado · Unificado |
+| Estado | Píldora en su propia columna | Registrado · En seguimiento · Finalizado · Desestimado · Unificado en otro caso |
 | Motivo de espera | Junto al estado, solo si está «En seguimiento» | Contacto · Respuesta · Certificado |
 | Marcas | Íconos pegados al identificador, a la izquierda; pueden ser varias | Incompleto · Posible duplicado · Grave *(2026-11-03: sale «Posible evento relacionado»)* |
 
@@ -115,6 +115,21 @@ Ajustes que el código del front todavía no refleja. **Registralos como pendien
 un change de openspec). Cuando estén hechos no hace falta avisar: el agente de diseño revisa el código
 y borra el aviso de acá.
 
+- **2026-11-10 · Qué significa cada valor.** `narrativa.md` §7: estados, motivos de espera, marcas,
+  día 10, tenencia, motivos de desestimación, decisión de duplicados, tipo de evento, tipo de lugar,
+  canal, solicitud y denuncia. Es la base de los textos de ayuda (íconos de ayuda, tooltips): no
+  escribas otras definiciones. Los motivos de espera quedan los tres, ahora definidos (contacto =
+  falta el teléfono; respuesta = hay teléfono y no atiende; certificado = el certificado médico).
+  **Ampliado el mismo día** con tu cruce: «No sabe» y «Sin dato» en general, zona del cuerpo, gravedad
+  de la lesión, descripción del animal, traducción del formulario público (¿Qué pasó? y ¿De quién
+  es?), motivos de no denunciar, roles y tipos de organismo. Choques corregidos: `vistas/inicio.md`
+  (tarjeta Esperando contacto: «Falta un teléfono: hay que buscarlo por DNI»); `vistas/bandeja.md`
+  (Posible duplicado: «otro caso **vigente**», también en el tooltip); el estado se muestra
+  **«Unificado en otro caso»**, como ya lo tiene el código (`narrativa.md` §3 y §7 y la tabla de
+  indicadores de este README quedaron igual).
+  **Zona del cuerpo: «Cara» pasa a «Cabeza»** (`cabeza` en la API): cabeza, cara o cuello. Actualizadas
+  `vistas/inicio.md` y `vistas/estadisticas.md` (gráfico, destacado y datos de ejemplo). Cambialo en
+  `catalogos.js`, los mocks, Inicio y Estadísticas.
 - **2026-11-06 · Ciudad en el formulario inicial y mapa sin tocar.** Actualizadas `narrativa.md` §1
   (paso 2), `vistas/formulario-publico.md` (pantallas 1 y 3, envíos de ejemplo), `vistas/nuevo-caso.md`
   (bloque «Hecho», tabla de obligatorios, validación) y `vistas/solicitudes.md` (mapa del pin en

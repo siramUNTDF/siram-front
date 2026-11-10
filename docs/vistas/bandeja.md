@@ -88,7 +88,7 @@ se lo abre y desde acá se registra uno nuevo. **Arriba queda lo que alguien toc
 | Marca | Cuándo aparece | Cómo se ve |
 |---|---|---|
 | Incompleto | Le falta algún dato **del caso** | «!» rojo sobre fondo suave con borde rojo (como hoy) |
-| Posible duplicado | Su víctima tiene el mismo DNI que la de otro caso y nadie decidió todavía | Dos cuadrados violetas (como hoy) |
+| Posible duplicado | Su víctima tiene el mismo DNI que la de otro caso **vigente** y nadie decidió todavía. Tooltip: «Posible duplicado: la víctima tiene el mismo DNI que en otro caso vigente» | Dos cuadrados violetas (como hoy) |
 | **Grave** (nueva) | Algún animal del caso murió o enfermó en la observación del día 10 | Cuadrado **rojo relleno** con «!» claro (color `error.main`, texto `background.paper`). Tooltip: «Grave: un animal del caso murió o enfermó en la observación» |
 
 Las marcas **llegan calculadas por la API**: el front no decide cuándo un caso es incompleto, grave o
