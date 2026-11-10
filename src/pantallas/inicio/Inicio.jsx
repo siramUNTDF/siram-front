@@ -25,7 +25,7 @@ const niveles = [
     rotulo: 'Bloquea el registro', aclaracion: 'el caso no avanza hasta que alguien lo resuelva', grande: true,
     tarjetas: [
       { clave: 'incompletos', color: 'error', Icono: AssignmentLateOutlinedIcon, texto: ['caso incompleto', 'casos incompletos'], detalle: 'Faltan datos obligatorios', a: '/casos/incompletos' },
-      { clave: 'esperandoContacto', color: 'info', Icono: ScheduleIcon, texto: ['caso esperando contacto', 'casos esperando contacto'], detalle: 'Hay que llamar a la persona para completar y verificar', a: '/casos?filtro=en_seguimiento&motivo=contacto' },
+      { clave: 'esperandoContacto', color: 'info', Icono: ScheduleIcon, texto: ['caso esperando contacto', 'casos esperando contacto'], detalle: 'Falta un teléfono: hay que buscarlo por DNI', a: '/casos?filtro=en_seguimiento&motivo=contacto' },
       { clave: 'graves', color: 'error', Icono: ErrorOutlineIcon, texto: ['caso grave', 'casos graves'], detalle: 'Un animal murió o enfermó en la observación', a: '/casos?filtro=graves' },
     ],
   },
@@ -124,9 +124,9 @@ export default function Inicio() {
             <TarjetaGrafico
               titulo="Zona del cuerpo lesionada" area="Epidemiología" mide="lesión principal" pie="casos vigentes con tratamiento cargado"
               nota="Sale del tratamiento que carga Salud: los casos que no pasaron por Salud no tienen este dato."
-              datos={serie(panorama.zonaDelCuerpo.valores, 'zona', { destacados: ['cara'] })}
+              datos={serie(panorama.zonaDelCuerpo.valores, 'zona', { destacados: ['cabeza'] })}
             >
-              <Barras datos={serie(panorama.zonaDelCuerpo.valores, 'zona', { destacados: ['cara'] })} />
+              <Barras datos={serie(panorama.zonaDelCuerpo.valores, 'zona', { destacados: ['cabeza'] })} />
             </TarjetaGrafico>
             <TarjetaGrafico titulo="Franja etaria de la víctima" area="Epidemiología" mide="edad al momento del ataque" datos={serie(panorama.franjaEtaria, null, { destacados: ['0–9'] })}>
               <Columnas datos={serie(panorama.franjaEtaria, null, { destacados: ['0–9'] })} pie="edad de la víctima, en años" />

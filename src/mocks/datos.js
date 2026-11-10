@@ -472,7 +472,7 @@ export const panorama = {
   ],
   zonaDelCuerpo: { conTratamiento: 118, valores: [
     { valor: 'piernas', casos: 41 }, { valor: 'manos', casos: 26 }, { valor: 'brazos', casos: 19 },
-    { valor: 'cara', casos: 16 }, { valor: 'tronco', casos: 8 }, { valor: 'multiples', casos: 8 },
+    { valor: 'cabeza', casos: 16 }, { valor: 'tronco', casos: 8 }, { valor: 'multiples', casos: 8 },
   ] },
   franjaEtaria: [
     { valor: '0–9', casos: 31 }, { valor: '10–19', casos: 22 }, { valor: '20–39', casos: 34 },

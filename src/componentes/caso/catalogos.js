@@ -24,7 +24,7 @@ export const marcas = {
   },
   duplicado: {
     etiqueta: 'Posible duplicado',
-    descripcion: 'Posible duplicado: la víctima tiene el mismo DNI que en otro caso',
+    descripcion: 'Posible duplicado: la víctima tiene el mismo DNI que en otro caso vigente',
   },
   grave: {
     etiqueta: 'Grave',
@@ -76,7 +76,7 @@ export const dia10 = {
 }
 
 export const zonasCuerpo = {
-  piernas: 'Piernas', manos: 'Manos', brazos: 'Brazos', cara: 'Cara', tronco: 'Tronco', multiples: 'Múltiples',
+  piernas: 'Piernas', manos: 'Manos', brazos: 'Brazos', cabeza: 'Cabeza', tronco: 'Tronco', multiples: 'Múltiples',
 }
 
 export const gravedades = {

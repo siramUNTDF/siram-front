@@ -121,7 +121,7 @@ export default function Estadisticas() {
           </Seccion>
 
           <Seccion titulo="Lesión" bajada="Zona del cuerpo y gravedad, del tratamiento">
-            <Grafico titulo="Zona del cuerpo lesionada" area="Lesión" mide="lesión principal" pie={pieTratamiento} nota="Sale del tratamiento que carga Salud: los casos que no pasaron por Salud no tienen este dato." datos={serie(e.zonaDelCuerpo.valores, 'zona', { destacados: ['cara'] })} />
+            <Grafico titulo="Zona del cuerpo lesionada" area="Lesión" mide="lesión principal" pie={pieTratamiento} nota="Sale del tratamiento que carga Salud: los casos que no pasaron por Salud no tienen este dato." datos={serie(e.zonaDelCuerpo.valores, 'zona', { destacados: ['cabeza'] })} />
             <Grafico titulo="Gravedad de la lesión" area="Lesión" mide="gravedad" pie={pieTratamiento} datos={serie(e.gravedad.valores, 'gravedad')} />
           </Seccion>
 
